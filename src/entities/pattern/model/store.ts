@@ -3,6 +3,8 @@ import { ExtractionPattern, ConstraintType, ColumnConstraint } from './types';
 
 interface PatternState extends ExtractionPattern {
   setHeaderRow: (index: number) => void;
+  toggleManualMode: (totalCols: number) => void;
+  updateColumnName: (colIndex: number, name: string) => void;
   setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
   toggleVisibility: (colIndex: number) => void;
   resetPattern: () => void;
@@ -10,31 +12,47 @@ interface PatternState extends ExtractionPattern {
 
 export const usePatternStore = create<PatternState>((set) => ({
   headerRowIndex: null,
+  isManualMode: false,
+  customNames: {},
   constraints: [],
   hiddenColumns: [],
 
   setHeaderRow: (index) => set({ 
     headerRowIndex: index, 
+    isManualMode: false,
     constraints: [], 
     hiddenColumns: [] 
   }),
 
-  // Теперь мы просто меняем тип, не удаляя объект из массива
+  toggleManualMode: (totalCols) => set((state) => ({
+    isManualMode: !state.isManualMode,
+    headerRowIndex: null,
+    constraints: [],
+    customNames: !state.isManualMode ? 
+      Object.fromEntries(Array.from({length: totalCols}, (_, i) => [i, String.fromCharCode(65 + i)])) 
+      : {}
+  })),
+
+  updateColumnName: (colIndex, name) => set((state) => ({
+    customNames: { ...state.customNames, [colIndex]: name }
+  })),
+
   setConstraintType: (colIndex, name, type) => set((state) => {
     const others = state.constraints.filter(c => c.colIndex !== colIndex);
-    const newConstraint: ColumnConstraint = { colIndex, name, type };
-    return { constraints: [...others, newConstraint] };
+    return { constraints: [...others, { colIndex, name, type }] };
   }),
 
-  // Переключатель: скрыть/показать колонку в результатах
-  toggleVisibility: (colIndex) => set((state) => {
-    const isHidden = state.hiddenColumns.includes(colIndex);
-    return {
-      hiddenColumns: isHidden 
-        ? state.hiddenColumns.filter(id => id !== colIndex)
-        : [...state.hiddenColumns, colIndex]
-    };
-  }),
+  toggleVisibility: (colIndex) => set((state) => ({
+    hiddenColumns: state.hiddenColumns.includes(colIndex)
+      ? state.hiddenColumns.filter(id => id !== colIndex)
+      : [...state.hiddenColumns, colIndex]
+  })),
 
-  resetPattern: () => set({ headerRowIndex: null, constraints: [], hiddenColumns: [] }),
+  resetPattern: () => set({ 
+    headerRowIndex: null, 
+    isManualMode: false, 
+    customNames: {}, 
+    constraints: [], 
+    hiddenColumns: [] 
+  }),
 }));

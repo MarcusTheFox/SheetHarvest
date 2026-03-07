@@ -8,6 +8,8 @@ export interface ColumnConstraint {
 
 export interface ExtractionPattern {
   headerRowIndex: number | null;
+  isManualMode: boolean; // Режим "Без заголовка в таблице"
+  customNames: Record<number, string>; // Кастомные имена колонок
   constraints: ColumnConstraint[];
-  hiddenColumns: number[]; // Новое поле: индексы колонок, которые не попадут в результат
+  hiddenColumns: number[];
 }
