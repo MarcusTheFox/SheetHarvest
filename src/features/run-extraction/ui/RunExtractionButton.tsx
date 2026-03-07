@@ -6,30 +6,43 @@ import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { validators } from "@/shared/lib/validators";
+import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 
 export const RunExtractionButton = () => {
   const { sheets, currentSheetIndex } = useSpreadsheetStore();
-  const { headerRowIndex, constraints } = usePatternStore();
+  const { headerRowIndex, constraints, hiddenColumns } = usePatternStore();
   const { setResults } = useExtractionStore();
 
   const handleRun = () => {
     const sheet = sheets[currentSheetIndex];
     if (!sheet || headerRowIndex === null) return;
 
-    // 1. Берем все строки ПОСЛЕ заголовка
     const dataToProcess = sheet.data.slice(headerRowIndex + 1);
+    const headerRow = sheet.data[headerRowIndex];
+    const merges = sheet.merges || [];
 
-    // 2. Фильтруем строки согласно constraints
-    const filteredResults = dataToProcess.filter((row) => {
-      // Строка подходит, если ВСЕ активные constraints выполняются
+    // 1. ФИЛЬТРАЦИЯ СТРОК
+    const filteredRows = dataToProcess.filter((row) => {
+      if (constraints.length === 0) return true;
+
       return constraints.every((constraint) => {
         const cellValue = row[constraint.colIndex];
         const validator = validators[constraint.type];
         return validator ? validator(cellValue) : true;
       });
     });
+    
+    const projectedResults = filteredRows.map((row) => {
+      return headerRow
+        .map((_, idx) => row[idx]) 
+        .filter((_, idx) => {
+          const isSecondary = isSecondaryMergeCell(headerRowIndex, idx, merges);
+          const isHidden = hiddenColumns.includes(idx);
+          return !isSecondary && !isHidden;
+        });
+    });
 
-    setResults(filteredResults);
+    setResults(projectedResults);
   };
 
   return (

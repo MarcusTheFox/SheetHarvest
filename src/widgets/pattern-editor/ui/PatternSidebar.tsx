@@ -1,11 +1,11 @@
 "use client";
 
-import { Card, CardBody, Divider, Select, SelectItem, Button, Chip } from "@heroui/react";
+import { Card, CardBody, Divider, Select, SelectItem, Button, Chip, Tooltip } from "@heroui/react";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
-import { Settings2, Trash2, Columns } from "lucide-react";
+import { Settings2, Trash2, Columns, Eye, EyeOff } from "lucide-react";
 
 const CONSTRAINT_TYPES = [
   { label: "Любое значение", value: "any" },
@@ -15,7 +15,15 @@ const CONSTRAINT_TYPES = [
 ];
 
 export const PatternSidebar = () => {
-  const { headerRowIndex, constraints, toggleConstraint, resetPattern } = usePatternStore();
+  const { 
+    headerRowIndex, 
+    constraints, 
+    hiddenColumns, 
+    setConstraintType, 
+    toggleVisibility, 
+    resetPattern 
+  } = usePatternStore();
+  
   const { sheets, currentSheetIndex } = useSpreadsheetStore();
 
   const currentSheet = sheets[currentSheetIndex];
@@ -45,35 +53,47 @@ export const PatternSidebar = () => {
           </div>
           
           {headerRow?.map((cell, idx) => {
-            // КЛЮЧЕВОЙ МОМЕНТ: Пропускаем "пустые" части объединенной ячейки
             if (isSecondaryMergeCell(headerRowIndex, idx, merges)) return null;
 
             const currentConstraint = constraints.find(c => c.colIndex === idx);
+            const isHidden = hiddenColumns.includes(idx);
 
             return (
-              <div key={idx} className="flex flex-col gap-2 p-3 border rounded-xl bg-default-50 hover:border-primary-200 transition-colors">
-                <div className="flex justify-between items-start">
-                  <span className="text-[10px] font-bold px-2 py-0.5 bg-default-200 rounded text-default-600">
+              <div 
+                key={idx} 
+                className={`flex flex-col gap-2 p-3 border rounded-xl transition-all ${
+                  isHidden ? "bg-default-100 opacity-60" : "bg-default-50 border-default-200"
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-default-200 rounded text-default-600 font-mono">
                     COL {String.fromCharCode(65 + idx)}
                   </span>
-                  {currentConstraint && currentConstraint.type !== 'any' && (
-                    <Chip size="sm" color="primary" variant="dot" className="border-none h-4" />
-                  )}
+                  
+                  <Tooltip content={isHidden ? "Показать в результате" : "Скрыть из результата"}>
+                    <Button 
+                      isIconOnly 
+                      size="sm" 
+                      variant="light" 
+                      color={isHidden ? "default" : "primary"}
+                      onPress={() => toggleVisibility(idx)}
+                    >
+                      {isHidden ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </Button>
+                  </Tooltip>
                 </div>
                 
-                <span className="font-semibold text-sm line-clamp-2 min-h-[2.5rem]">
+                <span className="font-semibold text-sm line-clamp-1">
                   {cell?.toString() || <span className="text-default-300 italic">Без названия</span>}
                 </span>
                 
                 <Select 
                   size="sm" 
                   variant="bordered"
-                  aria-label="Select data type"
+                  labelPlacement="outside"
                   selectedKeys={[currentConstraint?.type || "any"]}
-                  onChange={(e) => toggleConstraint(idx, cell?.toString() || "", e.target.value as any)}
-                  classNames={{
-                    trigger: "bg-white",
-                  }}
+                  onChange={(e) => setConstraintType(idx, cell?.toString() || "", e.target.value as any)}
+                  classNames={{ trigger: "bg-white" }}
                 >
                   {CONSTRAINT_TYPES.map((type) => (
                     <SelectItem key={type.value}>

@@ -7,47 +7,103 @@ import {
 } from "@heroui/react";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
-import { X, Download } from "lucide-react";
+import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
+import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
+import { X, FileJson } from "lucide-react";
 
 export const ResultsTable = () => {
   const { results, clearResults } = useExtractionStore();
-  const { constraints } = usePatternStore();
+  const { headerRowIndex, hiddenColumns } = usePatternStore();
+  const { sheets, currentSheetIndex } = useSpreadsheetStore();
 
-  if (results.length === 0) return null;
+  // Ранний выход: если результатов нет или заголовок не выбран — ничего не рендерим
+  if (results.length === 0 || headerRowIndex === null) return null;
+
+  const currentSheet = sheets[currentSheetIndex];
+  if (!currentSheet) return null;
+
+  const headerRow = currentSheet.data[headerRowIndex];
+  const merges = currentSheet.merges || [];
+  
+  // Создаем константу для TS, чтобы он "запомнил", что это число
+  const safeHeaderRowIndex = headerRowIndex;
+
+  // Формируем заголовки только для уникальных и видимых колонок
+  const visibleHeaders = headerRow.filter((_, idx) => {
+    // Используем safeHeaderRowIndex, который гарантированно number
+    const isSecondary = isSecondaryMergeCell(safeHeaderRowIndex, idx, merges);
+    const isHidden = hiddenColumns.includes(idx);
+    return !isSecondary && !isHidden;
+  });
 
   return (
-    <Card className="w-full p-4 border-2 border-success-200">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          Результаты извлечения 
-          <span className="text-success text-sm bg-success-50 px-2 py-1 rounded-full">
-            Найдено строк: {results.length}
-          </span>
-        </h2>
-        <div className="flex gap-2">
-          <Button size="sm" color="danger" variant="flat" onPress={clearResults} startContent={<X size={16}/>}>
+    <Card className="w-full p-6 shadow-2xl border-none bg-white">
+      {/* Шапка результатов */}
+      <div className="flex justify-between items-center mb-8 px-2">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-bold tracking-tight text-default-800">
+            Результаты извлечения
+          </h2>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+            <p className="text-sm text-default-500 font-medium">
+              Найдено <span className="text-success font-bold">{results.length}</span> строк
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex gap-3">
+          <Button 
+            variant="flat" 
+            color="primary" 
+            className="font-semibold"
+            startContent={<FileJson size={18}/>}
+          >
+            Экспорт JSON
+          </Button>
+          <Button 
+            variant="light" 
+            color="danger" 
+            className="font-semibold"
+            onPress={clearResults} 
+            startContent={<X size={18}/>}
+          >
             Закрыть
           </Button>
         </div>
       </div>
 
-      <div className="overflow-x-auto max-h-[60vh]">
-        <Table aria-label="Extraction results" isHeaderSticky removeWrapper shadow="none">
+      {/* Таблица без границ */}
+      <div className="overflow-hidden rounded-2xl bg-default-50/30">
+        <Table 
+          aria-label="Extraction results" 
+          isHeaderSticky 
+          removeWrapper 
+          shadow="none"
+          className="min-h-[200px]"
+        >
           <TableHeader>
-            {constraints.length > 0 ? (
-              constraints.map((c) => (
-                <TableColumn key={c.colIndex}>{c.name || `Кол. ${c.colIndex + 1}`}</TableColumn>
-              ))
-            ) : (
-              <TableColumn>Данные</TableColumn>
-            )}
+            {visibleHeaders.map((name, i) => (
+              <TableColumn 
+                key={i} 
+                className="bg-default-100/50 text-default-600 font-bold py-4 border-none uppercase text-tiny"
+              >
+                {name?.toString() || `Кол. ${i + 1}`}
+              </TableColumn>
+            ))}
           </TableHeader>
           <TableBody emptyContent="Ничего не найдено">
-            {results.map((row, i) => (
-              <TableRow key={i} className="hover:bg-success-50/30">
-                {constraints.map((c) => (
-                  <TableCell key={c.colIndex}>
-                    {row[c.colIndex]?.toString() || ""}
+            {results.map((row, rowIndex) => (
+              <TableRow 
+                key={rowIndex} 
+                className="hover:bg-white/80 transition-all cursor-default group"
+              >
+                {visibleHeaders.map((_, colIndex) => (
+                  <TableCell 
+                    key={colIndex} 
+                    className="py-4 text-default-700 border-none group-hover:text-primary transition-colors"
+                  >
+                    {row[colIndex]?.toString() || ""}
                   </TableCell>
                 ))}
               </TableRow>
