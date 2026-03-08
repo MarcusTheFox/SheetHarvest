@@ -1,4 +1,5 @@
 export type ConstraintType = 'not_empty' | 'is_number' | 'is_date' | 'any';
+export type TopologyMode = 'any' | 'filled' | 'empty'; // Режимы топологии
 
 export interface ColumnConstraint {
   colIndex: number;
@@ -8,8 +9,9 @@ export interface ColumnConstraint {
 
 export interface ExtractionPattern {
   headerRowIndex: number | null;
-  isManualMode: boolean; // Режим "Без заголовка в таблице"
-  customNames: Record<number, string>; // Кастомные имена колонок
+  isManualMode: boolean;
+  customNames: Record<number, string>;
   constraints: ColumnConstraint[];
+  topology: Record<number, TopologyMode>; // Новое поле: структурные правила
   hiddenColumns: number[];
 }

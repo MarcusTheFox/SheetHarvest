@@ -10,20 +10,33 @@ import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils
 
 export const RunExtractionButton = () => {
   const { sheets, currentSheetIndex } = useSpreadsheetStore();
-  const { headerRowIndex, isManualMode, customNames, constraints, hiddenColumns } = usePatternStore();
+  const { headerRowIndex, isManualMode, customNames, constraints, topology, hiddenColumns } = usePatternStore();
   const { setResults } = useExtractionStore();
 
   const handleRun = () => {
     const sheet = sheets[currentSheetIndex];
     if (!sheet || (headerRowIndex === null && !isManualMode)) return;
 
-    // Определение диапазона данных
     const dataToProcess = isManualMode ? sheet.data : sheet.data.slice(headerRowIndex! + 1);
     const tableHeaderRow = headerRowIndex !== null ? sheet.data[headerRowIndex] : [];
     const merges = sheet.merges || [];
 
-    // 1. ФИЛЬТРАЦИЯ СТРОК
+    // 1. КОМБИНИРОВАННАЯ ФИЛЬТРАЦИЯ
     const filteredRows = dataToProcess.filter((row) => {
+      // ПРОВЕРКА 1: ТОПОЛОГИЯ (Структура)
+      const matchesTopology = Object.entries(topology).every(([colIdx, mode]) => {
+        const idx = Number(colIdx);
+        const val = row[idx];
+        const isNotEmpty = val !== null && val !== undefined && val.toString().trim() !== '';
+
+        if (mode === 'filled') return isNotEmpty;
+        if (mode === 'empty') return !isNotEmpty;
+        return true; // any
+      });
+
+      if (!matchesTopology) return false;
+
+      // ПРОВЕРКА 2: CONSTRAINTS (Контент)
       if (constraints.length === 0) return true;
       return constraints.every((constraint) => {
         const cellValue = row[constraint.colIndex];
@@ -31,20 +44,17 @@ export const RunExtractionButton = () => {
       });
     });
 
-    // 2. ФОРМИРОВАНИЕ ВИДИМЫХ ИНДЕКСОВ
-    // Логика: колонка остается если (не скрыта) И (не вторичная объединения) И (не пустая в заголовке таблицы ИЛИ переименована)
+    // 2. ОПРЕДЕЛЕНИЕ ВИДИМЫХ ИНДЕКСОВ
     const maxCols = Math.max(...sheet.data.map(r => r.length));
     const activeColIndices = Array.from({length: maxCols}, (_, i) => i).filter(idx => {
       const isHidden = hiddenColumns.includes(idx);
       const isSecondary = headerRowIndex !== null && isSecondaryMergeCell(headerRowIndex, idx, merges);
-      
       if (isManualMode) return !isHidden;
-      
       const hasContent = !!tableHeaderRow[idx] || !!customNames[idx];
       return !isHidden && !isSecondary && hasContent;
     });
 
-    // 3. ПРОЕКЦИЯ ДАННЫХ
+    // 3. ПРОЕКЦИЯ
     const projectedResults = filteredRows.map((row) => {
       return activeColIndices.map(idx => row[idx]);
     });
@@ -55,8 +65,8 @@ export const RunExtractionButton = () => {
   return (
     <Button 
       color="success" 
-      className="w-full font-bold text-white shadow-xl"
-      startContent={<Play size={18} fill="currentColor" />}
+      className="w-full font-bold text-white shadow-xl py-6 rounded-2xl"
+      startContent={<Play size={20} fill="currentColor" />}
       onPress={handleRun}
     >
       Запустить сбор данных

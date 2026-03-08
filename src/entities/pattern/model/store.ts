@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import { ExtractionPattern, ConstraintType, ColumnConstraint } from './types';
+import { ExtractionPattern, ConstraintType, ColumnConstraint, TopologyMode } from './types';
 
 interface PatternState extends ExtractionPattern {
   setHeaderRow: (index: number) => void;
   toggleManualMode: (totalCols: number) => void;
   updateColumnName: (colIndex: number, name: string) => void;
   setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
+  setTopology: (colIndex: number, mode: TopologyMode) => void; // Новый экшен
   toggleVisibility: (colIndex: number) => void;
   resetPattern: () => void;
 }
@@ -15,12 +16,14 @@ export const usePatternStore = create<PatternState>((set) => ({
   isManualMode: false,
   customNames: {},
   constraints: [],
+  topology: {},
   hiddenColumns: [],
 
   setHeaderRow: (index) => set({ 
     headerRowIndex: index, 
     isManualMode: false,
     constraints: [], 
+    topology: {},
     hiddenColumns: [] 
   }),
 
@@ -28,9 +31,9 @@ export const usePatternStore = create<PatternState>((set) => ({
     isManualMode: !state.isManualMode,
     headerRowIndex: null,
     constraints: [],
+    topology: {},
     customNames: !state.isManualMode ? 
-      Object.fromEntries(Array.from({length: totalCols}, (_, i) => [i, String.fromCharCode(65 + i)])) 
-      : {}
+      Object.fromEntries(Array.from({length: totalCols}, (_, i) => [i, String.fromCharCode(65 + i)])) : {}
   })),
 
   updateColumnName: (colIndex, name) => set((state) => ({
@@ -41,6 +44,10 @@ export const usePatternStore = create<PatternState>((set) => ({
     const others = state.constraints.filter(c => c.colIndex !== colIndex);
     return { constraints: [...others, { colIndex, name, type }] };
   }),
+
+  setTopology: (colIndex, mode) => set((state) => ({
+    topology: { ...state.topology, [colIndex]: mode }
+  })),
 
   toggleVisibility: (colIndex) => set((state) => ({
     hiddenColumns: state.hiddenColumns.includes(colIndex)
@@ -53,6 +60,7 @@ export const usePatternStore = create<PatternState>((set) => ({
     isManualMode: false, 
     customNames: {}, 
     constraints: [], 
+    topology: {},
     hiddenColumns: [] 
   }),
 }));
