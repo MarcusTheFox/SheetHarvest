@@ -1,12 +1,14 @@
 import { create } from 'zustand';
-import { ExtractionPattern, ConstraintType, ColumnConstraint, TopologyMode } from './types';
+import { ExtractionPattern, ConstraintType, ColumnConstraint, TopologyMode, AnchorPoint } from './types';
 
 interface PatternState extends ExtractionPattern {
   setHeaderRow: (index: number) => void;
   toggleManualMode: (totalCols: number) => void;
   updateColumnName: (colIndex: number, name: string) => void;
   setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
-  setTopology: (colIndex: number, mode: TopologyMode) => void; // Новый экшен
+  setTopology: (colIndex: number, mode: TopologyMode) => void;
+  setStartAnchor: (point: AnchorPoint | null) => void;
+  setEndAnchor: (point: AnchorPoint | null) => void;
   toggleVisibility: (colIndex: number) => void;
   resetPattern: () => void;
 }
@@ -17,6 +19,10 @@ export const usePatternStore = create<PatternState>((set) => ({
   customNames: {},
   constraints: [],
   topology: {},
+  anchor: {
+    start: null,
+    end: null,
+  },
   hiddenColumns: [],
 
   setHeaderRow: (index) => set({ 
@@ -24,6 +30,7 @@ export const usePatternStore = create<PatternState>((set) => ({
     isManualMode: false,
     constraints: [], 
     topology: {},
+    anchor: { start: null, end: null },
     hiddenColumns: [] 
   }),
 
@@ -32,6 +39,7 @@ export const usePatternStore = create<PatternState>((set) => ({
     headerRowIndex: null,
     constraints: [],
     topology: {},
+    anchor: { start: null, end: null },
     customNames: !state.isManualMode ? 
       Object.fromEntries(Array.from({length: totalCols}, (_, i) => [i, String.fromCharCode(65 + i)])) : {}
   })),
@@ -49,6 +57,14 @@ export const usePatternStore = create<PatternState>((set) => ({
     topology: { ...state.topology, [colIndex]: mode }
   })),
 
+  setStartAnchor: (start) => set((state) => ({
+    anchor: { ...state.anchor, start }
+  })),
+
+  setEndAnchor: (end) => set((state) => ({
+    anchor: { ...state.anchor, end }
+  })),
+
   toggleVisibility: (colIndex) => set((state) => ({
     hiddenColumns: state.hiddenColumns.includes(colIndex)
       ? state.hiddenColumns.filter(id => id !== colIndex)
@@ -61,6 +77,7 @@ export const usePatternStore = create<PatternState>((set) => ({
     customNames: {}, 
     constraints: [], 
     topology: {},
+    anchor: { start: null, end: null },
     hiddenColumns: [] 
   }),
 }));

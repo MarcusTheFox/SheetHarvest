@@ -10,42 +10,74 @@ import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils
 
 export const RunExtractionButton = () => {
   const { sheets, currentSheetIndex } = useSpreadsheetStore();
-  const { headerRowIndex, isManualMode, customNames, constraints, topology, hiddenColumns } = usePatternStore();
+  const { headerRowIndex, isManualMode, customNames, constraints, topology, anchor, hiddenColumns } = usePatternStore();
   const { setResults } = useExtractionStore();
 
   const handleRun = () => {
     const sheet = sheets[currentSheetIndex];
     if (!sheet || (headerRowIndex === null && !isManualMode)) return;
 
-    const dataToProcess = isManualMode ? sheet.data : sheet.data.slice(headerRowIndex! + 1);
-    const tableHeaderRow = headerRowIndex !== null ? sheet.data[headerRowIndex] : [];
+    const allRows = sheet.data;
+    const tableHeaderRow = headerRowIndex !== null ? allRows[headerRowIndex] : [];
     const merges = sheet.merges || [];
 
-    // 1. КОМБИНИРОВАННАЯ ФИЛЬТРАЦИЯ
-    const filteredRows = dataToProcess.filter((row) => {
-      // ПРОВЕРКА 1: ТОПОЛОГИЯ (Структура)
-      const matchesTopology = Object.entries(topology).every(([colIdx, mode]) => {
-        const idx = Number(colIdx);
-        const val = row[idx];
-        const isNotEmpty = val !== null && val !== undefined && val.toString().trim() !== '';
+    // Состояние активности поиска (если нет стартового якоря — мы активны сразу)
+    let isSearchActive = !anchor.start;
+    const finalFilteredRows: any[][] = [];
 
-        if (mode === 'filled') return isNotEmpty;
-        if (mode === 'empty') return !isNotEmpty;
-        return true; // any
-      });
+    // Главный цикл по строкам таблицы
+    for (let i = 0; i < allRows.length; i++) {
+      const row = allRows[i];
 
-      if (!matchesTopology) return false;
+      // ПРОВЕРКА СТАРТОВОГО ЯКОРЯ
+      if (anchor.start && !isSearchActive) {
+        const cellValue = row[anchor.start.colIndex]?.toString();
+        if (cellValue === anchor.start.text) {
+          isSearchActive = true;
+          continue; // Саму строку якоря обычно не берем в данные
+        }
+      }
 
-      // ПРОВЕРКА 2: CONSTRAINTS (Контент)
-      if (constraints.length === 0) return true;
-      return constraints.every((constraint) => {
-        const cellValue = row[constraint.colIndex];
-        return validators[constraint.type](cellValue);
-      });
-    });
+      // ПРОВЕРКА КОНЕЧНОГО ЯКОРЯ
+      if (anchor.end && isSearchActive) {
+        const cellValue = row[anchor.end.colIndex]?.toString();
+        if (cellValue === anchor.end.text) {
+          isSearchActive = false;
+          break; // Прекращаем поиск полностью
+        }
+      }
 
-    // 2. ОПРЕДЕЛЕНИЕ ВИДИМЫХ ИНДЕКСОВ
-    const maxCols = Math.max(...sheet.data.map(r => r.length));
+      // Если мы в активной фазе поиска
+      if (isSearchActive) {
+        // Пропускаем заголовок, если мы не в ручном режиме
+        if (!isManualMode && i <= (headerRowIndex || -1)) continue;
+
+        // 1. ТОПОЛОГИЯ
+        const matchesTopology = Object.entries(topology).every(([colIdx, mode]) => {
+          const idx = Number(colIdx);
+          const val = row[idx];
+          const isNotEmpty = val !== null && val !== undefined && val.toString().trim() !== '';
+          if (mode === 'filled') return isNotEmpty;
+          if (mode === 'empty') return !isNotEmpty;
+          return true;
+        });
+
+        if (!matchesTopology) continue;
+
+        // 2. CONSTRAINTS
+        const matchesConstraints = constraints.every((constraint) => {
+          const cellValue = row[constraint.colIndex];
+          return validators[constraint.type](cellValue);
+        });
+
+        if (!matchesConstraints) continue;
+
+        finalFilteredRows.push(row);
+      }
+    }
+
+    // ОПРЕДЕЛЕНИЕ ВИДИМЫХ ИНДЕКСОВ
+    const maxCols = Math.max(...allRows.map(r => r.length));
     const activeColIndices = Array.from({length: maxCols}, (_, i) => i).filter(idx => {
       const isHidden = hiddenColumns.includes(idx);
       const isSecondary = headerRowIndex !== null && isSecondaryMergeCell(headerRowIndex, idx, merges);
@@ -54,8 +86,8 @@ export const RunExtractionButton = () => {
       return !isHidden && !isSecondary && hasContent;
     });
 
-    // 3. ПРОЕКЦИЯ
-    const projectedResults = filteredRows.map((row) => {
+    // ПРОЕКЦИЯ
+    const projectedResults = finalFilteredRows.map((row) => {
       return activeColIndices.map(idx => row[idx]);
     });
 

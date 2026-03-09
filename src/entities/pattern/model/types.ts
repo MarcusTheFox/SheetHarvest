@@ -1,5 +1,10 @@
 export type ConstraintType = 'not_empty' | 'is_number' | 'is_date' | 'any';
-export type TopologyMode = 'any' | 'filled' | 'empty'; // Режимы топологии
+export type TopologyMode = 'any' | 'filled' | 'empty';
+
+export interface AnchorPoint {
+  text: string;
+  colIndex: number;
+}
 
 export interface ColumnConstraint {
   colIndex: number;
@@ -12,6 +17,10 @@ export interface ExtractionPattern {
   isManualMode: boolean;
   customNames: Record<number, string>;
   constraints: ColumnConstraint[];
-  topology: Record<number, TopologyMode>; // Новое поле: структурные правила
+  topology: Record<number, TopologyMode>;
+  anchor: {
+    start: AnchorPoint | null;
+    end: AnchorPoint | null;
+  };
   hiddenColumns: number[];
 }
