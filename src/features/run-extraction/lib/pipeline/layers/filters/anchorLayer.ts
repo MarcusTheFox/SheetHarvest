@@ -1,5 +1,4 @@
-import { ExtractionLayer } from "../core";
-import { checkTopology, checkConstraints } from "../../extraction-utils";
+import { ExtractionLayer } from "../../core";
 
 export const anchorLayer: ExtractionLayer = (context) => {
     const { rows, params } = context;
@@ -35,33 +34,4 @@ export const anchorLayer: ExtractionLayer = (context) => {
     }
 
     return { ...context, rows: filteredRows };
-};
-
-export const headerSkipLayer: ExtractionLayer = (context) => {
-    const { rows, params } = context;
-    if (params.isManualMode || params.headerRowIndex === null) {
-        return context;
-    }
-
-    return {
-        ...context,
-        // Пропускаем строки, индекс которых меньше или равен индексу заголовка
-        rows: rows.filter(r => r.originalIndex > params.headerRowIndex!)
-    };
-};
-
-export const topologyLayer: ExtractionLayer = (context) => {
-    const { rows, params } = context;
-    return {
-        ...context,
-        rows: rows.filter(r => checkTopology(r.cells, params.topology))
-    };
-};
-
-export const constraintsLayer: ExtractionLayer = (context) => {
-    const { rows, params } = context;
-    return {
-        ...context,
-        rows: rows.filter(r => checkConstraints(r.cells, params.constraints))
-    };
 };
