@@ -12,6 +12,7 @@ import {
     ChevronRight, PlusCircle, ArrowUp, ArrowDown
 } from "lucide-react";
 import { memo, useState } from "react";
+import { ValueMappingConfig } from "./layers/ValueMappingConfig";
 
 interface PipelineEditorProps {
     isOpen: boolean;
@@ -191,11 +192,18 @@ export const PipelineEditor = memo(({ isOpen, onClose, onApply }: PipelineEditor
                                             <h4 className="font-bold uppercase tracking-widest text-xs">Настройки параметров</h4>
                                         </div>
 
-                                        {/* Здесь будет рендериться специфичная форма настроек для каждого слоя */}
-                                        <div className="bg-default-50 rounded-2xl p-12 flex flex-col items-center justify-center border-2 border-dashed border-default-200">
-                                            <Settings2 size={48} className="text-default-200 mb-4" />
-                                            <p className="text-default-400 text-sm">Для этого слоя пока нет дополнительных настроек</p>
-                                        </div>
+                                        {selectedEntry.id === 'value-mapping' ? (
+                                            <ValueMappingConfig
+                                                index={selectedLayerIndex!}
+                                                settings={selectedEntry.settings}
+                                            />
+                                        ) : (
+                                            /* Здесь будет рендериться специфичная форма настроек для каждого слоя */
+                                            <div className="bg-default-50 rounded-2xl p-12 flex flex-col items-center justify-center border-2 border-dashed border-default-200">
+                                                <Settings2 size={48} className="text-default-200 mb-4" />
+                                                <p className="text-default-400 text-sm">Для этого слоя пока нет дополнительных настроек</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </ScrollShadow>
                             </div>

@@ -7,7 +7,8 @@ import {
 } from "./layers/filters";
 import {
     projectionLayer,
-    splitColumnExampleLayer
+    splitColumnExampleLayer,
+    valueMappingLayer
 } from "./layers/transformers";
 
 export interface LayerMetadata {
@@ -59,6 +60,12 @@ export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
         name: 'Разбиение "Артикул, Штрихкод"',
         description: 'Демонстрационный слой: разбивает одну колонку на две по запятой',
         layer: splitColumnExampleLayer
+    },
+    'value-mapping': {
+        id: 'value-mapping',
+        name: 'Сопоставление значений',
+        description: 'Заменяет значения в колонках по загруженному справочнику',
+        layer: valueMappingLayer
     }
 };
 
