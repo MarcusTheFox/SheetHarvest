@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, Divider } from "@heroui/react";
+import { Card, CardBody, CardFooter, Divider } from "@heroui/react";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
@@ -30,10 +30,12 @@ export const PatternSidebar = () => {
         
         <PatternSidebarColumnList headerRow={headerRow} merges={merges} />
 
-        <div className="mt-auto pt-4">
+      </CardBody>
+      <CardFooter className="border-t-2 border-default-100">
+        <div className="mx-auto my-2">
           <RunExtractionButton />
         </div>
-      </CardBody>
+      </CardFooter>
     </Card>
   );
 };
