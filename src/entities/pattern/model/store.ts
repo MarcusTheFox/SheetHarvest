@@ -2,8 +2,11 @@ import { create } from 'zustand';
 import { ExtractionPattern, ConstraintType, ColumnConstraint, TopologyMode, AnchorPoint } from './types';
 
 interface PatternState extends ExtractionPattern {
+  selectedColumns: number[];
+
   setHeaderRow: (index: number) => void;
-  toggleManualMode: (totalCols: number) => void;
+  toggleManualMode: () => void;
+  toggleColumn: (colIndex: number) => void;
   updateColumnName: (colIndex: number, name: string) => void;
   setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
   setTopology: (colIndex: number, mode: TopologyMode) => void;
@@ -16,6 +19,7 @@ interface PatternState extends ExtractionPattern {
 export const usePatternStore = create<PatternState>((set) => ({
   headerRowIndex: null,
   isManualMode: false,
+  selectedColumns: [],
   customNames: {},
   constraints: [],
   topology: {},
@@ -28,20 +32,29 @@ export const usePatternStore = create<PatternState>((set) => ({
   setHeaderRow: (index) => set({ 
     headerRowIndex: index, 
     isManualMode: false,
+    selectedColumns: [],
     constraints: [], 
     topology: {},
     anchor: { start: null, end: null },
     hiddenColumns: [] 
   }),
 
-  toggleManualMode: (totalCols) => set((state) => ({
+  // Переключение ручного режима — колонки сбрасываются, пользователь добавляет их сам
+  toggleManualMode: () => set((state) => ({
     isManualMode: !state.isManualMode,
     headerRowIndex: null,
+    selectedColumns: [],
     constraints: [],
     topology: {},
     anchor: { start: null, end: null },
-    customNames: !state.isManualMode ? 
-      Object.fromEntries(Array.from({length: totalCols}, (_, i) => [i, String.fromCharCode(65 + i)])) : {}
+    customNames: {}
+  })),
+
+  // Добавить/убрать колонку из паттерна (в ручном режиме)
+  toggleColumn: (colIndex) => set((state) => ({
+    selectedColumns: state.selectedColumns.includes(colIndex)
+      ? state.selectedColumns.filter(i => i !== colIndex)
+      : [...state.selectedColumns, colIndex].sort((a, b) => a - b)
   })),
 
   updateColumnName: (colIndex, name) => set((state) => ({
@@ -74,6 +87,7 @@ export const usePatternStore = create<PatternState>((set) => ({
   resetPattern: () => set({ 
     headerRowIndex: null, 
     isManualMode: false, 
+    selectedColumns: [],
     customNames: {}, 
     constraints: [], 
     topology: {},

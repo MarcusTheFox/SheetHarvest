@@ -2,7 +2,7 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { Listbox, ListboxItem } from "@heroui/react";
-import { Flag, XCircle, Table as TableIcon } from "lucide-react";
+import { Flag, XCircle, Table as TableIcon, Columns } from "lucide-react";
 import { memo } from "react";
 
 interface SpreadsheetCellMenuProps {
@@ -12,17 +12,31 @@ interface SpreadsheetCellMenuProps {
 }
 
 export const SpreadsheetCellMenu = memo(({ rowIndex, colIndex, cellValue }: SpreadsheetCellMenuProps) => {
-  const { setHeaderRow, setStartAnchor, setEndAnchor } = usePatternStore();
+  const { isManualMode, selectedColumns, setHeaderRow, setStartAnchor, setEndAnchor, toggleColumn } = usePatternStore();
+
+  const isColumnSelected = selectedColumns.includes(colIndex);
 
   return (
     <Listbox aria-label="Cell actions" variant="flat">
-      <ListboxItem 
-        key="header" 
-        startContent={<TableIcon size={16}/>}
-        onPress={() => setHeaderRow(rowIndex)}
-      >
-        Сделать заголовком
-      </ListboxItem>
+      {isManualMode ? (
+        <ListboxItem
+          key="toggle-column"
+          startContent={<Columns size={16} />}
+          color={isColumnSelected ? "danger" : "primary"}
+          className={isColumnSelected ? "text-danger" : "text-primary"}
+          onPress={() => toggleColumn(colIndex)}
+        >
+          {isColumnSelected ? "Убрать из паттерна" : "Добавить в паттерн"}
+        </ListboxItem>
+      ) : (
+        <ListboxItem 
+          key="header" 
+          startContent={<TableIcon size={16}/>}
+          onPress={() => setHeaderRow(rowIndex)}
+        >
+          Сделать заголовком
+        </ListboxItem>
+      )}
       <ListboxItem 
         key="start" 
         className="text-success"

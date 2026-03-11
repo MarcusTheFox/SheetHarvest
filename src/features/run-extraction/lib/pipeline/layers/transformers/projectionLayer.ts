@@ -10,6 +10,7 @@ export const projectionLayer: ExtractionLayer = (context) => {
         headerRowIndex: params.headerRowIndex,
         tableHeaderRow: params.tableHeaderRow,
         hiddenColumns: params.hiddenColumns,
+        selectedColumns: params.selectedColumns,
         isManualMode: params.isManualMode,
         customNames: params.customNames,
         merges: params.merges

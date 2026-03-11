@@ -16,15 +16,14 @@ export const PatternSidebar = () => {
   const currentSheet = sheets[currentSheetIndex];
   if (!currentSheet) return null;
 
-  const maxCols = Math.max(...currentSheet.data.map(r => r.length));
-  const headerRow = headerRowIndex !== null ? currentSheet.data[headerRowIndex] : Array(maxCols).fill("");
+  const headerRow = headerRowIndex !== null ? currentSheet.data[headerRowIndex] : currentSheet.data[0] || [];
   const merges = currentSheet.merges || [];
 
   return (
     <Card className="w-80 h-[85vh] shrink-0 sticky top-24 border-none shadow-2xl bg-white">
       <CardBody className="gap-4 overflow-y-auto p-5">
         <PatternSidebarHeader />
-        <PatternSidebarModeToggle maxCols={maxCols} />
+        <PatternSidebarModeToggle />
         <PatternSidebarAnchors />
         
         <Divider />

@@ -6,6 +6,7 @@ export interface ExtractionParams {
     headerRowIndex: number | null;
     tableHeaderRow: any[];
     isManualMode: boolean;
+    selectedColumns: number[];
     customNames: Record<number, string>;
     constraints: { colIndex: number; type: any }[];
     topology: Record<number, TopologyMode>;
