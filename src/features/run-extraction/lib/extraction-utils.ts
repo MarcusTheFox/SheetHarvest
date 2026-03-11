@@ -17,6 +17,13 @@ export const checkTopology = (row: any[], topology: Record<number, TopologyMode>
 export const checkConstraints = (row: any[], constraints: { colIndex: number; type: keyof typeof validators }[]): boolean => {
     return constraints.every((constraint) => {
         const cellValue = row[constraint.colIndex];
+
+        const isEmpty = cellValue === null || cellValue === undefined || cellValue.toString().trim() === '';
+
+        if (isEmpty && constraint.type !== 'not_empty') {
+            return true;
+        }
+
         return validators[constraint.type](cellValue);
     });
 };
