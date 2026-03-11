@@ -16,7 +16,7 @@ export const SpreadsheetTable = () => {
   const columns = Array.from({ length: maxCols }, (_, i) => i);
 
   return (
-    <div className="overflow-auto border-none rounded-2xl bg-white shadow-xl max-h-[75vh]">
+    <div className="overflow-auto border-none rounded-2xl bg-white shadow-xl max-h-[75vh] w-full">
       <table className="w-full border-collapse text-sm">
         <SpreadsheetHeader columns={columns} />
         <tbody>

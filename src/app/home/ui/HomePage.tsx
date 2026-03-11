@@ -29,10 +29,16 @@ export const HomePage = () => {
           </div>
         ) : (
           <>
-            <div className="flex-1 flex flex-col gap-6">
-              {isExtracted ? <ResultsTable /> : <SpreadsheetTable />}
-            </div>
-            {!isExtracted && <PatternSidebar />}
+            {
+              !isExtracted
+              ?
+                <>
+                  <SpreadsheetTable />
+                  <PatternSidebar />
+                </>
+              :
+                <ResultsTable />
+            }
           </>
         )}
       </main>
