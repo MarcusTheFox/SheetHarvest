@@ -15,6 +15,11 @@ export interface ExtractionParams {
         end: { text: string; colIndex: number } | null;
     };
     hiddenColumns: number[];
+    pipeline: Array<{
+        id: string;
+        instanceId: string;
+        settings: Record<string, any>;
+    }>;
     merges: MergeRange[];
 }
 
@@ -27,6 +32,7 @@ export interface PipelineContext {
     rows: PipelineRow[];
     headers: string[];
     params: ExtractionParams;
+    settings?: Record<string, any>;
 }
 
 export type ExtractionLayer = (context: PipelineContext) => PipelineContext;

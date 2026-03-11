@@ -23,4 +23,9 @@ export interface ExtractionPattern {
     end: AnchorPoint | null;
   };
   hiddenColumns: number[];
+  pipeline: Array<{
+    id: string;
+    instanceId: string;
+    settings: Record<string, any>;
+  }>;
 }

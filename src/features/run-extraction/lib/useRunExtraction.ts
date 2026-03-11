@@ -6,7 +6,7 @@ import { extractData } from "./extract-data";
 
 export const useRunExtraction = () => {
     const { sheets, currentSheetIndex } = useSpreadsheetStore();
-    const { headerRowIndex, isManualMode, selectedColumns, customNames, constraints, topology, anchor, hiddenColumns } = usePatternStore();
+    const { headerRowIndex, isManualMode, selectedColumns, customNames, constraints, topology, anchor, hiddenColumns, pipeline } = usePatternStore();
     const { setResults } = useExtractionStore();
 
     const runExtraction = useCallback(() => {
@@ -26,13 +26,14 @@ export const useRunExtraction = () => {
             topology,
             anchor,
             hiddenColumns,
+            pipeline,
             merges: sheet.merges || []
         });
 
         setResults(results);
     }, [
-        sheets, currentSheetIndex, headerRowIndex, isManualMode, customNames,
-        constraints, topology, anchor, hiddenColumns, selectedColumns, setResults
+        sheets, currentSheetIndex, headerRowIndex, isManualMode, selectedColumns,
+        customNames, constraints, topology, anchor, hiddenColumns, pipeline, setResults
     ]);
 
     return { runExtraction };

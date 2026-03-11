@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { ExtractionPattern, ConstraintType, ColumnConstraint, TopologyMode, AnchorPoint } from './types';
+import { DEFAULT_PIPELINE } from '@/features/run-extraction/lib/pipeline/registry';
 
 interface PatternState extends ExtractionPattern {
   selectedColumns: number[];
@@ -13,6 +14,13 @@ interface PatternState extends ExtractionPattern {
   setStartAnchor: (point: AnchorPoint | null) => void;
   setEndAnchor: (point: AnchorPoint | null) => void;
   toggleVisibility: (colIndex: number) => void;
+
+  // Pipeline actions
+  addLayer: (layerId: string) => void;
+  removeLayer: (index: number) => void;
+  moveLayer: (fromIndex: number, toIndex: number) => void;
+  updateLayerSettings: (index: number, settings: Record<string, any>) => void;
+
   resetPattern: () => void;
 }
 
@@ -28,6 +36,11 @@ export const usePatternStore = create<PatternState>((set) => ({
     end: null,
   },
   hiddenColumns: [],
+  pipeline: DEFAULT_PIPELINE.map(id => ({
+    id,
+    instanceId: `${id}-${Math.random().toString(36).substr(2, 9)}`,
+    settings: {}
+  })),
 
   setHeaderRow: (index) => set({ 
     headerRowIndex: index, 
@@ -84,6 +97,31 @@ export const usePatternStore = create<PatternState>((set) => ({
       : [...state.hiddenColumns, colIndex]
   })),
 
+  addLayer: (layerId) => set((state) => ({
+    pipeline: [...state.pipeline, {
+      id: layerId,
+      instanceId: `${layerId}-${Math.random().toString(36).substr(2, 9)}`,
+      settings: {}
+    }]
+  })),
+
+  removeLayer: (index) => set((state) => ({
+    pipeline: state.pipeline.filter((_, i) => i !== index)
+  })),
+
+  moveLayer: (fromIndex, toIndex) => set((state) => {
+    const newPipeline = [...state.pipeline];
+    const [movedItem] = newPipeline.splice(fromIndex, 1);
+    newPipeline.splice(toIndex, 0, movedItem);
+    return { pipeline: newPipeline };
+  }),
+
+  updateLayerSettings: (index, settings) => set((state) => {
+    const newPipeline = [...state.pipeline];
+    newPipeline[index] = { ...newPipeline[index], settings: { ...newPipeline[index].settings, ...settings } };
+    return { pipeline: newPipeline };
+  }),
+
   resetPattern: () => set({ 
     headerRowIndex: null, 
     isManualMode: false, 
@@ -92,6 +130,11 @@ export const usePatternStore = create<PatternState>((set) => ({
     constraints: [], 
     topology: {},
     anchor: { start: null, end: null },
-    hiddenColumns: [] 
+    hiddenColumns: [],
+    pipeline: DEFAULT_PIPELINE.map(id => ({
+      id,
+      instanceId: `${id}-${Math.random().toString(36).substr(2, 9)}`,
+      settings: {}
+    }))
   }),
 }));

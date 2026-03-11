@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardFooter, Divider } from "@heroui/react";
+import { Card, CardBody, CardFooter, Divider, Tabs, Tab } from "@heroui/react";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
@@ -8,6 +8,8 @@ import { PatternSidebarHeader } from "./PatternSidebarHeader";
 import { PatternSidebarModeToggle } from "./PatternSidebarModeToggle";
 import { PatternSidebarAnchors } from "./PatternSidebarAnchors";
 import { PatternSidebarColumnList } from "./PatternSidebarColumnList";
+import { PatternSidebarPipeline } from "./PatternSidebarPipeline";
+import { Layers, Columns } from "lucide-react";
 
 export const PatternSidebar = () => {
   const { headerRowIndex } = usePatternStore();
@@ -21,17 +23,53 @@ export const PatternSidebar = () => {
 
   return (
     <Card className="w-80 h-[85vh] shrink-0 sticky top-24 border-none shadow-2xl bg-white">
-      <CardBody className="gap-4 overflow-y-auto p-5">
+      <CardBody className="gap-4 overflow-y-auto p-5 scrollbar-hide">
         <PatternSidebarHeader />
         <PatternSidebarModeToggle />
         <PatternSidebarAnchors />
         
         <Divider />
-        
-        <PatternSidebarColumnList headerRow={headerRow} merges={merges} />
+
+        <Tabs
+          fullWidth
+          variant="light"
+          size="sm"
+          classNames={{
+            tabList: "bg-default-100 rounded-xl p-1",
+            cursor: "bg-white shadow-sm rounded-lg",
+            tab: "h-8"
+          }}
+        >
+          <Tab
+            key="columns"
+            title={
+              <div className="flex items-center gap-2">
+                <Columns size={14} />
+                <span>Колонки</span>
+              </div>
+            }
+          >
+            <div className="pt-2">
+              <PatternSidebarColumnList headerRow={headerRow} merges={merges} />
+            </div>
+          </Tab>
+          <Tab
+            key="pipeline"
+            title={
+              <div className="flex items-center gap-2">
+                <Layers size={14} />
+                <span>Пайплайн</span>
+              </div>
+            }
+          >
+            <div className="pt-2">
+              <PatternSidebarPipeline />
+            </div>
+          </Tab>
+        </Tabs>
 
       </CardBody>
-      <CardFooter className="border-t-2 border-default-100">
+      <CardFooter className="border-t-2 border-default-100 shrink-0">
         <div className="mx-auto my-2">
           <RunExtractionButton />
         </div>
