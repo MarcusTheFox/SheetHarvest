@@ -13,9 +13,12 @@ export const useRunExtraction = () => {
         const sheet = sheets[currentSheetIndex];
         if (!sheet || (headerRowIndex === null && !isManualMode)) return;
 
+        const tableHeaderRow = headerRowIndex !== null ? sheet.data[headerRowIndex] : [];
+
         const results = extractData({
             allRows: sheet.data,
             headerRowIndex,
+            tableHeaderRow,
             isManualMode,
             customNames,
             constraints,

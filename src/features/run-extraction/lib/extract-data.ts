@@ -1,91 +1,44 @@
+import { PipelineContext, executePipeline, ExtractionParams } from "./pipeline/core";
 import {
-    checkTopology,
-    checkConstraints,
-    getActiveColIndices,
-    projectRows
-} from "./extraction-utils";
-import { TopologyMode } from "@/entities/pattern/model/types";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+    anchorLayer,
+    headerSkipLayer,
+    topologyLayer,
+    constraintsLayer
+} from "./pipeline/layers/filters";
+import {
+    projectionLayer,
+    splitColumnExampleLayer
+} from "./pipeline/layers/transformers";
 
-interface ExtractDataParams {
-    allRows: any[][];
-    headerRowIndex: number | null;
-    isManualMode: boolean;
-    customNames: Record<number, string>;
-    constraints: { colIndex: number; type: any }[];
-    topology: Record<number, TopologyMode>;
-    anchor: {
-        start: { text: string; colIndex: number } | null;
-        end: { text: string; colIndex: number } | null;
+export const extractData = (params: ExtractionParams): { rows: any[][]; headers: string[] } => {
+    // 1. Инициализируем контекст с сырыми строками (оборачиваем их для сохранения оригинального индекса)
+    const initialContext: PipelineContext = {
+        rows: params.allRows.map((cells, idx) => ({
+            originalIndex: idx,
+            cells
+        })),
+        headers: [], // Заголовки заполнятся на слое projectionLayer
+        params
     };
-    hiddenColumns: number[];
-    merges: MergeRange[];
-}
 
-export const extractData = (params: ExtractDataParams): any[][] => {
-    const {
-        allRows, headerRowIndex, isManualMode, customNames,
-        constraints, topology, anchor, hiddenColumns, merges
-    } = params;
+    // 2. Определяем слои (конвейер обработки)
+    const pipelineLayers = [
+        headerSkipLayer,   // 1. Пропускаем заголовки (если не ручной режим)
+        anchorLayer,       // 2. Отсекаем всё, что вне якорей
+        topologyLayer,     // 3. Фильтруем по топологии
+        constraintsLayer,  // 4. Фильтруем по типам данных (числа, даты)
+        projectionLayer,   // 5. Проекция: оставляем только нужные колонки и формируем заголовки
 
-    const tableHeaderRow = headerRowIndex !== null ? allRows[headerRowIndex] : [];
+        // --- Здесь можно добавлять свои слои трансформации данных ---
+        splitColumnExampleLayer // Пример разбиения колонки "Артикул, Штрихкод"
+    ];
 
-    // Состояние активности поиска (если нет стартового якоря — мы активны сразу)
-    let isSearchActive = !anchor.start;
-    const finalFilteredRows: any[][] = [];
+    // 3. Прогоняем данные через пайплайн
+    const finalContext = executePipeline(initialContext, pipelineLayers);
 
-    // Главный цикл по строкам таблицы
-    for (let i = 0; i < allRows.length; i++) {
-        const row = allRows[i];
-
-        // ПРОВЕРКА СТАРТОВОГО ЯКОРЯ
-        if (anchor.start && !isSearchActive) {
-            const cellValue = row[anchor.start.colIndex]?.toString();
-            if (cellValue === anchor.start.text) {
-                isSearchActive = true;
-                continue; // Саму строку якоря обычно не берем в данные
-            }
-        }
-
-        // ПРОВЕРКА КОНЕЧНОГО ЯКОРЯ
-        if (anchor.end && isSearchActive) {
-            const cellValue = row[anchor.end.colIndex]?.toString();
-            if (cellValue === anchor.end.text) {
-                isSearchActive = false;
-                break; // Прекращаем поиск полностью
-            }
-        }
-
-        // Если мы в активной фазе поиска
-        if (isSearchActive) {
-            // Пропускаем заголовок, если мы не в ручном режиме
-            if (!isManualMode && i <= (headerRowIndex || -1)) continue;
-
-            // 1. ТОПОЛОГИЯ
-            if (!checkTopology(row, topology)) {
-                continue;
-            }
-
-            // 2. CONSTRAINTS
-            if (!checkConstraints(row, constraints)) {
-                continue;
-            }
-
-            finalFilteredRows.push(row);
-        }
-    }
-
-    // ОПРЕДЕЛЕНИЕ ВИДИМЫХ ИНДЕКСОВ
-    const activeColIndices = getActiveColIndices({
-        allRows,
-        headerRowIndex,
-        tableHeaderRow,
-        hiddenColumns,
-        isManualMode,
-        customNames,
-        merges
-    });
-
-    // ПРОЕКЦИЯ
-    return projectRows(finalFilteredRows, activeColIndices);
+    // 4. Возвращаем результат: чистые массивы данных и заголовки
+    return {
+        rows: finalContext.rows.map(r => r.cells),
+        headers: finalContext.headers
+    };
 };
