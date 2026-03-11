@@ -14,6 +14,8 @@ export const ResultsTable = () => {
     <Card className="w-full p-6 shadow-2xl border-none bg-white">
       <ResultsTableTopBar
         resultsCount={results.length}
+        headers={headers}
+        results={results}
         onClear={clearResults}
       />
       <ResultsTableData

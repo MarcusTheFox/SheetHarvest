@@ -1,15 +1,18 @@
 "use client";
 
-import { Button } from "@heroui/react";
-import { FileJson, X } from "lucide-react";
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
+import { Download, FileJson, FileSpreadsheet, FileText, X } from "lucide-react";
 import { memo } from "react";
+import { exportToCSV, exportToExcel, exportToJSON } from "@/features/run-extraction/lib/export-utils";
 
 interface ResultsTableTopBarProps {
   resultsCount: number;
+  headers: string[];
+  results: any[][];
   onClear: () => void;
 }
 
-export const ResultsTableTopBar = memo(({ resultsCount, onClear }: ResultsTableTopBarProps) => {
+export const ResultsTableTopBar = memo(({ resultsCount, headers, results, onClear }: ResultsTableTopBarProps) => {
   return (
     <div className="flex justify-between items-center mb-8 px-2">
       <div className="flex flex-col gap-1">
@@ -19,10 +22,49 @@ export const ResultsTableTopBar = memo(({ resultsCount, onClear }: ResultsTableT
         </p>
       </div>
       <div className="flex gap-3">
-        <Button variant="flat" color="primary" className="font-semibold" startContent={<FileJson size={18}/>}>
-          JSON
-        </Button>
-        <Button variant="light" color="danger" className="font-semibold" onPress={onClear} startContent={<X size={18}/>}>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              variant="flat"
+              color="primary"
+              className="font-semibold shadow-sm"
+              startContent={<Download size={18} />}
+            >
+              Экспорт
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Export options">
+            <DropdownItem
+              key="excel"
+              startContent={<FileSpreadsheet size={18} className="text-success" />}
+              onPress={() => exportToExcel(headers, results)}
+            >
+              Excel (.xlsx)
+            </DropdownItem>
+            <DropdownItem
+              key="csv"
+              startContent={<FileText size={18} className="text-primary" />}
+              onPress={() => exportToCSV(headers, results)}
+            >
+              CSV (.csv)
+            </DropdownItem>
+            <DropdownItem
+              key="json"
+              startContent={<FileJson size={18} className="text-warning" />}
+              onPress={() => exportToJSON(headers, results)}
+            >
+              JSON (.json)
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+
+        <Button
+          variant="light"
+          color="danger"
+          className="font-semibold"
+          onPress={onClear}
+          startContent={<X size={18} />}
+        >
           Закрыть
         </Button>
       </div>
