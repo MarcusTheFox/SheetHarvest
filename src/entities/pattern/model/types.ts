@@ -17,10 +17,12 @@ export interface PatternAnchor {
   end: AnchorPoint | null;
 }
 
+export type LayerSettings = Record<string, any>;
+
 export interface PipelineLayer {
   id: string;
   instanceId: string;
-  settings: Record<string, any>;
+  settings: LayerSettings;
 }
 
 export interface ExtractionPattern {
@@ -51,7 +53,7 @@ export interface PatternState extends ExtractionPattern {
   addLayer: (layerId: string) => void;
   removeLayer: (index: number) => void;
   moveLayer: (fromIndex: number, toIndex: number) => void;
-  updateLayerSettings: (index: number, settings: Record<string, any>) => void;
+  updateLayerSettings: (index: number, settings: LayerSettings) => void;
 
   resetPattern: () => void;
 }

@@ -3,12 +3,12 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { clsx } from "clsx";
 import { SpreadsheetCell } from "./SpreadsheetCell";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
 import { memo } from "react";
+import { CellValue, MergeRange } from "@/shared/types/spreadsheet";
 
 interface SpreadsheetRowProps {
   rowIndex: number;
-  row: any[];
+  row: CellValue[];
   columns: number[];
   merges: MergeRange[];
 }

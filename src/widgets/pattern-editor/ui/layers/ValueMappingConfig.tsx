@@ -7,10 +7,11 @@ import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { LayerSettings } from "@/entities/pattern/model/types";
 
 interface ValueMappingConfigProps {
     index: number;
-    settings: Record<string, any>;
+    settings: LayerSettings;
 }
 
 export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps) => {

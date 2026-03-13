@@ -1,11 +1,12 @@
 "use client";
 
+import { CellValue } from "@/shared/types/spreadsheet";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/react";
 import { memo } from "react";
 
 interface ResultsTableDataProps {
   visibleHeaderNames: string[];
-  results: any[][];
+  results: CellValue[][];
 }
 
 export const ResultsTableData = memo(({ visibleHeaderNames, results }: ResultsTableDataProps) => {
@@ -22,7 +23,7 @@ export const ResultsTableData = memo(({ visibleHeaderNames, results }: ResultsTa
         <TableBody>
           {results.map((row, rowIndex) => (
             <TableRow key={rowIndex} className="hover:bg-white/80 transition-all border-none">
-              {row.map((cell: any, colIndex: number) => (
+              {row.map((cell: CellValue, colIndex: number) => (
                 <TableCell key={colIndex} className="py-4 text-default-700 border-none">
                   {cell?.toString() || ""}
                 </TableCell>

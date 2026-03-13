@@ -4,11 +4,12 @@ import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@
 import { Download, FileJson, FileSpreadsheet, FileText, X } from "lucide-react";
 import { memo } from "react";
 import { exportToCSV, exportToExcel, exportToJSON } from "@/features/run-extraction/lib/export-utils";
+import { CellValue } from "@/shared/types/spreadsheet";
 
 interface ResultsTableTopBarProps {
   resultsCount: number;
   headers: string[];
-  results: any[][];
+  results: CellValue[][];
   onClear: () => void;
 }
 

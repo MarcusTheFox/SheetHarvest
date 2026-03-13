@@ -1,4 +1,4 @@
-import { TopologyMode, ConstraintType } from "@/entities/pattern/model/types";
+import { TopologyMode, ConstraintType, LayerSettings } from "@/entities/pattern/model/types";
 import { MergeRange, CellValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
@@ -18,7 +18,7 @@ export interface ExtractionParams {
     pipeline: Array<{
         id: string;
         instanceId: string;
-        settings: Record<string, any>;
+        settings: LayerSettings;
     }>;
     merges: MergeRange[];
 }
@@ -32,7 +32,7 @@ export interface PipelineContext {
     rows: PipelineRow[];
     headers: string[];
     params: ExtractionParams;
-    settings?: Record<string, any>;
+    settings?: LayerSettings;
 }
 
 export type ExtractionLayer = (context: PipelineContext) => PipelineContext;

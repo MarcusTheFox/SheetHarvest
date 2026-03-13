@@ -3,7 +3,7 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { Button, Input, Select, SelectItem, Tab, Tabs } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
-import { TopologyMode } from "@/entities/pattern/model/types";
+import { ConstraintType, TopologyMode } from "@/entities/pattern/model/types";
 import { memo } from "react";
 
 const CONSTRAINT_TYPES = [
@@ -71,7 +71,7 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
         label="Тип данных"
         variant="bordered"
         selectedKeys={[constraints.find(c => c.colIndex === idx)?.type || "any"]}
-        onChange={(e) => setConstraintType(idx, currentName, e.target.value as any)}
+        onChange={(e) => setConstraintType(idx, currentName, e.target.value as ConstraintType)}
       >
         {CONSTRAINT_TYPES.map((type) => <SelectItem key={type.value}>{type.label}</SelectItem>)}
       </Select>
