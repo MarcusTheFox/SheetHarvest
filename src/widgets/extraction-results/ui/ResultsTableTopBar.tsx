@@ -1,75 +1,48 @@
 "use client";
 
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
-import { Download, FileJson, FileSpreadsheet, FileText, X } from "lucide-react";
+import { Button, Card, CardBody } from "@heroui/react";
+import { X, LayoutGrid, Rows } from "lucide-react";
 import { memo } from "react";
-import { exportToCSV, exportToExcel, exportToJSON } from "@/features/run-extraction/lib/export-utils";
-import { TableValue } from "@/shared/types/spreadsheet";
 
 interface ResultsTableTopBarProps {
-  resultsCount: number;
-  headers: string[];
-  results: TableValue;
+  tablesCount: number;
+  totalRowsCount: number;
   onClear: () => void;
 }
 
-export const ResultsTableTopBar = memo(({ resultsCount, headers, results, onClear }: ResultsTableTopBarProps) => {
+export const ResultsTableTopBar = memo(({ tablesCount, totalRowsCount, onClear }: ResultsTableTopBarProps) => {
   return (
-    <div className="flex justify-between items-center mb-8 px-2">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-bold tracking-tight text-default-800">Результаты извлечения</h2>
-        <p className="text-sm text-default-500">
-          Найдено <span className="text-success font-bold">{resultsCount}</span> строк
-        </p>
-      </div>
-      <div className="flex gap-3">
-        <Dropdown>
-          <DropdownTrigger>
-            <Button
-              variant="flat"
-              color="primary"
-              className="font-semibold shadow-sm"
-              startContent={<Download size={18} />}
-            >
-              Экспорт
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Export options">
-            <DropdownItem
-              key="excel"
-              startContent={<FileSpreadsheet size={18} className="text-success" />}
-              onPress={() => exportToExcel(headers, results)}
-            >
-              Excel (.xlsx)
-            </DropdownItem>
-            <DropdownItem
-              key="csv"
-              startContent={<FileText size={18} className="text-primary" />}
-              onPress={() => exportToCSV(headers, results)}
-            >
-              CSV (.csv)
-            </DropdownItem>
-            <DropdownItem
-              key="json"
-              startContent={<FileJson size={18} className="text-warning" />}
-              onPress={() => exportToJSON(headers, results)}
-            >
-              JSON (.json)
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+    <Card className="mb-8 shadow-md border border-default-100 sticky top-12 z-30">
+      <CardBody className="flex flex-row items-center justify-between p-6">
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-xl font-bold tracking-tight text-default-800">Результаты сбора</h2>
+            <p className="text-sm text-default-500">Общий итог по документу</p>
+          </div>
+          
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2 bg-primary-50 px-3 py-1.5 rounded-lg border border-primary-100">
+              <LayoutGrid size={18} className="text-primary" />
+              <span className="text-sm font-bold text-primary-700">{tablesCount} таблиц</span>
+            </div>
+            <div className="flex items-center gap-2 bg-success-50 px-3 py-1.5 rounded-lg border border-success-100">
+              <Rows size={18} className="text-success" />
+              <span className="text-sm font-bold text-success-700">{totalRowsCount} строк</span>
+            </div>
+          </div>
+        </div>
 
         <Button
-          variant="light"
+          variant="flat"
           color="danger"
           className="font-semibold"
           onPress={onClear}
           startContent={<X size={18} />}
         >
-          Закрыть
+          Закрыть результаты
         </Button>
-      </div>
-    </div>
+      </CardBody>
+    </Card>
   );
 });
 

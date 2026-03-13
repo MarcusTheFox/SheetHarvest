@@ -26,6 +26,7 @@ export interface ExtractionParams {
 export interface PipelineRow {
     originalIndex: number;
     cells: RowValue;
+    groupIndex: number;
 }
 
 export interface PipelineContext {

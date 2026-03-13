@@ -5,6 +5,7 @@ export const anchorLayer: ExtractionLayer = (context) => {
     const { anchor } = params;
 
     let isSearchActive = !anchor.start;
+    let groupIndex = 0;
     const filteredRows: typeof rows = [];
 
     for (let i = 0; i < rows.length; i++) {
@@ -18,18 +19,22 @@ export const anchorLayer: ExtractionLayer = (context) => {
                 continue; // Строку со стартовым якорем пропускаем
             }
         }
-
+        
         // Проверка конечного якоря
         if (anchor.end && isSearchActive) {
             const cellValue = row.cells[anchor.end.colIndex]?.toString();
             if (cellValue === anchor.end.text) {
                 isSearchActive = false;
-                break; // Завершаем поиск
+                groupIndex++;
+                continue;
             }
         }
 
         if (isSearchActive) {
-            filteredRows.push(row);
+            filteredRows.push({
+                ...row,
+                groupIndex,
+            });
         }
     }
 

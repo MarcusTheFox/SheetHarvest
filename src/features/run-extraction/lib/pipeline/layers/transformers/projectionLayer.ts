@@ -1,4 +1,4 @@
-import { ExtractionLayer } from "../../core";
+import { ExtractionLayer, PipelineRow } from "../../core";
 import { getActiveColIndices } from "../../../extraction-utils";
 
 export const projectionLayer: ExtractionLayer = (context) => {
@@ -24,9 +24,10 @@ export const projectionLayer: ExtractionLayer = (context) => {
     });
 
     // Оставляем в строках только данные из активных столбцов
-    const projectedRows = rows.map(r => ({
-        originalIndex: r.originalIndex,
-        cells: activeColIndices.map(idx => r.cells[idx])
+    const projectedRows = rows.map((row): PipelineRow => ({
+        originalIndex: row.originalIndex,
+        cells: activeColIndices.map(idx => row.cells[idx]),
+        groupIndex: row.groupIndex
     }));
 
     return {

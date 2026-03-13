@@ -2,11 +2,11 @@ import { create } from 'zustand';
 import { TableValue } from '@/shared/types/spreadsheet';
 
 interface ExtractionState {
-  results: TableValue;
+  results: TableValue[];
   headers: string[];
   isExtracted: boolean;
 
-  setResults: (data: { rows: TableValue; headers: string[] }) => void;
+  setResults: (data: { tables: TableValue[]; headers: string[] }) => void;
   clearResults: () => void;
 }
 
@@ -15,6 +15,6 @@ export const useExtractionStore = create<ExtractionState>((set) => ({
   headers: [],
   isExtracted: false,
 
-  setResults: ({ rows, headers }) => set({ results: rows, headers, isExtracted: true }),
+  setResults: ({ tables, headers }) => set({ results: tables, headers, isExtracted: true }),
   clearResults: () => set({ results: [], headers: [], isExtracted: false }),
 }));
