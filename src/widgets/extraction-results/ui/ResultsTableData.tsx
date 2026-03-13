@@ -1,12 +1,12 @@
 "use client";
 
-import { CellValue } from "@/shared/types/spreadsheet";
+import { CellValue, TableValue } from "@/shared/types/spreadsheet";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@heroui/react";
 import { memo } from "react";
 
 interface ResultsTableDataProps {
   visibleHeaderNames: string[];
-  results: CellValue[][];
+  results: TableValue;
 }
 
 export const ResultsTableData = memo(({ visibleHeaderNames, results }: ResultsTableDataProps) => {

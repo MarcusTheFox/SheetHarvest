@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { ISpreadsheetParser } from './types';
-import { Sheet, MergeRange, CellAddress, CellValue } from '@/shared/types/spreadsheet';
+import { Sheet, MergeRange, CellAddress, CellValue, TableValue } from '@/shared/types/spreadsheet';
 
 export class XLSXParser implements ISpreadsheetParser {
   async parse(file: File): Promise<Sheet[]> {
@@ -10,7 +10,7 @@ export class XLSXParser implements ISpreadsheetParser {
 
     const result: Sheet[] = [];
     workbook.eachSheet((worksheet) => {
-      const sheetData: CellValue[][] = [];
+      const sheetData: TableValue = [];
       worksheet.eachRow({ includeEmpty: true }, (row) => {
         const rowValues = Array.isArray(row.values) ? row.values.slice(1) : [];
         

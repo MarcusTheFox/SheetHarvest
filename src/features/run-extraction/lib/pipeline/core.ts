@@ -1,10 +1,10 @@
 import { TopologyMode, ConstraintType, LayerSettings } from "@/entities/pattern/model/types";
-import { MergeRange, CellValue } from "@/shared/types/spreadsheet";
+import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
-    allRows: CellValue[][];
+    allRows: TableValue;
     headerRowIndex: number | null;
-    tableHeaderRow: CellValue[];
+    tableHeaderRow: RowValue;
     isManualMode: boolean;
     selectedColumns: number[];
     customNames: Record<number, string>;
@@ -25,7 +25,7 @@ export interface ExtractionParams {
 
 export interface PipelineRow {
     originalIndex: number;
-    cells: CellValue[];
+    cells: RowValue;
 }
 
 export interface PipelineContext {

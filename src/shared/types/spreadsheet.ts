@@ -9,9 +9,11 @@ export interface MergeRange {
 }
 
 export type CellValue = string | number | boolean | Date | null | undefined;
+export type RowValue = CellValue[];
+export type TableValue = RowValue[];
 
 export interface Sheet {
   name: string;
-  data: CellValue[][];
+  data: TableValue;
   merges: MergeRange[];
 }

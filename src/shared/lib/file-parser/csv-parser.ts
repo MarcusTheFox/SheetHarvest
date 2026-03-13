@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import { ISpreadsheetParser } from './types';
-import { Sheet, CellValue } from '@/shared/types/spreadsheet';
+import { Sheet, TableValue } from '@/shared/types/spreadsheet';
 
 export class CSVParser implements ISpreadsheetParser {
   async parse(file: File): Promise<Sheet[]> {
@@ -9,7 +9,7 @@ export class CSVParser implements ISpreadsheetParser {
         complete: (results) => {
           resolve([{ 
             name: 'CSV Result', 
-            data: results.data as CellValue[][], 
+            data: results.data as TableValue, 
             merges: [] 
           }]);
         },

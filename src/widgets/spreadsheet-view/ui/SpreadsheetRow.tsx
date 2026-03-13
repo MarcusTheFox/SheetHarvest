@@ -4,11 +4,11 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { clsx } from "clsx";
 import { SpreadsheetCell } from "./SpreadsheetCell";
 import { memo } from "react";
-import { CellValue, MergeRange } from "@/shared/types/spreadsheet";
+import { MergeRange, RowValue } from "@/shared/types/spreadsheet";
 
 interface SpreadsheetRowProps {
   rowIndex: number;
-  row: CellValue[];
+  row: RowValue;
   columns: number[];
   merges: MergeRange[];
 }
