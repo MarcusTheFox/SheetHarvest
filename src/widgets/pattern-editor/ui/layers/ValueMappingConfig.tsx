@@ -3,7 +3,7 @@
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Select, SelectItem } from "@heroui/react";
 import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";

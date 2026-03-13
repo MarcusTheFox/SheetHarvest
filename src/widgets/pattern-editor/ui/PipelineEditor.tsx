@@ -4,11 +4,11 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 import {
     Modal, ModalContent, ModalHeader, ModalBody, ModalFooter,
-    Button, Card, CardBody, Divider, ScrollShadow,
+    Button, Card, CardBody, ScrollShadow,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem
 } from "@heroui/react";
 import {
-    ArrowLeft, Layers, Play, Settings2, Trash2, GripVertical,
+    ArrowLeft, Layers, Play, Settings2, Trash2,
     ChevronRight, PlusCircle, ArrowUp, ArrowDown
 } from "lucide-react";
 import { memo, useState } from "react";
@@ -21,7 +21,7 @@ interface PipelineEditorProps {
 }
 
 export const PipelineEditor = memo(({ isOpen, onClose, onApply }: PipelineEditorProps) => {
-    const { pipeline, removeLayer, moveLayer, addLayer, updateLayerSettings } = usePatternStore();
+    const { pipeline, removeLayer, moveLayer, addLayer } = usePatternStore();
     const [selectedLayerIndex, setSelectedLayerIndex] = useState<number | null>(null);
 
     const selectedEntry = selectedLayerIndex !== null ? pipeline[selectedLayerIndex] : null;

@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow } from "../../core";
+import { PipelineContext } from "../../core";
 
 /**
  * Слой сопоставления значений по справочнику
