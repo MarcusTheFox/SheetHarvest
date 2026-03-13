@@ -22,6 +22,8 @@ export const headerSkipLayer: ExtractionLayer = (context) => {
             }
         }
     }
+    
+    const isHeaderCapturedByAnchors = rows.some(r => r.originalIndex === params.headerRowIndex);
 
     const groupsMap = new Map<number, PipelineRow[]>();
     rows.forEach(row => {
@@ -40,6 +42,8 @@ export const headerSkipLayer: ExtractionLayer = (context) => {
 
         if (headerIdxInGroup !== -1) {
             processedRows.push(...groupRows.slice(headerIdxInGroup + headerHeight));
+        } else if (isHeaderCapturedByAnchors) {
+            return;
         } else {
             processedRows.push(...groupRows);
         }
