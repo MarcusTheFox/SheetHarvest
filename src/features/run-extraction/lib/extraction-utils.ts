@@ -1,9 +1,9 @@
 import { validators } from "@/shared/lib/validators";
 import { TopologyMode } from "@/entities/pattern/model/types";
-import { MergeRange } from "@/shared/types/spreadsheet";
+import { MergeRange, CellValue } from "@/shared/types/spreadsheet";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 
-export const checkTopology = (row: any[], topology: Record<number, TopologyMode>): boolean => {
+export const checkTopology = (row: CellValue[], topology: Record<number, TopologyMode>): boolean => {
     return Object.entries(topology).every(([colIdx, mode]) => {
         const idx = Number(colIdx);
         const val = row[idx];
@@ -14,7 +14,7 @@ export const checkTopology = (row: any[], topology: Record<number, TopologyMode>
     });
 };
 
-export const checkConstraints = (row: any[], constraints: { colIndex: number; type: keyof typeof validators }[]): boolean => {
+export const checkConstraints = (row: CellValue[], constraints: { colIndex: number; type: keyof typeof validators }[]): boolean => {
     return constraints.every((constraint) => {
         const cellValue = row[constraint.colIndex];
 
@@ -29,9 +29,9 @@ export const checkConstraints = (row: any[], constraints: { colIndex: number; ty
 };
 
 interface GetActiveColIndicesParams {
-    allRows: any[][];
+    allRows: CellValue[][];
     headerRowIndex: number | null;
-    tableHeaderRow: any[];
+    tableHeaderRow: CellValue[];
     hiddenColumns: number[];
     selectedColumns: number[];
     isManualMode: boolean;
@@ -59,6 +59,6 @@ export const getActiveColIndices = (params: GetActiveColIndicesParams): number[]
     });
 };
 
-export const projectRows = (rows: any[][], activeColIndices: number[]): any[][] => {
+export const projectRows = (rows: CellValue[][], activeColIndices: number[]): CellValue[][] => {
     return rows.map((row) => activeColIndices.map(idx => row[idx]));
 };

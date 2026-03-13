@@ -1,11 +1,12 @@
 import { create } from 'zustand';
+import { CellValue } from '@/shared/types/spreadsheet';
 
 interface ExtractionState {
-  results: any[][];
+  results: CellValue[][];
   headers: string[];
   isExtracted: boolean;
 
-  setResults: (data: { rows: any[][]; headers: string[] }) => void;
+  setResults: (data: { rows: CellValue[][]; headers: string[] }) => void;
   clearResults: () => void;
 }
 

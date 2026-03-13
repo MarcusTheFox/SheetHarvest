@@ -1,9 +1,10 @@
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
+import { CellValue } from '@/shared/types/spreadsheet';
 
 const defaultFileName = 'extraction_results';
 
-export const exportToExcel = (headers: string[], data: any[][], fileName: string = defaultFileName + '.xlsx') => {
+export const exportToExcel = (headers: string[], data: CellValue[][], fileName: string = defaultFileName + '.xlsx') => {
     const worksheetData = [headers, ...data];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
@@ -11,7 +12,7 @@ export const exportToExcel = (headers: string[], data: any[][], fileName: string
     XLSX.writeFile(workbook, fileName);
 };
 
-export const exportToCSV = (headers: string[], data: any[][], fileName: string = defaultFileName + '.csv') => {
+export const exportToCSV = (headers: string[], data: CellValue[][], fileName: string = defaultFileName + '.csv') => {
     const csv = Papa.unparse({
         fields: headers,
         data: data
@@ -30,9 +31,9 @@ export const exportToCSV = (headers: string[], data: any[][], fileName: string =
     }
 };
 
-export const exportToJSON = (headers: string[], data: any[][], fileName: string = defaultFileName + '.json') => {
+export const exportToJSON = (headers: string[], data: CellValue[][], fileName: string = defaultFileName + '.json') => {
     const jsonData = data.map(row => {
-        const obj: Record<string, any> = {};
+        const obj: Record<string, CellValue> = {};
         headers.forEach((header, index) => {
             obj[header] = row[index];
         });

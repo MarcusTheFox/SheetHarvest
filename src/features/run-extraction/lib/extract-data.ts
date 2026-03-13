@@ -1,7 +1,8 @@
 import { PipelineContext, executePipeline, ExtractionParams } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
+import { CellValue } from "@/shared/types/spreadsheet";
 
-export const extractData = (params: ExtractionParams): { rows: any[][]; headers: string[] } => {
+export const extractData = (params: ExtractionParams): { rows: CellValue[][]; headers: string[] } => {
     // 1. Инициализируем контекст с сырыми строками (оборачиваем их для сохранения оригинального индекса)
     const initialContext: PipelineContext = {
         rows: params.allRows.map((cells, idx) => ({
