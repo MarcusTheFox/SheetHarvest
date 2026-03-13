@@ -1,4 +1,5 @@
-import { ExtractionLayer } from "../../core";
+import { RowValue } from "@/shared/types/spreadsheet";
+import { ExtractionLayer, PipelineRow } from "../../core";
 
 export const headerSkipLayer: ExtractionLayer = (context) => {
     const { rows, params } = context;
@@ -6,21 +7,46 @@ export const headerSkipLayer: ExtractionLayer = (context) => {
         return context;
     }
 
-    let skipUntilRow = params.headerRowIndex;
+    const originalHeaderRow = params.allRows[params.headerRowIndex];
+    if (!originalHeaderRow) return context;
 
-    // Учитываем объединения ячеек, чтобы пропустить все строки, в которых "застревает" многострочный заголовок
+    const getSignature = (row: RowValue) => row.map(cell => String(cell ?? '').trim()).join('|');
+    const headerSignature = getSignature(originalHeaderRow);
+
+    let headerHeight = 1;
+
     if (params.merges && params.merges.length > 0) {
         for (const merge of params.merges) {
-            // Если merge пересекает строку заголовка
-            if (merge.s.r <= params.headerRowIndex && merge.e.r >= params.headerRowIndex) {
-                skipUntilRow = Math.max(skipUntilRow, merge.e.r);
+            if (merge.s.r === params.headerRowIndex && merge.e.r >= params.headerRowIndex) {
+                headerHeight = Math.max(headerHeight, (merge.e.r - merge.s.r) + 1);
             }
         }
     }
 
+    const groupsMap = new Map<number, PipelineRow[]>();
+    rows.forEach(row => {
+        if (!groupsMap.has(row.groupIndex)) {
+            groupsMap.set(row.groupIndex, []);
+        }
+        groupsMap.get(row.groupIndex)!.push(row);
+    });
+
+    const processedRows: PipelineRow[] = [];
+
+    groupsMap.forEach((groupRows) => {
+        if (groupRows.length === 0) return;
+
+        const headerIdxInGroup = groupRows.findIndex(r => getSignature(r.cells) === headerSignature);
+
+        if (headerIdxInGroup !== -1) {
+            processedRows.push(...groupRows.slice(headerIdxInGroup + headerHeight));
+        } else {
+            processedRows.push(...groupRows);
+        }
+    });
+
     return {
         ...context,
-        // Пропускаем строки, индекс которых меньше или равен вычисленному индексу
-        rows: rows.filter(r => r.originalIndex > skipUntilRow)
+        rows: processedRows
     };
 };
