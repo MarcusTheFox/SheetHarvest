@@ -4,7 +4,7 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { getCellMergeInfo } from "../lib/merge-utils";
 import { clsx } from "clsx";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+import { MergeRange } from "@/shared/types/spreadsheet";
 import { memo } from "react";
 import { SpreadsheetCellMenu } from "./SpreadsheetCellMenu";
 

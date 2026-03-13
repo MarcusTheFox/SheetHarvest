@@ -1,9 +1,8 @@
-import { ISpreadsheetParser, ParsedSheet } from './types';
+import { ISpreadsheetParser } from './types';
 import { XLSXParser } from './xlsx-parser';
 import { CSVParser } from './csv-parser';
 import { XLSLegacyParser } from './xls-legacy-parser';
-
-export type { ParsedSheet, MergeRange } from './types';
+import { Sheet } from '@/shared/types/spreadsheet';
 
 export const getParserForFile = (file: File): ISpreadsheetParser => {
   const extension = file.name.split('.').pop()?.toLowerCase();
@@ -21,7 +20,7 @@ export const getParserForFile = (file: File): ISpreadsheetParser => {
   }
 };
 
-export const parseSpreadsheet = async (file: File): Promise<ParsedSheet[]> => {
+export const parseSpreadsheet = async (file: File): Promise<Sheet[]> => {
   const parser = getParserForFile(file);
   return await parser.parse(file);
 };
