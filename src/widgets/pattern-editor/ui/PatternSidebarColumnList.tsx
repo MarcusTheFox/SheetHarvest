@@ -3,12 +3,12 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { PatternSidebarColumn } from "./PatternSidebarColumn";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+import { MergeRange, CellValue } from "@/shared/types/spreadsheet";
 import { memo } from "react";
 import { Columns } from "lucide-react";
 
 interface PatternSidebarColumnListProps {
-  headerRow: any[];
+  headerRow: CellValue[];
   merges: MergeRange[];
 }
 

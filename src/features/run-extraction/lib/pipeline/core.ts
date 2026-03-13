@@ -1,5 +1,5 @@
 import { TopologyMode } from "@/entities/pattern/model/types";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+import { MergeRange } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
     allRows: any[][];

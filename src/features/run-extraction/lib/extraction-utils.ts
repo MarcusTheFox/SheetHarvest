@@ -1,6 +1,6 @@
 import { validators } from "@/shared/lib/validators";
 import { TopologyMode } from "@/entities/pattern/model/types";
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+import { MergeRange } from "@/shared/types/spreadsheet";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 
 export const checkTopology = (row: any[], topology: Record<number, TopologyMode>): boolean => {
