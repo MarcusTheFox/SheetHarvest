@@ -70,8 +70,8 @@ export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
 };
 
 export const DEFAULT_PIPELINE = [
-    'header-skip',
     'anchor',
+    'header-skip',
     'topology',
     'constraints',
     'projection'
