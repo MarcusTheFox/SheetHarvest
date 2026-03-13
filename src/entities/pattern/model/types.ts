@@ -12,20 +12,46 @@ export interface ColumnConstraint {
   name: string; 
 }
 
+export interface PatternAnchor {
+  start: AnchorPoint | null;
+  end: AnchorPoint | null;
+}
+
+export interface PipelineLayer {
+  id: string;
+  instanceId: string;
+  settings: Record<string, any>;
+}
+
 export interface ExtractionPattern {
   headerRowIndex: number | null;
   isManualMode: boolean;
   customNames: Record<number, string>;
   constraints: ColumnConstraint[];
   topology: Record<number, TopologyMode>;
-  anchor: {
-    start: AnchorPoint | null;
-    end: AnchorPoint | null;
-  };
+  anchor: PatternAnchor;
   hiddenColumns: number[];
-  pipeline: Array<{
-    id: string;
-    instanceId: string;
-    settings: Record<string, any>;
-  }>;
+  pipeline: PipelineLayer[];
+}
+
+export interface PatternState extends ExtractionPattern {
+  selectedColumns: number[];
+
+  setHeaderRow: (index: number) => void;
+  toggleManualMode: () => void;
+  toggleColumn: (colIndex: number) => void;
+  updateColumnName: (colIndex: number, name: string) => void;
+  setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
+  setTopology: (colIndex: number, mode: TopologyMode) => void;
+  setStartAnchor: (point: AnchorPoint | null) => void;
+  setEndAnchor: (point: AnchorPoint | null) => void;
+  toggleVisibility: (colIndex: number) => void;
+
+  // Pipeline actions
+  addLayer: (layerId: string) => void;
+  removeLayer: (index: number) => void;
+  moveLayer: (fromIndex: number, toIndex: number) => void;
+  updateLayerSettings: (index: number, settings: Record<string, any>) => void;
+
+  resetPattern: () => void;
 }
