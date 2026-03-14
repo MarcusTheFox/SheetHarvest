@@ -7,7 +7,6 @@ import {
 } from "./layers/filters";
 import {
     projectionLayer,
-    splitColumnExampleLayer,
     valueMappingLayer
 } from "./layers/transformers";
 import { columnSplitLayer } from "./layers/transformers/columnSplitLayer";
@@ -57,12 +56,6 @@ export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
         description: 'Оставляет только выбранные колонки и формирует заголовки',
         layer: projectionLayer,
         isSystem: true
-    },
-    'split-example': {
-        id: 'split-example',
-        name: 'Разбиение "Артикул, Штрихкод"',
-        description: 'Демонстрационный слой: разбивает одну колонку на две по запятой',
-        layer: splitColumnExampleLayer
     },
     'value-mapping': {
         id: 'value-mapping',
