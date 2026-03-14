@@ -3,6 +3,7 @@ import { PipelineLayer } from "@/entities/pattern/model/types";
 import { ValueMappingConfig } from "@/widgets/pipeline-editor/ui/layer-configs/ValueMappingConfig";
 import { NoSettingsState } from "./NoSettingsState";
 import { RegexExtractConfig } from "../layer-configs/RegexExtractConfig";
+import { ColumnSplitConfig } from "../layer-configs/ColumnSplitConfig";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
@@ -16,6 +17,8 @@ export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) 
                 return <ValueMappingConfig index={index} settings={entry.settings} />;
             case 'regex-extract':
                 return <RegexExtractConfig index={index} settings={entry.settings} />;
+            case 'column-split':
+                return <ColumnSplitConfig index={index} settings={entry.settings} />;
             default:
                 return <NoSettingsState />;
         }

@@ -10,6 +10,7 @@ import {
     splitColumnExampleLayer,
     valueMappingLayer
 } from "./layers/transformers";
+import { columnSplitLayer } from "./layers/transformers/columnSplitLayer";
 import { regexExtractLayer } from "./layers/transformers/regexExtractLayer";
 
 export interface LayerMetadata {
@@ -78,6 +79,18 @@ export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
             keepOriginalIfNoMatch: true,
             pattern: '',
             sourceColIndex: undefined
+        }
+    },
+    'column-split': {
+        id: 'column-split',
+        name: 'Разделение колонки',
+        description: 'Разбивает одну колонку на две или более по символу или Regex',
+        layer: columnSplitLayer,
+        defaultSettings: {
+            mode: 'delimiter',
+            delimiter: ',',
+            newNames: ['Часть 1', 'Часть 2'],
+            sourceColIndex: 0
         }
     }
 };
