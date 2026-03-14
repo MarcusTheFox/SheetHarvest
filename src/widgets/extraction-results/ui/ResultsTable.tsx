@@ -13,8 +13,6 @@ export const ResultsTable = () => {
     results.reduce((acc, table) => acc + table.length, 0), 
   [results]);
 
-  if (!isExtracted || results.length === 0) return null;
-
   return (
     <div className="w-full flex flex-col gap-2">
       <ResultsTableTopBar
@@ -23,16 +21,18 @@ export const ResultsTable = () => {
         onClear={clearResults}
       />
       
-      <div className="flex flex-col">
-        {results.map((tableData, idx) => (
-          <SingleTableResult 
-            key={idx}
-            index={idx}
-            headers={headers}
-            data={tableData}
-          />
-        ))}
-      </div>
+      {(isExtracted && results.length > 0) && (
+        <div className="flex flex-col">
+          {results.map((tableData, idx) => (
+            <SingleTableResult 
+              key={idx}
+              index={idx}
+              headers={headers}
+              data={tableData}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
