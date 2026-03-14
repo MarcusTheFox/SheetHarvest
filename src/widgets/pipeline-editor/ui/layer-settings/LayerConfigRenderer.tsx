@@ -1,9 +1,7 @@
 import { Settings2 } from "lucide-react";
 import { PipelineLayer } from "@/entities/pattern/model/types";
-import { ValueMappingConfig } from "@/widgets/pipeline-editor/ui/layer-configs/ValueMappingConfig";
 import { NoSettingsState } from "./NoSettingsState";
-import { RegexExtractConfig } from "../layer-configs/RegexExtractConfig";
-import { ColumnSplitConfig } from "../layer-configs/ColumnSplitConfig";
+import { LAYER_CONFIG_COMPONENTS } from "../layer-configs";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
@@ -11,18 +9,7 @@ interface LayerConfigRendererProps {
 }
 
 export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) => {
-    const renderConfig = () => {
-        switch (entry.id) {
-            case 'value-mapping':
-                return <ValueMappingConfig index={index} settings={entry.settings} />;
-            case 'regex-extract':
-                return <RegexExtractConfig index={index} settings={entry.settings} />;
-            case 'column-split':
-                return <ColumnSplitConfig index={index} settings={entry.settings} />;
-            default:
-                return <NoSettingsState />;
-        }
-    };
+    const ConfigComponent = LAYER_CONFIG_COMPONENTS[entry.id];
 
     return (
         <div className="max-w-3xl">
@@ -30,7 +17,12 @@ export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) 
                 <Settings2 size={20} />
                 <h4 className="font-bold uppercase tracking-widest text-xs">Конфигурация параметров</h4>
             </div>
-            {renderConfig()}
+            
+            {ConfigComponent ? (
+                <ConfigComponent index={index} settings={entry.settings} />
+            ) : (
+                <NoSettingsState />
+            )}
         </div>
     );
 };

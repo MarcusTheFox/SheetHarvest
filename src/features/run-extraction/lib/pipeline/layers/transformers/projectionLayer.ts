@@ -1,7 +1,16 @@
-import { ExtractionLayer, PipelineRow } from "../../core";
+import { PipelineContext, PipelineRow } from "../../core";
 import { getActiveColIndices } from "../../../extraction-utils";
+import { LayerMetadata } from "../../types";
 
-export const projectionLayer: ExtractionLayer = (context) => {
+export const projectionLayerMetadata: LayerMetadata = {
+    id: 'projection',
+    name: 'Проекция колонок',
+    description: 'Оставляет только выбранные колонки и формирует заголовки',
+    isSystem: true,
+    layer: projectionLayer,
+}
+
+export function projectionLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;
 
     // Получаем индексы колонок, которые должны остаться (активные)

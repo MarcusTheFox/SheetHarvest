@@ -1,7 +1,16 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { ExtractionLayer, PipelineRow } from "../../core";
+import { PipelineContext, PipelineRow } from "../../core";
+import { LayerMetadata } from "../../types";
 
-export const headerSkipLayer: ExtractionLayer = (context) => {
+export const headerSkipLayerMetadata: LayerMetadata = {
+    id: 'header-skip',
+    name: 'Пропуск заголовка',
+    description: 'Пропускает строку заголовка и объединенные с ней ячейки',
+    isSystem: true,
+    layer: headerSkipLayer,
+}
+
+export function headerSkipLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;
     if (params.isManualMode || params.headerRowIndex === null) {
         return context;

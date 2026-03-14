@@ -1,4 +1,17 @@
-import { ExtractionLayer } from "../../core";
+import { PipelineContext } from "../../core";
+import { LayerMetadata } from "../../types";
+
+export const regexExtractLayerMetadata: LayerMetadata = {
+    id: 'regex-extract',
+    name: 'Regex извлечение',
+    description: 'Оставляет в ячейке только текст, подходящий под регулярное выражение',
+    layer: regexExtractLayer,
+    defaultSettings: {
+        keepOriginalIfNoMatch: true,
+        pattern: '',
+        sourceColIndex: undefined
+    }
+}
 
 /**
  * Слой извлечения данных по регулярному выражению
@@ -8,7 +21,7 @@ import { ExtractionLayer } from "../../core";
  *   keepOriginalIfNoMatch: boolean;
  * }
  */
-export const regexExtractLayer: ExtractionLayer = (context) => {
+export function regexExtractLayer(context: PipelineContext): PipelineContext {
     const { rows, settings } = context;
 
     if (!settings || !settings.pattern || settings.sourceColIndex === undefined) {

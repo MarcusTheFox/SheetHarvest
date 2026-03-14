@@ -1,4 +1,18 @@
-import { ExtractionLayer } from "../../core";
+import { PipelineContext } from "../../core";
+import { LayerMetadata } from "../../types";
+
+export const columnSplitLayerMetadata: LayerMetadata = {
+    id: 'column-split',
+    name: 'Разделение колонки',
+    description: 'Разбивает одну колонку на две или более по символу или Regex',
+    layer: columnSplitLayer,
+    defaultSettings: {
+        mode: 'delimiter',
+        delimiter: ',',
+        newNames: ['Часть 1', 'Часть 2'],
+        sourceColIndex: 0
+    }
+}
 
 /**
  * Слой разделения одной колонки на несколько
@@ -10,7 +24,7 @@ import { ExtractionLayer } from "../../core";
  *   newNames: string[];     // Имена для новых колонок
  * }
  */
-export const columnSplitLayer: ExtractionLayer = (context) => {
+export function columnSplitLayer(context: PipelineContext): PipelineContext {
     const { rows, headers, settings } = context;
 
     if (settings?.sourceColIndex === undefined || headers.length === 0) {

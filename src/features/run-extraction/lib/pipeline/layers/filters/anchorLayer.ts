@@ -1,6 +1,15 @@
-import { ExtractionLayer } from "../../core";
+import { PipelineContext } from "../../core";
+import { LayerMetadata } from "../../types";
 
-export const anchorLayer: ExtractionLayer = (context) => {
+export const anchorLayerMetadata: LayerMetadata = {
+    id: 'anchor',
+    name: 'Якоря',
+    description: 'Ограничивает область поиска',
+    isSystem: true,
+    layer: anchorLayer
+};
+
+export function anchorLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;
     const { anchor } = params;
 

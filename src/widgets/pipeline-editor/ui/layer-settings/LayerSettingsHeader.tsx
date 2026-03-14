@@ -1,6 +1,6 @@
 import { Button, Chip } from "@heroui/react";
 import { Trash2 } from "lucide-react";
-import { LayerMetadata } from "@/features/run-extraction/lib/pipeline/registry";
+import { LayerMetadata } from "@/features/run-extraction/lib/pipeline/types";
 
 interface LayerSettingsHeaderProps {
     metadata: LayerMetadata;

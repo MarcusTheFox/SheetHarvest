@@ -1,4 +1,12 @@
 import { PipelineContext } from "../../core";
+import { LayerMetadata } from "../../types";
+
+export const valueMappingLayerMetadata: LayerMetadata = {
+    id: 'value-mapping',
+    name: 'Сопоставление значений',
+    description: 'Заменяет значения в колонках по загруженному справочнику',
+    layer: valueMappingLayer
+}
 
 /**
  * Слой сопоставления значений по справочнику
@@ -8,7 +16,7 @@ import { PipelineContext } from "../../core";
  *   fuzzyMatch: boolean; // Включить ли нечеткий поиск (в будущем)
  * }
  */
-export const valueMappingLayer = (context: PipelineContext): PipelineContext => {
+export function valueMappingLayer(context: PipelineContext): PipelineContext {
     const { rows, settings } = context;
 
     if (!settings || !settings.mapping || settings.sourceColIndex === undefined) {
