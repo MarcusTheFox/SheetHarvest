@@ -28,6 +28,7 @@ export interface PipelineLayer {
 export interface ExtractionPattern {
   headerRowIndex: number | null;
   isManualMode: boolean;
+  selectedColumns: number[];
   customNames: Record<number, string>;
   constraints: ColumnConstraint[];
   topology: Record<number, TopologyMode>;
@@ -48,6 +49,7 @@ export interface PatternState extends ExtractionPattern {
   setStartAnchor: (point: AnchorPoint | null) => void;
   setEndAnchor: (point: AnchorPoint | null) => void;
   toggleVisibility: (colIndex: number) => void;
+  loadPattern: (config: ExtractionPattern) => void;
 
   // Pipeline actions
   addLayer: (layerId: string) => void;

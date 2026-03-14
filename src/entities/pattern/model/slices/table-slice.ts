@@ -1,12 +1,12 @@
 import { StateCreator } from 'zustand';
-import { PatternState } from '../types';
+import { PatternState, ExtractionPattern } from '../types';
 
 export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternState, 
   | 'headerRowIndex' | 'isManualMode' | 'selectedColumns' | 'customNames' 
   | 'constraints' | 'topology' | 'anchor' | 'hiddenColumns'
   | 'setHeaderRow' | 'toggleManualMode' | 'toggleColumn' | 'updateColumnName' 
   | 'setConstraintType' | 'setTopology' | 'setStartAnchor' | 'setEndAnchor' 
-  | 'toggleVisibility'
+  | 'toggleVisibility' | 'loadPattern'
 >> = (set) => ({
   // State
   headerRowIndex: null,
@@ -74,4 +74,14 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
       ? state.hiddenColumns.filter(id => id !== colIndex)
       : [...state.hiddenColumns, colIndex]
   })),
+
+  loadPattern: (config) => set((state) => ({
+  ...state,
+  ...config,
+  // Перегенерируем instanceId для слоев пайплайна, чтобы React не путался
+  pipeline: config.pipeline.map(layer => ({
+    ...layer,
+    instanceId: `${layer.id}-${Math.random().toString(36).substr(2, 9)}`
+  }))
+})),
 });

@@ -9,7 +9,8 @@ import { PatternSidebarModeToggle } from "./PatternSidebarModeToggle";
 import { PatternSidebarAnchors } from "./PatternSidebarAnchors";
 import { PatternSidebarColumnList } from "./PatternSidebarColumnList";
 import { PatternSidebarPipeline } from "./PatternSidebarPipeline";
-import { Layers, Columns } from "lucide-react";
+import { Layers, Columns, FolderOpen } from "lucide-react";
+import { PatternSidebarTemplates } from "./PatternSidebarTemplates";
 
 export const PatternSidebar = () => {
   const { headerRowIndex } = usePatternStore();
@@ -64,6 +65,19 @@ export const PatternSidebar = () => {
           >
             <div className="pt-2">
               <PatternSidebarPipeline />
+            </div>
+          </Tab>
+          <Tab
+            key="templates"
+            title={
+              <div className="flex items-center gap-2">
+                <FolderOpen size={14} />
+                <span>Шаблоны</span>
+              </div>
+            }
+          >
+            <div className="pt-2">
+              <PatternSidebarTemplates />
             </div>
           </Tab>
         </Tabs>
