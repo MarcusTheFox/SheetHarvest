@@ -5,7 +5,7 @@ import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry"
 import { Button, Card, CardBody, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 import { ArrowDown, ArrowUp, PlusCircle, Settings2, Trash2, ExternalLink } from "lucide-react";
 import { memo, useState } from "react";
-import { PipelineEditor } from "./PipelineEditor";
+import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
 import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
 
 export const PatternSidebarPipeline = memo(() => {
