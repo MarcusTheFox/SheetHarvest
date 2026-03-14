@@ -10,6 +10,7 @@ import {
     splitColumnExampleLayer,
     valueMappingLayer
 } from "./layers/transformers";
+import { regexExtractLayer } from "./layers/transformers/regexExtractLayer";
 
 export interface LayerMetadata {
     id: string;
@@ -17,6 +18,7 @@ export interface LayerMetadata {
     description: string;
     layer: ExtractionLayer;
     isSystem?: boolean; // Системные слои, которые лучше не удалять (например, проекция)
+    defaultSettings?: Record<string, any>;
 }
 
 export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
@@ -66,6 +68,17 @@ export const LAYER_REGISTRY: Record<string, LayerMetadata> = {
         name: 'Сопоставление значений',
         description: 'Заменяет значения в колонках по загруженному справочнику',
         layer: valueMappingLayer
+    },
+    'regex-extract': {
+        id: 'regex-extract',
+        name: 'Regex извлечение',
+        description: 'Оставляет в ячейке только текст, подходящий под регулярное выражение',
+        layer: regexExtractLayer,
+        defaultSettings: {
+            keepOriginalIfNoMatch: true,
+            pattern: '',
+            sourceColIndex: undefined
+        }
     }
 };
 

@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { PatternState } from '../types';
-import { DEFAULT_PIPELINE } from '@/features/run-extraction/lib/pipeline/registry';
+import { DEFAULT_PIPELINE, LAYER_REGISTRY } from '@/features/run-extraction/lib/pipeline/registry';
 
 export const createPipelineSlice: StateCreator<PatternState, [], [], Pick<PatternState, 
   | 'pipeline' | 'addLayer' | 'removeLayer' | 'moveLayer' | 'updateLayerSettings'
@@ -11,13 +11,17 @@ export const createPipelineSlice: StateCreator<PatternState, [], [], Pick<Patter
     settings: {}
   })),
 
-  addLayer: (layerId) => set((state) => ({
-    pipeline: [...state.pipeline, {
-      id: layerId,
-      instanceId: `${layerId}-${Math.random().toString(36).substr(2, 9)}`,
-      settings: {}
-    }]
-  })),
+  addLayer: (layerId) => set((state) => {
+    const metadata = LAYER_REGISTRY[layerId];
+
+    return {
+      pipeline: [...state.pipeline, {
+        id: layerId,
+        instanceId: `${layerId}-${Math.random().toString(36).substr(2, 9)}`,
+        settings: metadata?.defaultSettings ? { ...metadata.defaultSettings } : {}
+      }]
+    }
+  }),
 
   removeLayer: (index) => set((state) => ({
     pipeline: state.pipeline.filter((_, i) => i !== index)

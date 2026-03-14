@@ -2,6 +2,7 @@ import { Settings2 } from "lucide-react";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { ValueMappingConfig } from "@/widgets/pipeline-editor/ui/layer-configs/ValueMappingConfig";
 import { NoSettingsState } from "./NoSettingsState";
+import { RegexExtractConfig } from "../layer-configs/RegexExtractConfig";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
@@ -13,6 +14,8 @@ export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) 
         switch (entry.id) {
             case 'value-mapping':
                 return <ValueMappingConfig index={index} settings={entry.settings} />;
+            case 'regex-extract':
+                return <RegexExtractConfig index={index} settings={entry.settings} />;
             default:
                 return <NoSettingsState />;
         }
