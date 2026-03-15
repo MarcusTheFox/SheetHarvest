@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { LayerMetadata } from "@/features/run-extraction/lib/pipeline/types";
 
 interface LayerSettingsHeaderProps {
-    metadata: LayerMetadata;
+    metadata: LayerMetadata<unknown>;
     index: number;
     onRemove: (index: number) => void;
 }

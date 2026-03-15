@@ -1,11 +1,17 @@
 import { PipelineContext } from "../../core";
 import { LayerMetadata } from "../../types";
 
-export const valueMappingLayerMetadata: LayerMetadata = {
+export interface ValueMappingLayerSettings {
+    sourceColIndex: number;
+    mapping: Record<string, string>;
+    fuzzyMatch: boolean;
+}
+
+export const valueMappingLayerMetadata: LayerMetadata<ValueMappingLayerSettings> = {
     id: 'value-mapping',
     name: 'Сопоставление значений',
     description: 'Заменяет значения в колонках по загруженному справочнику',
-    layer: valueMappingLayer
+    layer: valueMappingLayer,
 }
 
 /**
@@ -16,7 +22,7 @@ export const valueMappingLayerMetadata: LayerMetadata = {
  *   fuzzyMatch: boolean; // Включить ли нечеткий поиск (в будущем)
  * }
  */
-export function valueMappingLayer(context: PipelineContext): PipelineContext {
+export function valueMappingLayer(context: PipelineContext<ValueMappingLayerSettings>): PipelineContext {
     const { rows, settings } = context;
 
     if (!settings || !settings.mapping || settings.sourceColIndex === undefined) {

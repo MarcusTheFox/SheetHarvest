@@ -1,7 +1,7 @@
 import { PipelineContext } from "../../core";
 import { LayerMetadata } from "../../types";
 
-export const anchorLayerMetadata: LayerMetadata = {
+export const anchorLayerMetadata: LayerMetadata<never> = {
     id: 'anchor',
     name: 'Якоря',
     description: 'Ограничивает область поиска',

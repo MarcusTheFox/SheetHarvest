@@ -2,7 +2,7 @@ import { PipelineContext } from "../../core";
 import { checkTopology } from "../../../extraction-utils";
 import { LayerMetadata } from "../../types";
 
-export const topologyLayerMetadata: LayerMetadata = {
+export const topologyLayerMetadata: LayerMetadata<never> = {
     id: 'topology',
     name: 'Топология строк',
     description: 'Фильтрует строки по правилам заполненности колонок',

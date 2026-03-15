@@ -7,12 +7,10 @@ import { Button, Select, SelectItem } from "@heroui/react";
 import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { LayerSettings } from "@/entities/pattern/model/types";
+import { LayerConfigProps } from ".";
+import { ValueMappingLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/valueMappingLayer";
 
-interface ValueMappingConfigProps {
-    index: number;
-    settings: LayerSettings;
-}
+type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 
 export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps) => {
     const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore();

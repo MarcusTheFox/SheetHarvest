@@ -4,9 +4,13 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { getActiveColIndices } from "@/features/run-extraction/lib/extraction-utils";
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
-import { Plus, Trash2, Split } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { LayerConfigProps } from ".";
+import { ColumnSplitLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/columnSplitLayer";
 
-export const ColumnSplitConfig = ({ index, settings }: { index: number; settings: any }) => {
+type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
+
+export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) => {
     const { updateLayerSettings, customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore();
     const { sheets, currentSheetIndex } = useSpreadsheetStore();
 
@@ -115,7 +119,7 @@ export const ColumnSplitConfig = ({ index, settings }: { index: number; settings
                             />
                             {names.length > 2 && (
                                 <Button isIconOnly size="sm" variant="light" color="danger" 
-                                    onPress={() => updateLayerSettings(index, { newNames: names.filter((_: any, idx: number) => idx !== i) })}>
+                                    onPress={() => updateLayerSettings(index, { newNames: names.filter((_: string, idx: number) => idx !== i) })}>
                                     <Trash2 size={14} />
                                 </Button>
                             )}

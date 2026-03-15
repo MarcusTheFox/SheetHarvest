@@ -1,10 +1,10 @@
 import { ExtractionLayer } from "./core";
 
-export interface LayerMetadata {
+export interface LayerMetadata<T> {
     id: string;
     name: string;
     description: string;
-    layer: ExtractionLayer;
+    layer: ExtractionLayer<T>;
     isSystem?: boolean;
-    defaultSettings?: Record<string, any>;
+    defaultSettings?: T;
 }

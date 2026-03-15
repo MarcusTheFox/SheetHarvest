@@ -1,7 +1,13 @@
 import { PipelineContext } from "../../core";
 import { LayerMetadata } from "../../types";
 
-export const regexExtractLayerMetadata: LayerMetadata = {
+export interface RegexExtractionLayerSettings {
+    keepOriginalIfNoMatch: boolean;
+    pattern: string;
+    sourceColIndex?: number;
+}
+
+export const regexExtractLayerMetadata: LayerMetadata<RegexExtractionLayerSettings> = {
     id: 'regex-extract',
     name: 'Regex извлечение',
     description: 'Оставляет в ячейке только текст, подходящий под регулярное выражение',
@@ -21,7 +27,7 @@ export const regexExtractLayerMetadata: LayerMetadata = {
  *   keepOriginalIfNoMatch: boolean;
  * }
  */
-export function regexExtractLayer(context: PipelineContext): PipelineContext {
+export function regexExtractLayer(context: PipelineContext<RegexExtractionLayerSettings>): PipelineContext {
     const { rows, settings } = context;
 
     if (!settings || !settings.pattern || settings.sourceColIndex === undefined) {

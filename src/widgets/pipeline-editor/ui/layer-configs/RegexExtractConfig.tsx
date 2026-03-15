@@ -5,8 +5,12 @@ import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
+import { LayerConfigProps } from ".";
+import { RegexExtractionLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/regexExtractLayer";
 
-export const RegexExtractConfig = ({ index, settings }: { index: number; settings: any }) => {
+type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
+
+export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps) => {
     const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore();
     const { sheets, currentSheetIndex } = useSpreadsheetStore();
 

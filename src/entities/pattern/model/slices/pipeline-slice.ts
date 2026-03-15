@@ -43,11 +43,11 @@ export const createPipelineSlice: StateCreator<PatternState, [], [], Pick<Patter
     return { pipeline: newPipeline };
   }),
 
-  updateLayerSettings: (index, settings) => set((state) => {
+  updateLayerSettings: <T>(index: number, settings: Partial<T>) => set((state) => {
     usePreviewStore.getState().invalidateFromIndex(index, state.pipeline);
     
     const newPipeline = [...state.pipeline];
-    newPipeline[index] = { ...newPipeline[index], settings: { ...newPipeline[index].settings, ...settings } };
+    newPipeline[index] = { ...newPipeline[index], settings: { ...(newPipeline[index].settings as T), ...settings } };
     return { pipeline: newPipeline };
   }),
 });

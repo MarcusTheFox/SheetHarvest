@@ -1,7 +1,15 @@
 import { PipelineContext } from "../../core";
 import { LayerMetadata } from "../../types";
 
-export const columnSplitLayerMetadata: LayerMetadata = {
+export interface ColumnSplitLayerSettings {
+    sourceColIndex: number;
+    mode: 'delimiter' | 'regex';
+    delimiter?: string;
+    pattern?: string;
+    newNames: string[];
+}
+
+export const columnSplitLayerMetadata: LayerMetadata<ColumnSplitLayerSettings> = {
     id: 'column-split',
     name: 'Разделение колонки',
     description: 'Разбивает одну колонку на две или более по символу или Regex',
@@ -24,7 +32,7 @@ export const columnSplitLayerMetadata: LayerMetadata = {
  *   newNames: string[];     // Имена для новых колонок
  * }
  */
-export function columnSplitLayer(context: PipelineContext): PipelineContext {
+export function columnSplitLayer(context: PipelineContext<ColumnSplitLayerSettings>): PipelineContext {
     const { rows, headers, settings } = context;
 
     if (settings?.sourceColIndex === undefined || headers.length === 0) {

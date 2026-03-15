@@ -2,7 +2,7 @@ import { PipelineContext, PipelineRow } from "../../core";
 import { getActiveColIndices } from "../../../extraction-utils";
 import { LayerMetadata } from "../../types";
 
-export const projectionLayerMetadata: LayerMetadata = {
+export const projectionLayerMetadata: LayerMetadata<never> = {
     id: 'projection',
     name: 'Проекция колонок',
     description: 'Оставляет только выбранные колонки и формирует заголовки',

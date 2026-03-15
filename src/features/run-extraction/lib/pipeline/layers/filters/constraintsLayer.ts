@@ -2,7 +2,7 @@ import { PipelineContext } from "../../core";
 import { checkConstraints } from "../../../extraction-utils";
 import { LayerMetadata } from "../../types";
 
-export const constraintsLayerMetadata: LayerMetadata = {
+export const constraintsLayerMetadata: LayerMetadata<never> = {
     id: 'constraints',
     name: 'Типы данных',
     description: 'Валидирует данные в ячейках (числа, даты)',

@@ -1,4 +1,4 @@
-import { TopologyMode, ConstraintType, LayerSettings } from "@/entities/pattern/model/types";
+import { TopologyMode, PipelineLayer, AnchorPoint, ColumnConstraint } from "@/entities/pattern/model/types";
 import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
@@ -8,18 +8,14 @@ export interface ExtractionParams {
     isManualMode: boolean;
     selectedColumns: number[];
     customNames: Record<number, string>;
-    constraints: { colIndex: number; type: ConstraintType }[];
+    constraints: ColumnConstraint[];
     topology: Record<number, TopologyMode>;
     anchor: {
-        start: { text: string; colIndex: number } | null;
-        end: { text: string; colIndex: number } | null;
+        start: AnchorPoint | null;
+        end: AnchorPoint | null;
     };
     hiddenColumns: number[];
-    pipeline: Array<{
-        id: string;
-        instanceId: string;
-        settings: LayerSettings;
-    }>;
+    pipeline: PipelineLayer[];
     merges: MergeRange[];
 }
 
@@ -29,14 +25,14 @@ export interface PipelineRow {
     groupIndex: number;
 }
 
-export interface PipelineContext {
+export interface PipelineContext<T = unknown> {
     rows: PipelineRow[];
     headers: string[];
     params: ExtractionParams;
-    settings?: LayerSettings;
+    settings?: T;
 }
 
-export type ExtractionLayer = (context: PipelineContext) => PipelineContext;
+export type ExtractionLayer<T = unknown> = (context: PipelineContext<T>) => PipelineContext;
 
 export const executePipeline = (initialContext: PipelineContext, layers: ExtractionLayer[]): PipelineContext => {
     return layers.reduce((context, layer) => layer(context), initialContext);
