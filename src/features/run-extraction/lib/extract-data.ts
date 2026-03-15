@@ -1,44 +1,55 @@
-import { PipelineContext, executePipeline, ExtractionParams } from "./pipeline/core";
+import { PipelineContext, ExtractionParams } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
 import { TableValue } from "@/shared/types/spreadsheet";
+import { createInitialContext } from "./context-builder";
 
-export const extractData = (params: ExtractionParams): { tables: TableValue[]; headers: string[] } => {
-    // 1. Инициализируем контекст с сырыми строками (оборачиваем их для сохранения оригинального индекса)
-    const initialContext: PipelineContext = {
-        rows: params.allRows.map((cells, idx) => ({
-            originalIndex: idx,
-            cells,
-            groupIndex: 0,
-        })),
-        headers: [], // Заголовки заполнятся на слое projectionLayer
-        params
-    };
+export const extractData = (
+    params: ExtractionParams,
+    cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
+): { tables: TableValue[]; headers: string[] } => {
+    
+    let currentContext = createInitialContext(params);
+    let startIndex = 0;
 
-    // 2. Определяем слои (конвейер обработки) на основе настроек из параметров
-    const pipelineLayers = params.pipeline
-        .map(entry => {
-            const metadata = LAYER_REGISTRY[entry.id];
-            if (!metadata) return null;
+    // 1. Ищем самый "глубокий" слой, который уже есть в кеше
+    if (cache) {
+        // Идем с конца пайплайна к началу
+        for (let i = params.pipeline.length - 1; i >= 0; i--) {
+            const layer = params.pipeline[i];
+            if (cache[layer.instanceId]) {
+                // Нашли кеш! Берем его как стартовую точку
+                currentContext = cache[layer.instanceId];
+                // Начинаем выполнение со СЛЕДУЮЩЕГО слоя
+                startIndex = i + 1;
+                break;
+            }
+        }
+    }
 
-            // Оборачиваем слой, чтобы передать ему настройки конкретного экземпляра
-            return (ctx: PipelineContext) => metadata.layer({ ...ctx, settings: entry.settings });
-        })
-        .filter((layer): layer is (ctx: PipelineContext) => PipelineContext => layer !== null);
+    // 2. Прогоняем данные только через оставшиеся (некешированные) слои
+    for (let i = startIndex; i < params.pipeline.length; i++) {
+        const entry = params.pipeline[i];
+        const metadata = LAYER_REGISTRY[entry.id];
+        
+        if (metadata) {
+            // Передаем текущий контекст в слой и обновляем его
+            currentContext = metadata.layer({ ...currentContext, settings: entry.settings });
+        }
+    }
 
-    // 3. Прогоняем данные через пайплайн
-    const finalContext = executePipeline(initialContext, pipelineLayers);
+    // 3. Формируем итоговые таблицы из финального контекста
     const tablesMap = new Map<number, TableValue>();
 
-    for (const row of finalContext.rows) {
+    for (const row of currentContext.rows) {
         if (!tablesMap.has(row.groupIndex)) {
             tablesMap.set(row.groupIndex, []);
         }
         tablesMap.get(row.groupIndex)!.push(row.cells);
     }
 
-    // 4. Возвращаем результат: чистые массивы данных и заголовки
+    // 4. Возвращаем результат
     return {
         tables: Array.from(tablesMap.values()),
-        headers: finalContext.headers
+        headers: currentContext.headers
     };
 };

@@ -3,12 +3,16 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 import { Button, Card, CardBody, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
-import { ArrowDown, ArrowUp, PlusCircle, Settings2, Trash2, ExternalLink } from "lucide-react";
+import { ArrowDown, ArrowUp, PlusCircle, Settings2, Trash2, ExternalLink, CheckCircle2, Play } from "lucide-react";
 import { memo, useState } from "react";
 import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
 import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
+import { usePreviewStore } from "@/entities/preview/model/store";
+import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
 
 export const PatternSidebarPipeline = memo(() => {
+    const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore();
+    const params = useExtractionParams();
     const { pipeline, moveLayer, removeLayer, addLayer } = usePatternStore();
     const { runExtraction } = useRunExtraction();
     const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -67,11 +71,32 @@ export const PatternSidebarPipeline = memo(() => {
                         const metadata = LAYER_REGISTRY[entry.id];
                         if (!metadata) return null;
 
+                        const isCached = !!cache[entry.instanceId];
+                        const isActivePreview = activePreviewId === entry.instanceId;
+
                         return (
                             <Card key={entry.instanceId} shadow="none" className="border border-default-100 bg-default-50/50 overflow-hidden">
                                 <CardBody className="p-3">
                                     <div className="flex items-start justify-between gap-2">
-                                        <div className="flex flex-col gap-0.5 min-w-0">
+                                        <div className="shrink-0">
+                                            <Button
+                                                isIconOnly
+                                                size="sm"
+                                                radius="full"
+                                                variant={isCached ? "flat" : "solid"}
+                                                color={isActivePreview ? "primary" : isCached ? "success" : "default"}
+                                                isLoading={isExecuting && isActivePreview}
+                                                onPress={() => {
+                                                    if (params) runUpToLayer(entry.instanceId, pipeline, params);
+                                                }}
+                                            >
+                                                {isCached ? <CheckCircle2 size={16} /> : <Play size={14} className="ml-0.5" />}
+                                            </Button>
+                                        </div>
+
+                                        <div className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer" onClick={() => {
+                                            if(isCached) usePreviewStore.getState().setActivePreview(entry.instanceId);
+                                        }}>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] font-bold text-default-400 font-mono">#{index + 1}</span>
                                                 <span className="text-[12px] font-semibold truncate leading-tight">{metadata.name}</span>
