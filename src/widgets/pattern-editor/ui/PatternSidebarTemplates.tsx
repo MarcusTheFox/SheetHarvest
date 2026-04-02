@@ -67,7 +67,7 @@ export const PatternSidebarTemplates = () => {
             <Divider />
 
             {/* Список сохраненных */}
-            <ScrollShadow className="max-h-[40vh] flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
                 {templates.map((t) => (
                     <Card key={t.id} shadow="none" className="border border-default-100 hover:border-primary-200 transition-all group">
                         <CardBody className="p-3">
@@ -99,7 +99,7 @@ export const PatternSidebarTemplates = () => {
                         У вас пока нет сохраненных шаблонов
                     </div>
                 )}
-            </ScrollShadow>
+            </div>
         </div>
     );
 };
