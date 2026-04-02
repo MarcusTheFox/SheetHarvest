@@ -7,12 +7,23 @@ import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/r
 import { Plus, Trash2 } from "lucide-react";
 import { LayerConfigProps } from ".";
 import { ColumnSplitLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/columnSplitLayer";
+import { useShallow } from "zustand/shallow";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
 
 export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) => {
-    const { updateLayerSettings, customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore();
-    const { sheets, currentSheetIndex } = useSpreadsheetStore();
+    const { updateLayerSettings, customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore(
+        useShallow(s => ({
+            updateLayerSettings: s.updateLayerSettings,
+            customNames: s.customNames,
+            selectedColumns: s.selectedColumns,
+            isManualMode: s.isManualMode,
+            headerRowIndex: s.headerRowIndex,
+        }))
+    );
+
+    const sheets = useSpreadsheetStore(s => s.sheets);
+    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
 
     const currentSheet = sheets[currentSheetIndex];
 

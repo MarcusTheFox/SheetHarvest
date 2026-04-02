@@ -7,12 +7,23 @@ import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
 import { LayerConfigProps } from ".";
 import { RegexExtractionLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/regexExtractLayer";
+import { useShallow } from "zustand/shallow";
 
 type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
 
 export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps) => {
-    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore();
-    const { sheets, currentSheetIndex } = useSpreadsheetStore();
+    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
+        useShallow(s => ({
+            updateLayerSettings: s.updateLayerSettings,
+            customNames: s.customNames,
+            selectedColumns: s.selectedColumns,
+            isManualMode: s.isManualMode,
+            headerRowIndex: s.headerRowIndex,
+        }))
+    );
+
+    const sheets = useSpreadsheetStore(s => s.sheets);
+    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
 
     const currentSheet = sheets[currentSheetIndex];
     const headerRow = (currentSheet && headerRowIndex !== null) ? currentSheet.data[headerRowIndex] : [];

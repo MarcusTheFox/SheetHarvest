@@ -13,8 +13,9 @@ import { Layers, Columns, FolderOpen } from "lucide-react";
 import { PatternSidebarTemplates } from "./PatternSidebarTemplates";
 
 export const PatternSidebar = () => {
-  const { headerRowIndex } = usePatternStore();
-  const { sheets, currentSheetIndex } = useSpreadsheetStore();
+  const headerRowIndex = usePatternStore(s => s.headerRowIndex);
+  const sheets = useSpreadsheetStore(s => s.sheets);
+  const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
   
   const currentSheet = sheets[currentSheetIndex];
   if (!currentSheet) return null;

@@ -1,44 +1,68 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { extractData } from "./extract-data";
+import { useShallow } from "zustand/shallow";
 
 export const useRunExtraction = () => {
-    const { sheets, currentSheetIndex } = useSpreadsheetStore();
-    const { headerRowIndex, isManualMode, selectedColumns, customNames, constraints, topology, anchor, hiddenColumns, pipeline } = usePatternStore();
-    const { setResults } = useExtractionStore();
+    const { sheets, currentSheetIndex } = useSpreadsheetStore(
+        useShallow(s => ({
+            sheets: s.sheets,
+            currentSheetIndex: s.currentSheetIndex,
+        }))
+    );
+    const pattern = usePatternStore(
+        useShallow(s => ({
+            headerRowIndex: s.headerRowIndex,
+            isManualMode: s.isManualMode,
+            selectedColumns: s.selectedColumns,
+            customNames: s.customNames,
+            constraints: s.constraints,
+            topology: s.topology,
+            anchor: s.anchor,
+            hiddenColumns: s.hiddenColumns,
+            pipeline: s.pipeline,
+        }))
+    );
+    const setResults = useExtractionStore(s => s.setResults);
     
     // Получаем текущий кеш превью
-    const { cache } = usePreviewStore(); 
+    const cache = usePreviewStore(s => s.cache);
+
+    const currentSheet = useMemo(() => {
+        return sheets[currentSheetIndex];
+    }, [sheets, currentSheetIndex]);
+
+    const isValid = useMemo(() => {
+        if (!currentSheet) {
+            console.warn('No sheet selected');
+            return false;
+        }
+        if (pattern.headerRowIndex === null && !pattern.isManualMode) {
+            console.warn('No header row selected and not in manual mode');
+            return false;
+        }
+        return true;
+    }, [currentSheet, pattern.headerRowIndex, pattern.isManualMode]);
 
     const runExtraction = useCallback(() => {
-        const sheet = sheets[currentSheetIndex];
-        if (!sheet || (headerRowIndex === null && !isManualMode)) return;
+        if (!isValid) return;
 
-        const tableHeaderRow = headerRowIndex !== null ? sheet.data[headerRowIndex] : [];
+        const tableHeaderRow = pattern.headerRowIndex !== null ? currentSheet.data[pattern.headerRowIndex] : [];
 
         // Вызываем извлечение, передавая параметры и кеш
         const results = extractData({
-            allRows: sheet.data,
-            headerRowIndex,
+            allRows: currentSheet.data,
             tableHeaderRow,
-            isManualMode,
-            selectedColumns,
-            customNames,
-            constraints,
-            topology,
-            anchor,
-            hiddenColumns,
-            pipeline,
-            merges: sheet.merges || []
+            merges: currentSheet.merges || [],
+            ...pattern,
         }, cache);
 
         setResults(results);
     }, [
-        sheets, currentSheetIndex, headerRowIndex, isManualMode, selectedColumns,
-        customNames, constraints, topology, anchor, hiddenColumns, pipeline, cache, setResults
+        sheets, currentSheetIndex, pattern, cache, setResults
     ]);
 
     return { runExtraction };

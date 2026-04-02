@@ -7,6 +7,7 @@ import { memo, useState, useCallback } from "react";
 import { PipelineEditorHeader } from "./PipelineEditorHeader";
 import { PipelineEditorSidebar } from "./PipelineEditorSidebar";
 import { PipelineEditorFooter } from "./PipelineEditorFooter";
+import { useShallow } from "zustand/shallow";
 
 interface PipelineEditorProps {
     isOpen: boolean;
@@ -15,8 +16,16 @@ interface PipelineEditorProps {
 }
 
 export const PipelineEditor = memo(({ isOpen, onClose, onApply }: PipelineEditorProps) => {
-    const { pipeline, removeLayer, moveLayer, addLayer } = usePatternStore();
     const [selectedLayerIndex, setSelectedLayerIndex] = useState<number | null>(null);
+
+    const { pipeline, removeLayer, moveLayer, addLayer } = usePatternStore(
+        useShallow(s => ({
+            pipeline: s.pipeline,
+            removeLayer: s.removeLayer,
+            moveLayer: s.moveLayer,
+            addLayer: s.addLayer,
+        }))
+    );
 
     const handleApply = useCallback(() => {
         onApply?.();

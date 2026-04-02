@@ -19,16 +19,21 @@ interface PatternSidebarColumnProps {
 }
 
 export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnProps) => {
-  const { 
-    isManualMode, customNames, topology, constraints, hiddenColumns,
-    toggleVisibility, updateColumnName, setTopology, setConstraintType 
-  } = usePatternStore();
+  debugger
+  const isHidden = usePatternStore(s => s.hiddenColumns.includes(idx));
+  const isManualMode = usePatternStore(s => s.isManualMode);
+  const currentTopology = usePatternStore(s => s.topology[idx] || 'any');
+  const currentConstraint = usePatternStore(s => s.constraints.find(c => c.colIndex === idx));
+  const currentName = usePatternStore(s => s.customNames[idx] || cell?.toString() || "");
 
-  const isHidden = hiddenColumns.includes(idx);
-  const currentName = customNames[idx] || cell?.toString() || "";
-  const currentTopology = topology[idx] || 'any';
 
-  if (!isManualMode && !cell && !customNames[idx]) return null;
+  const updateColumnName = usePatternStore(s => s.updateColumnName);
+  const toggleVisibility = usePatternStore(s => s.toggleVisibility);
+  const setTopology = usePatternStore(s => s.setTopology);
+  const setConstraintType = usePatternStore(s => s.setConstraintType);
+
+
+  if (!isManualMode && !cell && !currentName) return null;
 
   return (
     <div className={`flex flex-col gap-3 p-4 border-2 rounded-2xl transition-all ${
@@ -70,7 +75,7 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
         size="sm" 
         label="Тип данных"
         variant="bordered"
-        selectedKeys={[constraints.find(c => c.colIndex === idx)?.type || "any"]}
+        selectedKeys={[currentConstraint?.type || "any"]}
         onChange={(e) => setConstraintType(idx, currentName, e.target.value as ConstraintType)}
       >
         {CONSTRAINT_TYPES.map((type) => <SelectItem key={type.value}>{type.label}</SelectItem>)}

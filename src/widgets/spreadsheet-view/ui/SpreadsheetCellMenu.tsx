@@ -4,6 +4,7 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { Listbox, ListboxItem } from "@heroui/react";
 import { Flag, XCircle, Table as TableIcon, Columns } from "lucide-react";
 import { memo } from "react";
+import { useShallow } from "zustand/shallow";
 
 interface SpreadsheetCellMenuProps {
   rowIndex: number;
@@ -12,7 +13,16 @@ interface SpreadsheetCellMenuProps {
 }
 
 export const SpreadsheetCellMenu = memo(({ rowIndex, colIndex, cellValue }: SpreadsheetCellMenuProps) => {
-  const { isManualMode, selectedColumns, setHeaderRow, setStartAnchor, setEndAnchor, toggleColumn } = usePatternStore();
+  const { isManualMode, selectedColumns, setHeaderRow, setStartAnchor, setEndAnchor, toggleColumn } = usePatternStore(
+    useShallow(s => ({
+      isManualMode: s.isManualMode,
+      selectedColumns: s.selectedColumns,
+      setHeaderRow: s.setHeaderRow,
+      setStartAnchor: s.setStartAnchor,
+      setEndAnchor: s.setEndAnchor,
+      toggleColumn: s.toggleColumn,
+    }))
+  );
 
   const isColumnSelected = selectedColumns.includes(colIndex);
 

@@ -16,7 +16,8 @@ interface SpreadsheetCellProps {
 }
 
 export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges }: SpreadsheetCellProps) => {
-  const { headerRowIndex, anchor } = usePatternStore();
+  const headerRowIndex = usePatternStore(s => s.headerRowIndex);
+  const anchor = usePatternStore(s => s.anchor);
 
   const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, colIndex, merges);
   if (isHidden) return null;

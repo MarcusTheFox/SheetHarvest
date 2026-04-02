@@ -9,13 +9,29 @@ import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
 import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
+import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarPipeline = memo(() => {
-    const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore();
-    const params = useExtractionParams();
-    const { pipeline, moveLayer, removeLayer, addLayer } = usePatternStore();
-    const { runExtraction } = useRunExtraction();
     const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const params = useExtractionParams();
+    const { runExtraction } = useRunExtraction();
+
+    const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore(
+        useShallow(s => ({
+            cache: s.cache,
+            runUpToLayer: s.runUpToLayer,
+            activePreviewId: s.activePreviewId,
+            isExecuting: s.isExecuting,
+        }))
+    );
+    const { pipeline, moveLayer, removeLayer, addLayer } = usePatternStore(
+        useShallow(s => ({
+            pipeline: s.pipeline,
+            moveLayer: s.moveLayer,
+            removeLayer: s.removeLayer,
+            addLayer: s.addLayer,
+        }))
+    );
 
     // Доступные слои — те, которых нет в списке (или которые не системные, если мы разрешим дубли)
     const availableLayers = Object.values(LAYER_REGISTRY).filter(

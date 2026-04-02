@@ -5,7 +5,8 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { memo } from "react";
 
 export const PatternSidebarModeToggle = memo(() => {
-  const { isManualMode, toggleManualMode } = usePatternStore();
+  const isManualMode = usePatternStore(s => s.isManualMode);
+  const toggleManualMode = usePatternStore(s => s.toggleManualMode);
 
   return (
     <div className="flex flex-col gap-2">

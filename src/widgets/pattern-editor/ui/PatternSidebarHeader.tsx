@@ -6,7 +6,7 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { memo } from "react";
 
 export const PatternSidebarHeader = memo(() => {
-  const { resetPattern } = usePatternStore();
+  const resetPattern = usePatternStore(s => s.resetPattern);
 
   return (
     <div className="flex justify-between items-center">

@@ -3,45 +3,41 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useTemplateStore } from "@/entities/template/model/store";
 import { Button, Input, Card, CardBody, ScrollShadow, Divider } from "@heroui/react";
-import { Save, FolderOpen, Trash2, Clock } from "lucide-react";
+import { Save, Trash2, Clock } from "lucide-react";
 import { useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarTemplates = () => {
-    const { templates, addTemplate, removeTemplate } = useTemplateStore();
-    const pattern = usePatternStore(); // Берем всё состояние паттерна
-    const loadPattern = usePatternStore((state) => state.loadPattern);
+    const { templates, addTemplate, removeTemplate } = useTemplateStore(
+        useShallow(s => ({
+            templates: s.templates,
+            addTemplate: s.addTemplate,
+            removeTemplate: s.removeTemplate,
+        }))
+    );
+    const pattern = usePatternStore(
+        useShallow(s => ({
+            headerRowIndex: s.headerRowIndex,
+            isManualMode: s.isManualMode,
+            selectedColumns: s.selectedColumns,
+            customNames: s.customNames,
+            constraints: s.constraints,
+            topology: s.topology,
+            anchor: s.anchor,
+            hiddenColumns: s.hiddenColumns,
+            pipeline: s.pipeline,
+        }))
+    );
+    const loadPattern = usePatternStore(s => s.loadPattern);
     
     const [newTemplateName, setNewTemplateName] = useState("");
 
     const handleSave = () => {
         if (!newTemplateName) return;
         
-        // Извлекаем только данные конфига (без функций стора)
-        const {
-            headerRowIndex,
-            isManualMode,
-            selectedColumns,
-            customNames,
-            constraints,
-            topology,
-            anchor,
-            hiddenColumns,
-            pipeline
-        } = pattern;
-        
         addTemplate({
             name: newTemplateName,
-            config: {
-                headerRowIndex,
-                isManualMode,
-                selectedColumns,
-                customNames,
-                constraints,
-                topology,
-                anchor,
-                hiddenColumns,
-                pipeline
-            }
+            config: { ...pattern }
         });
         setNewTemplateName("");
     };

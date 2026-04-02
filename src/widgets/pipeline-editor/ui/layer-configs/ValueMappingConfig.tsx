@@ -9,12 +9,23 @@ import { useState } from "react";
 import * as XLSX from "xlsx";
 import { LayerConfigProps } from ".";
 import { ValueMappingLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/valueMappingLayer";
+import { useShallow } from "zustand/shallow";
 
 type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 
 export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps) => {
-    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore();
-    const { sheets, currentSheetIndex } = useSpreadsheetStore();
+    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
+        useShallow(s => ({
+            updateLayerSettings: s.updateLayerSettings,
+            customNames: s.customNames,
+            selectedColumns: s.selectedColumns,
+            isManualMode: s.isManualMode,
+            headerRowIndex: s.headerRowIndex,
+        }))
+    );
+    const sheets = useSpreadsheetStore(s => s.sheets);
+    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
+    
     const [fileName, setFileName] = useState<string | null>(null);
 
     const currentSheet = sheets[currentSheetIndex];

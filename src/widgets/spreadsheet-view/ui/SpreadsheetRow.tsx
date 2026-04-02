@@ -14,7 +14,7 @@ interface SpreadsheetRowProps {
 }
 
 export const SpreadsheetRow = memo(({ rowIndex, row, columns, merges }: SpreadsheetRowProps) => {
-  const { headerRowIndex } = usePatternStore();
+  const headerRowIndex = usePatternStore(s => s.headerRowIndex);
 
   return (
     <tr 

@@ -6,8 +6,11 @@ import { Anchor, Flag, XCircle } from "lucide-react";
 import { memo } from "react";
 
 export const PatternSidebarAnchors = memo(() => {
-  const { anchor, setStartAnchor, setEndAnchor } = usePatternStore();
+  const anchor = usePatternStore(s => s.anchor);
+  const setStartAnchor = usePatternStore(s => s.setStartAnchor);
+  const setEndAnchor = usePatternStore(s => s.setEndAnchor);
 
+debugger
   return (
     <div className="flex flex-col gap-2 p-3 bg-primary-50/50 rounded-2xl border border-primary-100">
       <span className="text-[10px] font-black text-primary-600 uppercase flex items-center gap-1 mb-1">

@@ -13,7 +13,9 @@ interface PatternSidebarColumnListProps {
 }
 
 export const PatternSidebarColumnList = memo(({ headerRow, merges }: PatternSidebarColumnListProps) => {
-  const { headerRowIndex, isManualMode, selectedColumns } = usePatternStore();
+  const isManualMode = usePatternStore(s => s.isManualMode);
+  const selectedColumns = usePatternStore(s => s.selectedColumns);
+  const headerRowIndex = usePatternStore(s => s.headerRowIndex);
 
   if (headerRowIndex === null && !isManualMode) {
     return null;
