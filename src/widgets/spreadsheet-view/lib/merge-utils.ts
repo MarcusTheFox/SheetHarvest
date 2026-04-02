@@ -1,4 +1,4 @@
-import { MergeRange } from "@/entities/spreadsheet/model/store";
+import { MergeRange } from "@/shared/types/spreadsheet";
 
 export const getCellMergeInfo = (row: number, col: number, merges: MergeRange[]) => {
   // Ищем, входит ли текущая ячейка в какой-либо диапазон
@@ -22,7 +22,7 @@ export const getCellMergeInfo = (row: number, col: number, merges: MergeRange[])
   return { isHidden: true, rowSpan: 1, colSpan: 1 };
 };
 
-export const isSecondaryMergeCell = (row: number, col: number, merges: any[]) => {
+export const isSecondaryMergeCell = (row: number, col: number, merges: MergeRange[]) => {
   const range = merges.find(m => 
     row >= m.s.r && row <= m.e.r && 
     col >= m.s.c && col <= m.e.c
