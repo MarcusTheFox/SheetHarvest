@@ -9,14 +9,14 @@ import { valueMappingLayerMetadata } from "../../plugins/value-mapping";
 import { LayerMetadata } from "./types";
 
 const allLayers = [
-    anchorLayerMetadata,
-    headerSkipLayerMetadata,
-    topologyLayerMetadata,
-    constraintsLayerMetadata,
-    projectionLayerMetadata,
-    valueMappingLayerMetadata,
-    regexExtractLayerMetadata,
-    columnSplitLayerMetadata,
+    // anchorLayerMetadata,
+    // headerSkipLayerMetadata,
+    // topologyLayerMetadata,
+    // constraintsLayerMetadata,
+    // projectionLayerMetadata,
+    // valueMappingLayerMetadata,
+    // regexExtractLayerMetadata,
+    // columnSplitLayerMetadata,
 ] as LayerMetadata<unknown>[];
 
 export const LAYER_REGISTRY = allLayers.reduce((acc, layer) => {
@@ -25,9 +25,9 @@ export const LAYER_REGISTRY = allLayers.reduce((acc, layer) => {
 }, {} as Record<string, LayerMetadata<unknown>>);
 
 export const DEFAULT_PIPELINE = [
-    'anchor',
-    'header-skip',
-    'topology',
-    'constraints',
-    'projection'
+    // 'anchor',
+    // 'header-skip',
+    // 'topology',
+    // 'constraints',
+    // 'projection'
 ];

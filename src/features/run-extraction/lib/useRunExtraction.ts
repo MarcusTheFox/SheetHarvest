@@ -40,12 +40,8 @@ export const useRunExtraction = () => {
             console.warn('No sheet selected');
             return false;
         }
-        if (pattern.headerRowIndex === null && !pattern.isManualMode) {
-            console.warn('No header row selected and not in manual mode');
-            return false;
-        }
         return true;
-    }, [currentSheet, pattern.headerRowIndex, pattern.isManualMode]);
+    }, [currentSheet]);
 
     const runExtraction = useCallback(() => {
         if (!isValid) return;

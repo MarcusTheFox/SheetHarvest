@@ -37,6 +37,13 @@ export const extractData = (
         }
     }
 
+    if (currentContext.headers.length === 0 && currentContext.rows.length > 0) {
+        const maxCols = Math.max(...currentContext.rows.map(r => r.cells.length));
+        currentContext.headers = Array.from({ length: maxCols }, (_, i) => 
+            String.fromCharCode(65 + i)
+        );
+    }
+
     // 3. Формируем итоговые таблицы из финального контекста
     const tablesMap = new Map<number, TableValue>();
 
