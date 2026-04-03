@@ -11,6 +11,7 @@ const CONSTRAINT_TYPES = [
   { label: "Не пустое", value: "not_empty" },
   { label: "Число", value: "is_number" },
   { label: "Дата", value: "is_date" },
+  { label: "Шаблон (RegExp)", value: "regex" },
 ];
 
 interface PatternSidebarColumnProps {
@@ -30,6 +31,7 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
   const toggleVisibility = usePatternStore(s => s.toggleVisibility);
   const setTopology = usePatternStore(s => s.setTopology);
   const setConstraintType = usePatternStore(s => s.setConstraintType);
+  const setConstraintPattern = usePatternStore(s => s.setConstraintPattern);
 
 
   if (!isManualMode && !cell && !currentName) return null;
@@ -79,6 +81,17 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
       >
         {CONSTRAINT_TYPES.map((type) => <SelectItem key={type.value}>{type.label}</SelectItem>)}
       </Select>
+
+      {currentConstraint?.type === "regex" && (
+        <Input
+          size="sm"
+          variant="bordered"
+          label="Regex-шаблон"
+          placeholder="Например, ^\d{4}-\d{2}-\d{2}$"
+          value={currentConstraint.pattern || ""}
+          onValueChange={(val) => setConstraintPattern(idx, val)}
+        />
+      )}
     </div>
   );
 });

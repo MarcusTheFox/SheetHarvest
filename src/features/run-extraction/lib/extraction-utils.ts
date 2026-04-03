@@ -1,5 +1,5 @@
 import { validators } from "@/shared/lib/validators";
-import { TopologyMode } from "@/entities/pattern/model/types";
+import { ColumnConstraint, TopologyMode } from "@/entities/pattern/model/types";
 import { MergeRange, TableValue, RowValue } from "@/shared/types/spreadsheet";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 
@@ -14,7 +14,7 @@ export const checkTopology = (row: RowValue, topology: Record<number, TopologyMo
     });
 };
 
-export const checkConstraints = (row: RowValue, constraints: { colIndex: number; type: keyof typeof validators }[]): boolean => {
+export const checkConstraints = (row: RowValue, constraints: ColumnConstraint[]): boolean => {
     return constraints.every((constraint) => {
         const cellValue = row[constraint.colIndex];
 
@@ -24,7 +24,7 @@ export const checkConstraints = (row: RowValue, constraints: { colIndex: number;
             return true;
         }
 
-        return validators[constraint.type](cellValue);
+        return validators[constraint.type](cellValue, constraint);
     });
 };
 

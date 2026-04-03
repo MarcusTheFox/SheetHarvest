@@ -12,6 +12,8 @@ export interface ColumnConstraint {
   colIndex: number;
   type: ConstraintType;
   name: string; 
+  pattern?: string;
+  flags?: string;
 }
 
 export interface PatternAnchor {
@@ -45,6 +47,7 @@ export interface PatternState extends ExtractionPattern {
   toggleColumn: (colIndex: number) => void;
   updateColumnName: (colIndex: number, name: string) => void;
   setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
+  setConstraintPattern: (colIndex: number, pattern: string) => void;
   setTopology: (colIndex: number, mode: TopologyMode) => void;
   setStartAnchor: (point: AnchorPoint | null) => void;
   setEndAnchor: (point: AnchorPoint | null) => void;
