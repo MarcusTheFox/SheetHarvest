@@ -1,7 +1,7 @@
 import { Settings2 } from "lucide-react";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { NoSettingsState } from "./NoSettingsState";
-import { LAYER_CONFIG_COMPONENTS } from "../layer-configs";
+import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
@@ -9,7 +9,7 @@ interface LayerConfigRendererProps {
 }
 
 export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) => {
-    const ConfigComponent = LAYER_CONFIG_COMPONENTS[entry.id];
+    const ConfigComponent = LAYER_REGISTRY[entry.id]?.component;
 
     return (
         <div className="max-w-3xl">

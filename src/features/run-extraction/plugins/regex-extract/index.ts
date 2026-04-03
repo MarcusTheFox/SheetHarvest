@@ -1,6 +1,7 @@
 import { LayerMetadata } from "../../lib/pipeline/types";
 import { regexExtractLayer } from "./logic";
 import { RegexExtractionLayerSettings } from "./types";
+import { RegexExtractConfig } from "./ui";
 
 export const regexExtractLayerMetadata: LayerMetadata<RegexExtractionLayerSettings> = {
     id: 'regex-extract',
@@ -11,5 +12,6 @@ export const regexExtractLayerMetadata: LayerMetadata<RegexExtractionLayerSettin
         keepOriginalIfNoMatch: true,
         pattern: '',
         sourceColIndex: undefined
-    }
+    },
+    component: RegexExtractConfig,
 }

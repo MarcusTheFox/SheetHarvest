@@ -6,8 +6,8 @@ import { getActiveColIndices } from "@/features/run-extraction/lib/extraction-ut
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
 import { Plus, Trash2 } from "lucide-react";
 import { useShallow } from "zustand/shallow";
-import { LayerConfigProps } from "@/widgets/pipeline-editor/ui/layer-configs";
 import { ColumnSplitLayerSettings } from "./types";
+import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
 

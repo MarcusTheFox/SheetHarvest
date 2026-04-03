@@ -8,8 +8,8 @@ import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import { useShallow } from "zustand/shallow";
-import { LayerConfigProps } from "@/widgets/pipeline-editor/ui/layer-configs";
 import { ValueMappingLayerSettings } from "./types";
+import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 

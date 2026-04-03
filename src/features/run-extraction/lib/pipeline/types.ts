@@ -1,5 +1,10 @@
 import { ExtractionLayer } from "./core";
 
+export interface LayerConfigProps<T = unknown> {
+    index: number;
+    settings: T;
+}
+
 export interface LayerMetadata<T> {
     id: string;
     name: string;
@@ -7,4 +12,5 @@ export interface LayerMetadata<T> {
     layer: ExtractionLayer<T>;
     isSystem?: boolean;
     defaultSettings?: T;
+    component?: React.FC<LayerConfigProps<T>>;
 }

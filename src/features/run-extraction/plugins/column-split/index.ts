@@ -1,6 +1,7 @@
 import { LayerMetadata } from "../../lib/pipeline/types";
 import { columnSplitLayer } from "./logic";
 import { ColumnSplitLayerSettings } from "./types";
+import { ColumnSplitConfig } from "./ui";
 
 export const columnSplitLayerMetadata: LayerMetadata<ColumnSplitLayerSettings> = {
     id: 'column-split',
@@ -12,5 +13,6 @@ export const columnSplitLayerMetadata: LayerMetadata<ColumnSplitLayerSettings> =
         delimiter: ',',
         newNames: ['Часть 1', 'Часть 2'],
         sourceColIndex: 0
-    }
+    },
+    component: ColumnSplitConfig,
 }
