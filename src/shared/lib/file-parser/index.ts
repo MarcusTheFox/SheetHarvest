@@ -10,7 +10,7 @@ export const getParserForFile = (file: File): ISpreadsheetParser => {
   switch (extension) {
     case 'xlsx':
     case 'xlsm':
-      return new XLSXParser();
+      return new XLSLegacyParser();
     case 'csv':
       return new CSVParser();
     case 'xls':
