@@ -2,6 +2,7 @@ import { Settings2 } from "lucide-react";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { NoSettingsState } from "./NoSettingsState";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { usePatternStore } from "@/entities/pattern/model/store";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
@@ -9,6 +10,8 @@ interface LayerConfigRendererProps {
 }
 
 export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) => {
+    const updateLayerSettings = usePatternStore(s => s.updateLayerSettings);
+
     const ConfigComponent = LAYER_REGISTRY[entry.id]?.component;
 
     return (
@@ -19,7 +22,10 @@ export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) 
             </div>
             
             {ConfigComponent ? (
-                <ConfigComponent index={index} settings={entry.settings} />
+                <ConfigComponent
+                    settings={entry.settings}
+                    onUpdate={(settings) => {updateLayerSettings(index, settings)}}
+                />
             ) : (
                 <NoSettingsState />
             )}

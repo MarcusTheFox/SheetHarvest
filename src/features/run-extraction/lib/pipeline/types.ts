@@ -1,8 +1,8 @@
 import { ExtractionLayer } from "./core";
 
 export interface LayerConfigProps<T = unknown> {
-    index: number;
     settings: T;
+    onUpdate?: (settings: Partial<T>) => void;
 }
 
 export interface LayerMetadata<T> {

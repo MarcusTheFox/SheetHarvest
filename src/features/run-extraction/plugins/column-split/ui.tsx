@@ -10,11 +10,18 @@ import { ColumnSplitLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
+type SplitMode = ColumnSplitLayerSettings["mode"];
 
-export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) => {
-    const { updateLayerSettings, customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore(
+const TABS: { key: SplitMode, title: string }[] = [
+    {key: "delimiter", title: "Символ"},
+    {key: "regex", title: "Regex (группы)"}
+]
+
+export const ColumnSplitConfig = (props: ColumnSplitConfigProps) => {
+    const { settings, onUpdate } = props;
+
+    const { customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore(
         useShallow(s => ({
-            updateLayerSettings: s.updateLayerSettings,
             customNames: s.customNames,
             selectedColumns: s.selectedColumns,
             isManualMode: s.isManualMode,
@@ -55,7 +62,7 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
     const handleNameChange = (nameIdx: number, val: string) => {
         const next = [...names];
         next[nameIdx] = val;
-        updateLayerSettings(index, { newNames: next });
+        onUpdate?.({ newNames: next });
     };
 
     return (
@@ -69,7 +76,7 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                     selectedKeys={settings.sourceColIndex !== undefined ? [String(settings.sourceColIndex)] : []}
                     onSelectionChange={(keys) => {
                         const val = Array.from(keys)[0];
-                        updateLayerSettings(index, { sourceColIndex: Number(val) });
+                        onUpdate?.({sourceColIndex: Number(val)})
                     }}
                 >
                     {availableCols.map((col) => (
@@ -86,10 +93,13 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                 <Tabs 
                     fullWidth 
                     selectedKey={settings.mode || 'delimiter'}
-                    onSelectionChange={(key) => updateLayerSettings(index, { mode: key })}
+                    onSelectionChange={(key) => {
+                        onUpdate?.({mode: key as SplitMode})
+                    }}
                 >
-                    <Tab key="delimiter" title="Символ" />
-                    <Tab key="regex" title="Regex (группы)" />
+                    {TABS.map(tab => (
+                        <Tab key={tab.key} title={tab.title} />
+                    ))}
                 </Tabs>
 
                 {settings.mode === 'regex' ? (
@@ -97,7 +107,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                         label="Regex паттерн"
                         placeholder="Пример: (.*?)\s*-\s*(.*)"
                         value={settings.pattern || ""}
-                        onValueChange={(val) => updateLayerSettings(index, { pattern: val })}
+                        onValueChange={(val) => {
+                            onUpdate?.({pattern: val});
+                        }}
                         description="Используйте скобки ( ) для каждой новой колонки"
                     />
                 ) : (
@@ -105,7 +117,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                         label="Символ-разделитель"
                         placeholder="Например: / или , или ;"
                         value={settings.delimiter || ""}
-                        onValueChange={(val) => updateLayerSettings(index, { delimiter: val })}
+                        onValueChange={(val) => {
+                            onUpdate?.({delimiter: val})
+                        }}
                     />
                 )}
             </div>
@@ -130,7 +144,10 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                             />
                             {names.length > 2 && (
                                 <Button isIconOnly size="sm" variant="light" color="danger" 
-                                    onPress={() => updateLayerSettings(index, { newNames: names.filter((_: string, idx: number) => idx !== i) })}>
+                                    onPress={() => {
+                                        onUpdate?.({newNames: names.filter((_: string, idx: number) => idx !== i)})
+                                    }}
+                                >
                                     <Trash2 size={14} />
                                 </Button>
                             )}
@@ -142,7 +159,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                     variant="flat" 
                     color="primary"
                     startContent={<Plus size={16}/>}
-                    onPress={() => updateLayerSettings(index, { newNames: [...names, ""] })}
+                    onPress={() => {
+                        onUpdate?.({newNames: [...names, ""]})
+                    }}
                 >
                     Добавить колонку
                 </Button>

@@ -13,10 +13,11 @@ import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 
-export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps) => {
-    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
+export const ValueMappingConfig = (props: ValueMappingConfigProps) => {
+    const { settings, onUpdate } = props;
+
+    const { selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
         useShallow(s => ({
-            updateLayerSettings: s.updateLayerSettings,
             customNames: s.customNames,
             selectedColumns: s.selectedColumns,
             isManualMode: s.isManualMode,
@@ -54,7 +55,7 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                 }
             });
 
-            updateLayerSettings(index, { mapping });
+            onUpdate?.({mapping});
         };
         reader.readAsArrayBuffer(file);
     };
@@ -85,7 +86,7 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                     selectedKeys={settings.sourceColIndex !== undefined ? [String(settings.sourceColIndex)] : []}
                     onSelectionChange={(keys) => {
                         const val = Array.from(keys)[0];
-                        updateLayerSettings(index, { sourceColIndex: Number(val) });
+                        onUpdate?.({sourceColIndex: Number(val)});
                     }}
                 >
                     {availableCols.map((col) => (
@@ -122,7 +123,9 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                                 size="sm"
                                 variant="light"
                                 color="danger"
-                                onPress={() => updateLayerSettings(index, { mapping: undefined })}
+                                onPress={() => {
+                                    onUpdate?.({mapping: undefined})
+                                }}
                             >
                                 <X size={16} />
                             </Button>
