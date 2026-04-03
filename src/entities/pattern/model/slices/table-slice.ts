@@ -5,8 +5,8 @@ import { usePreviewStore } from '@/entities/preview/model/store';
 export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternState, 
   | 'headerRowIndex' | 'isManualMode' | 'selectedColumns' | 'customNames' 
   | 'constraints' | 'topology' | 'anchor' | 'hiddenColumns'
-  | 'setHeaderRow' | 'toggleManualMode' | 'toggleColumn' | 'updateColumnName' 
-  | 'setConstraintType' | 'setTopology' | 'setStartAnchor' | 'setEndAnchor' 
+  | 'setHeaderRow' | 'toggleManualMode' | 'toggleColumn' | 'updateColumnName'
+  | 'setConstraintType' | 'setConstraintPattern' | 'setTopology' | 'setStartAnchor' | 'setEndAnchor' 
   | 'toggleVisibility' | 'loadPattern'
 >> = (set) => ({
   // State
@@ -69,6 +69,23 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
     usePreviewStore.getState().clearCache();
     const others = state.constraints.filter(c => c.colIndex !== colIndex);
     return { constraints: [...others, { colIndex, name, type }] };
+  }),
+
+  setConstraintPattern: (colIndex, pattern) => set((state) => {
+    usePreviewStore.getState().clearCache();
+    const existing = state.constraints.find(c => c.colIndex === colIndex);
+
+    if (!existing) {
+      return { constraints: state.constraints };
+    }
+
+    const others = state.constraints.filter(c => c.colIndex !== colIndex);
+    return {
+      constraints: [
+        ...others,
+        { ...existing, pattern },
+      ]
+    };
   }),
 
   setTopology: (colIndex, mode) => set((state) => {
