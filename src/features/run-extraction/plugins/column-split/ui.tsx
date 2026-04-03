@@ -5,9 +5,9 @@ import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { getActiveColIndices } from "@/features/run-extraction/lib/extraction-utils";
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
 import { Plus, Trash2 } from "lucide-react";
-import { LayerConfigProps } from ".";
-import { ColumnSplitLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/columnSplitLayer";
 import { useShallow } from "zustand/shallow";
+import { LayerConfigProps } from "@/widgets/pipeline-editor/ui/layer-configs";
+import { ColumnSplitLayerSettings } from "./types";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
 

@@ -1,6 +1,6 @@
-import { ValueMappingConfig } from "./ValueMappingConfig";
-import { ColumnSplitConfig } from "./ColumnSplitConfig";
-import { RegexExtractConfig } from "./RegexExtractConfig";
+import { ValueMappingConfig } from "@/features/run-extraction/plugins/value-mapping/ui";
+import { ColumnSplitConfig } from "@/features/run-extraction/plugins/column-split/ui";
+import { RegexExtractConfig } from "@/features/run-extraction/plugins/regex-extract/ui";
 
 export interface LayerConfigProps<T = unknown> {
     index: number;

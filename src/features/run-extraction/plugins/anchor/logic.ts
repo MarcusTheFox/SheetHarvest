@@ -1,13 +1,4 @@
-import { PipelineContext } from "../../core";
-import { LayerMetadata } from "../../types";
-
-export const anchorLayerMetadata: LayerMetadata<never> = {
-    id: 'anchor',
-    name: 'Якоря',
-    description: 'Ограничивает область поиска',
-    isSystem: true,
-    layer: anchorLayer
-};
+import { PipelineContext } from "../../lib/pipeline/core";
 
 export function anchorLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;

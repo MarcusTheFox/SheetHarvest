@@ -7,9 +7,9 @@ import { Button, Select, SelectItem } from "@heroui/react";
 import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { LayerConfigProps } from ".";
-import { ValueMappingLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/valueMappingLayer";
 import { useShallow } from "zustand/shallow";
+import { LayerConfigProps } from "@/widgets/pipeline-editor/ui/layer-configs";
+import { ValueMappingLayerSettings } from "./types";
 
 type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 

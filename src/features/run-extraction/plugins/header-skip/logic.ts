@@ -1,14 +1,5 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineContext, PipelineRow } from "../../core";
-import { LayerMetadata } from "../../types";
-
-export const headerSkipLayerMetadata: LayerMetadata<never> = {
-    id: 'header-skip',
-    name: 'Пропуск заголовка',
-    description: 'Пропускает строку заголовка и объединенные с ней ячейки',
-    isSystem: true,
-    layer: headerSkipLayer,
-}
+import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 
 export function headerSkipLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;

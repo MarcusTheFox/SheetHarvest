@@ -1,10 +1,22 @@
-import { filterLayers } from "./layers/filters";
-import { transformerLayers } from "./layers/transformers";
+import { anchorLayerMetadata } from "../../plugins/anchor";
+import { columnSplitLayerMetadata } from "../../plugins/column-split";
+import { constraintsLayerMetadata } from "../../plugins/constraints";
+import { headerSkipLayerMetadata } from "../../plugins/header-skip";
+import { projectionLayerMetadata } from "../../plugins/projection";
+import { regexExtractLayerMetadata } from "../../plugins/regex-extract";
+import { topologyLayerMetadata } from "../../plugins/topology";
+import { valueMappingLayerMetadata } from "../../plugins/value-mapping";
 import { LayerMetadata } from "./types";
 
 const allLayers = [
-    ...filterLayers,
-    ...transformerLayers
+    anchorLayerMetadata,
+    headerSkipLayerMetadata,
+    topologyLayerMetadata,
+    constraintsLayerMetadata,
+    projectionLayerMetadata,
+    valueMappingLayerMetadata,
+    regexExtractLayerMetadata,
+    columnSplitLayerMetadata,
 ] as LayerMetadata<unknown>[];
 
 export const LAYER_REGISTRY = allLayers.reduce((acc, layer) => {

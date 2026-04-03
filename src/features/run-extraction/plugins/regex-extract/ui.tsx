@@ -2,12 +2,12 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
+import { LayerConfigProps } from "@/widgets/pipeline-editor/ui/layer-configs";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
-import { LayerConfigProps } from ".";
-import { RegexExtractionLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/regexExtractLayer";
 import { useShallow } from "zustand/shallow";
+import { RegexExtractionLayerSettings } from "./types";
 
 type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
 

@@ -1,23 +1,5 @@
-import { PipelineContext } from "../../core";
-import { LayerMetadata } from "../../types";
-
-export interface RegexExtractionLayerSettings {
-    keepOriginalIfNoMatch: boolean;
-    pattern: string;
-    sourceColIndex?: number;
-}
-
-export const regexExtractLayerMetadata: LayerMetadata<RegexExtractionLayerSettings> = {
-    id: 'regex-extract',
-    name: 'Regex извлечение',
-    description: 'Оставляет в ячейке только текст, подходящий под регулярное выражение',
-    layer: regexExtractLayer,
-    defaultSettings: {
-        keepOriginalIfNoMatch: true,
-        pattern: '',
-        sourceColIndex: undefined
-    }
-}
+import { PipelineContext } from "../../lib/pipeline/core";
+import { RegexExtractionLayerSettings } from "./types";
 
 /**
  * Слой извлечения данных по регулярному выражению

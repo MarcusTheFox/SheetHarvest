@@ -1,26 +1,5 @@
-import { PipelineContext } from "../../core";
-import { LayerMetadata } from "../../types";
-
-export interface ColumnSplitLayerSettings {
-    sourceColIndex: number;
-    mode: 'delimiter' | 'regex';
-    delimiter?: string;
-    pattern?: string;
-    newNames: string[];
-}
-
-export const columnSplitLayerMetadata: LayerMetadata<ColumnSplitLayerSettings> = {
-    id: 'column-split',
-    name: 'Разделение колонки',
-    description: 'Разбивает одну колонку на две или более по символу или Regex',
-    layer: columnSplitLayer,
-    defaultSettings: {
-        mode: 'delimiter',
-        delimiter: ',',
-        newNames: ['Часть 1', 'Часть 2'],
-        sourceColIndex: 0
-    }
-}
+import { PipelineContext } from "../../lib/pipeline/core";
+import { ColumnSplitLayerSettings } from "./types";
 
 /**
  * Слой разделения одной колонки на несколько
