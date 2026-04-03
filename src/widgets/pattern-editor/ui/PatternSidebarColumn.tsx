@@ -19,7 +19,6 @@ interface PatternSidebarColumnProps {
 }
 
 export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnProps) => {
-  debugger
   const isHidden = usePatternStore(s => s.hiddenColumns.includes(idx));
   const isManualMode = usePatternStore(s => s.isManualMode);
   const currentTopology = usePatternStore(s => s.topology[idx] || 'any');
