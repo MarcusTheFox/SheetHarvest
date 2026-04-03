@@ -1,32 +1,5 @@
-import { validators } from "@/shared/lib/validators";
-import { ColumnConstraint, TopologyMode } from "@/entities/pattern/model/types";
 import { MergeRange, TableValue, RowValue } from "@/shared/types/spreadsheet";
 import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
-
-export const checkTopology = (row: RowValue, topology: Record<number, TopologyMode>): boolean => {
-    return Object.entries(topology).every(([colIdx, mode]) => {
-        const idx = Number(colIdx);
-        const val = row[idx];
-        const isNotEmpty = val !== null && val !== undefined && val.toString().trim() !== '';
-        if (mode === 'filled') return isNotEmpty;
-        if (mode === 'empty') return !isNotEmpty;
-        return true;
-    });
-};
-
-export const checkConstraints = (row: RowValue, constraints: ColumnConstraint[]): boolean => {
-    return constraints.every((constraint) => {
-        const cellValue = row[constraint.colIndex];
-
-        const isEmpty = cellValue === null || cellValue === undefined || cellValue.toString().trim() === '';
-
-        if (isEmpty && constraint.type !== 'not_empty') {
-            return true;
-        }
-
-        return validators[constraint.type](cellValue, constraint);
-    });
-};
 
 interface GetActiveColIndicesParams {
     allRows: TableValue;
@@ -57,8 +30,4 @@ export const getActiveColIndices = (params: GetActiveColIndicesParams): number[]
         const hasContent = !!tableHeaderRow[idx] || !!customNames[idx];
         return !isHidden && !isSecondary && hasContent;
     });
-};
-
-export const projectRows = (rows: TableValue, activeColIndices: number[]): TableValue => {
-    return rows.map((row) => activeColIndices.map(idx => row[idx]));
 };
