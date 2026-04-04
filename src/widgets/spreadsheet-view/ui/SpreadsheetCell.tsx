@@ -13,27 +13,37 @@ interface SpreadsheetCellProps {
   colIndex: number;
   cellValue: string;
   merges: MergeRange[];
+  isActive: boolean;
+  onActivate: (r: number, c: number) => void;
 }
 
-export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges }: SpreadsheetCellProps) => {
+export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges, isActive, onActivate }: SpreadsheetCellProps) => {
   const headerRowIndex = usePatternStore(s => s.headerRowIndex);
 
   const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, colIndex, merges);
   if (isHidden) return null;
 
+  const cellElement = (
+    <td
+      rowSpan={rowSpan}
+      colSpan={colSpan}
+      className={clsx(
+        "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
+        headerRowIndex === rowIndex && "font-bold text-primary text-medium",
+        isActive && "bg-primary-50 ring-2 ring-primary ring-inset z-10 relative"
+      )}
+      onClick={() => onActivate(rowIndex, colIndex)}
+    >
+      {cellValue}
+    </td>
+  );
+
+  if (!isActive) return cellElement;
+
   return (
-    <Popover placement="bottom" showArrow shadow="lg">
+    <Popover placement="bottom" showArrow shadow="lg" isOpen={true} onOpenChange={(open) => !open && onActivate(-1, -1)}>
       <PopoverTrigger>
-        <td
-          rowSpan={rowSpan}
-          colSpan={colSpan}
-          className={clsx(
-            "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
-            headerRowIndex === rowIndex && "font-bold text-primary"
-          )}
-        >
-          {cellValue}
-        </td>
+        {cellElement}
       </PopoverTrigger>
 
       <PopoverContent className="p-1">

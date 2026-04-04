@@ -11,9 +11,11 @@ interface SpreadsheetRowProps {
   row: RowValue;
   columns: number[];
   merges: MergeRange[];
+  activeCell: { r: number; c: number } | null;
+  onCellActivate: (r: number, c: number) => void;
 }
 
-export const SpreadsheetRow = memo(({ rowIndex, row, columns, merges }: SpreadsheetRowProps) => {
+export const SpreadsheetRow = memo(({ rowIndex, row, columns, merges, activeCell, onCellActivate }: SpreadsheetRowProps) => {
   const headerRowIndex = usePatternStore(s => s.headerRowIndex);
 
   return (
@@ -33,6 +35,8 @@ export const SpreadsheetRow = memo(({ rowIndex, row, columns, merges }: Spreadsh
             colIndex={colIndex}
             cellValue={cellValue}
             merges={merges}
+            isActive={activeCell?.r === rowIndex && activeCell?.c === colIndex}
+            onActivate={onCellActivate}
           />
         );
       })}
