@@ -1,44 +1,18 @@
 "use client";
 
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
-import { useShallow } from "zustand/shallow";
 import { RegexExtractionLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
 
-export const RegexExtractConfig = (props: RegexExtractConfigProps) => {
-    const { settings, onUpdate } = props;
+export const RegexExtractConfig = ({ settings, onUpdate, prevContext }: RegexExtractConfigProps) => {
+    const headers = prevContext?.headers ?? [];
 
-    const { selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
-        useShallow(s => ({
-            customNames: s.customNames,
-            selectedColumns: s.selectedColumns,
-            isManualMode: s.isManualMode,
-            headerRowIndex: s.headerRowIndex,
-        }))
-    );
-
-    const sheets = useSpreadsheetStore(s => s.sheets);
-    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
-
-    const currentSheet = sheets[currentSheetIndex];
-    const headerRow = (currentSheet && headerRowIndex !== null) ? currentSheet.data[headerRowIndex] : [];
-    const merges = currentSheet?.merges || [];
-
-    const columnIndices = isManualMode
-        ? selectedColumns
-        : headerRow.map((_, idx) => idx).filter(
-            idx => headerRowIndex !== null && !isSecondaryMergeCell(headerRowIndex, idx, merges)
-        );
-
-    const availableCols = columnIndices.map(colIdx => ({
-        label: customNames[colIdx] || String(headerRow[colIdx] || `Колонка ${colIdx + 1}`),
-        value: String(colIdx)
+    const availableCols = headers.map((h, i) => ({
+        label: h || `Колонка ${i + 1}`,
+        value: String(i)
     }));
 
     return (

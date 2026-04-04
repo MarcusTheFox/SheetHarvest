@@ -6,13 +6,8 @@ export const getInitialState = (): ExtractionPattern & { selectedColumns: number
   isManualMode: false,
   selectedColumns: [],
   customNames: {},
-  constraints: [],
-  topology: {},
-  anchor: {
-    start: null,
-    end: null,
-  },
   hiddenColumns: [],
+
   pipeline: DEFAULT_PIPELINE.map(id => {
     const metadata = LAYER_REGISTRY[id];
     return {

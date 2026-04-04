@@ -19,16 +19,12 @@ export const useRunExtraction = () => {
             isManualMode: s.isManualMode,
             selectedColumns: s.selectedColumns,
             customNames: s.customNames,
-            constraints: s.constraints,
-            topology: s.topology,
-            anchor: s.anchor,
             hiddenColumns: s.hiddenColumns,
             pipeline: s.pipeline,
         }))
     );
     const setResults = useExtractionStore(s => s.setResults);
     
-    // Получаем текущий кеш превью
     const cache = usePreviewStore(s => s.cache);
 
     const currentSheet = useMemo(() => {
@@ -48,7 +44,6 @@ export const useRunExtraction = () => {
 
         const tableHeaderRow = pattern.headerRowIndex !== null ? currentSheet.data[pattern.headerRowIndex] : [];
 
-        // Вызываем извлечение, передавая параметры и кеш
         const results = extractData({
             allRows: currentSheet.data,
             tableHeaderRow,

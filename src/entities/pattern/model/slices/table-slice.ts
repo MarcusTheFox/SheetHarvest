@@ -4,9 +4,8 @@ import { usePreviewStore } from '@/entities/preview/model/store';
 
 export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternState, 
   | 'headerRowIndex' | 'isManualMode' | 'selectedColumns' | 'customNames' 
-  | 'constraints' | 'topology' | 'anchor' | 'hiddenColumns'
+  | 'hiddenColumns'
   | 'setHeaderRow' | 'toggleManualMode' | 'toggleColumn' | 'updateColumnName'
-  | 'setConstraintType' | 'setConstraintPattern' | 'setTopology' | 'setStartAnchor' | 'setEndAnchor' 
   | 'toggleVisibility' | 'loadPattern'
 >> = (set) => ({
   // State
@@ -14,12 +13,6 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
   isManualMode: false,
   selectedColumns: [],
   customNames: {},
-  constraints: [],
-  topology: {},
-  anchor: {
-    start: null,
-    end: null,
-  },
   hiddenColumns: [],
 
   // Actions
@@ -29,9 +22,6 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
       headerRowIndex: index, 
       isManualMode: false,
       selectedColumns: [],
-      constraints: [], 
-      topology: {},
-      anchor: { start: null, end: null },
       hiddenColumns: [] 
     }
   }),
@@ -42,9 +32,6 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
       isManualMode: !state.isManualMode,
       headerRowIndex: null,
       selectedColumns: [],
-      constraints: [],
-      topology: {},
-      anchor: { start: null, end: null },
       customNames: {}
     }
   }),
@@ -62,50 +49,6 @@ export const createTableSlice: StateCreator<PatternState, [], [], Pick<PatternSt
     usePreviewStore.getState().clearCache();
     return {
       customNames: { ...state.customNames, [colIndex]: name }
-    }
-  }),
-
-  setConstraintType: (colIndex, name, type) => set((state) => {
-    usePreviewStore.getState().clearCache();
-    const others = state.constraints.filter(c => c.colIndex !== colIndex);
-    return { constraints: [...others, { colIndex, name, type }] };
-  }),
-
-  setConstraintPattern: (colIndex, pattern) => set((state) => {
-    usePreviewStore.getState().clearCache();
-    const existing = state.constraints.find(c => c.colIndex === colIndex);
-
-    if (!existing) {
-      return { constraints: state.constraints };
-    }
-
-    const others = state.constraints.filter(c => c.colIndex !== colIndex);
-    return {
-      constraints: [
-        ...others,
-        { ...existing, pattern },
-      ]
-    };
-  }),
-
-  setTopology: (colIndex, mode) => set((state) => {
-    usePreviewStore.getState().clearCache();
-    return {
-      topology: { ...state.topology, [colIndex]: mode }
-    }
-  }),
-
-  setStartAnchor: (start) => set((state) => {
-    usePreviewStore.getState().clearCache();
-    return {
-      anchor: { ...state.anchor, start }
-    }
-  }),
-
-  setEndAnchor: (end) => set((state) => {
-    usePreviewStore.getState().clearCache();
-    return {
-      anchor: { ...state.anchor, end }
     }
   }),
 

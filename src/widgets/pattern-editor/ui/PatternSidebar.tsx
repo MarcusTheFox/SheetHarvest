@@ -6,7 +6,6 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
 import { PatternSidebarHeader } from "./PatternSidebarHeader";
 import { PatternSidebarModeToggle } from "./PatternSidebarModeToggle";
-import { PatternSidebarAnchors } from "./PatternSidebarAnchors";
 import { PatternSidebarColumnList } from "./PatternSidebarColumnList";
 import { PatternSidebarPipeline } from "./PatternSidebarPipeline";
 import { Layers, Columns, FolderOpen } from "lucide-react";
@@ -28,7 +27,6 @@ export const PatternSidebar = () => {
       <CardBody className="gap-4 overflow-y-auto p-5 scrollbar-hide">
         <PatternSidebarHeader />
         <PatternSidebarModeToggle />
-        <PatternSidebarAnchors />
         
         <Divider />
 

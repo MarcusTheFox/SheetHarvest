@@ -1,11 +1,12 @@
 import { RowValue } from "@/shared/types/spreadsheet";
 import { PipelineContext } from "../../lib/pipeline/core";
-import { TopologyMode } from "@/entities/pattern/model/types";
+import { TopologyLayerSettings } from "./types";
 
-export function topologyLayer(context: PipelineContext): PipelineContext {
-    const { rows, params } = context;
+export function topologyLayer(context: PipelineContext<TopologyLayerSettings>): PipelineContext {
+    const { rows, settings } = context;
+    const topology = settings?.topology ?? {};
 
-    const checkTopology = (row: RowValue, topology: Record<number, TopologyMode>): boolean => {
+    const checkTopology = (row: RowValue, topology: Record<number, 'any' | 'filled' | 'empty'>): boolean => {
         return Object.entries(topology).every(([colIdx, mode]) => {
             const idx = Number(colIdx);
             const val = row[idx];
@@ -18,6 +19,6 @@ export function topologyLayer(context: PipelineContext): PipelineContext {
 
     return {
         ...context,
-        rows: rows.filter(r => checkTopology(r.cells, params.topology))
+        rows: rows.filter(r => checkTopology(r.cells, topology))
     };
 };
