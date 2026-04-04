@@ -39,7 +39,7 @@ export const PreviewTable = () => {
   }
 
   // 4. Формируем заголовки (если до проекции их нет — генерируем A, B, C...)
-  const maxCols = rows.length > 0 ? Math.max(...rows.map(r => r.cells.length)) : 0;
+  const maxCols = rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
   const displayHeaders = headers.length > 0 
     ? headers 
     : Array.from({ length: maxCols }, (_, i) => String.fromCharCode(65 + i));

@@ -38,7 +38,7 @@ export const extractData = (
     }
 
     if (currentContext.headers.length === 0 && currentContext.rows.length > 0) {
-        const maxCols = Math.max(...currentContext.rows.map(r => r.cells.length));
+        const maxCols = currentContext.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
         currentContext.headers = Array.from({ length: maxCols }, (_, i) => 
             String.fromCharCode(65 + i)
         );

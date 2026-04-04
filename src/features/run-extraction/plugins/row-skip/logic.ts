@@ -18,7 +18,9 @@ export function rowSkipLayer(context: PipelineContext<RowSkipLayerSettings>): Pi
 
     const processedRows: PipelineRow[] = [];
     groupsMap.forEach((groupRows) => {
-        processedRows.push(...groupRows.slice(skipCount));
+        for (let i = skipCount; i < groupRows.length; i++) {
+            processedRows.push(groupRows[i]);
+        }
     });
 
     return { ...context, rows: processedRows };

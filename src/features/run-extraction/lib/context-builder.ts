@@ -7,7 +7,7 @@ export const createInitialContext = (params: ExtractionParams): PipelineContext 
         groupIndex: 0,
     }));
 
-    const maxCols = Math.max(...params.allRows.map(r => r.length), 0);
+    const maxCols = params.allRows.reduce((max, row) => Math.max(max, row.length), 0);
 
     const headers = Array.from({ length: maxCols }, (_, i) => {
         const customName = params.customNames[i];
