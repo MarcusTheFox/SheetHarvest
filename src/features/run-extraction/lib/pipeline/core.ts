@@ -1,4 +1,4 @@
-import { TopologyMode, PipelineLayer, AnchorPoint, ColumnConstraint } from "@/entities/pattern/model/types";
+import { PipelineLayer } from "@/entities/pattern/model/types";
 import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
@@ -8,12 +8,6 @@ export interface ExtractionParams {
     isManualMode: boolean;
     selectedColumns: number[];
     customNames: Record<number, string>;
-    constraints: ColumnConstraint[];
-    topology: Record<number, TopologyMode>;
-    anchor: {
-        start: AnchorPoint | null;
-        end: AnchorPoint | null;
-    };
     hiddenColumns: number[];
     pipeline: PipelineLayer[];
     merges: MergeRange[];

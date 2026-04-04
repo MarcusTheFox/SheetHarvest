@@ -21,13 +21,11 @@ export const PatternSidebarTemplates = () => {
             isManualMode: s.isManualMode,
             selectedColumns: s.selectedColumns,
             customNames: s.customNames,
-            constraints: s.constraints,
-            topology: s.topology,
-            anchor: s.anchor,
             hiddenColumns: s.hiddenColumns,
             pipeline: s.pipeline,
         }))
     );
+
     const loadPattern = usePatternStore(s => s.loadPattern);
     
     const [newTemplateName, setNewTemplateName] = useState("");

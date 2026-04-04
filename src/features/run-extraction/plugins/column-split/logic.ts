@@ -37,7 +37,7 @@ export function columnSplitLayer(context: PipelineContext<ColumnSplitLayerSettin
             parts = originalValue.split(delim).map(p => p.trim());
         } else if (mode === 'regex') {
             try {
-                const regex = new RegExp(settings.pattern || '');
+                const regex = new RegExp(settings.pattern || '', "s");
                 const match = originalValue.match(regex);
                 if (match) {
                     // match[0] - это вся строка, match[1...N] - это группы ()

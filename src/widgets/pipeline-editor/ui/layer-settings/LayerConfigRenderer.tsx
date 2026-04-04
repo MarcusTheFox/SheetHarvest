@@ -3,13 +3,15 @@ import { PipelineLayer } from "@/entities/pattern/model/types";
 import { NoSettingsState } from "./NoSettingsState";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 import { usePatternStore } from "@/entities/pattern/model/store";
+import { PipelineContext } from "@/features/run-extraction/lib/pipeline/core";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;
     index: number;
+    prevContext?: PipelineContext;
 }
 
-export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) => {
+export const LayerConfigRenderer = ({ entry, index, prevContext }: LayerConfigRendererProps) => {
     const updateLayerSettings = usePatternStore(s => s.updateLayerSettings);
 
     const ConfigComponent = LAYER_REGISTRY[entry.id]?.component;
@@ -24,6 +26,7 @@ export const LayerConfigRenderer = ({ entry, index }: LayerConfigRendererProps) 
             {ConfigComponent ? (
                 <ConfigComponent
                     settings={entry.settings}
+                    prevContext={prevContext}
                     onUpdate={(settings) => {updateLayerSettings(index, settings)}}
                 />
             ) : (

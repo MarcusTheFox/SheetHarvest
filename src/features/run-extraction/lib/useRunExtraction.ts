@@ -19,16 +19,12 @@ export const useRunExtraction = () => {
             isManualMode: s.isManualMode,
             selectedColumns: s.selectedColumns,
             customNames: s.customNames,
-            constraints: s.constraints,
-            topology: s.topology,
-            anchor: s.anchor,
             hiddenColumns: s.hiddenColumns,
             pipeline: s.pipeline,
         }))
     );
     const setResults = useExtractionStore(s => s.setResults);
     
-    // Получаем текущий кеш превью
     const cache = usePreviewStore(s => s.cache);
 
     const currentSheet = useMemo(() => {
@@ -40,19 +36,14 @@ export const useRunExtraction = () => {
             console.warn('No sheet selected');
             return false;
         }
-        if (pattern.headerRowIndex === null && !pattern.isManualMode) {
-            console.warn('No header row selected and not in manual mode');
-            return false;
-        }
         return true;
-    }, [currentSheet, pattern.headerRowIndex, pattern.isManualMode]);
+    }, [currentSheet]);
 
     const runExtraction = useCallback(() => {
         if (!isValid) return;
 
         const tableHeaderRow = pattern.headerRowIndex !== null ? currentSheet.data[pattern.headerRowIndex] : [];
 
-        // Вызываем извлечение, передавая параметры и кеш
         const results = extractData({
             allRows: currentSheet.data,
             tableHeaderRow,

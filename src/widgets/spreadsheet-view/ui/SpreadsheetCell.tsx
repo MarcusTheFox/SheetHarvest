@@ -17,13 +17,9 @@ interface SpreadsheetCellProps {
 
 export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges }: SpreadsheetCellProps) => {
   const headerRowIndex = usePatternStore(s => s.headerRowIndex);
-  const anchor = usePatternStore(s => s.anchor);
 
   const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, colIndex, merges);
   if (isHidden) return null;
-
-  const isStartAnchor = anchor.start?.text === cellValue && anchor.start?.colIndex === colIndex;
-  const isEndAnchor = anchor.end?.text === cellValue && anchor.end?.colIndex === colIndex;
 
   return (
     <Popover placement="bottom" showArrow shadow="lg">
@@ -33,14 +29,13 @@ export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges }: 
           colSpan={colSpan}
           className={clsx(
             "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
-            headerRowIndex === rowIndex && "font-bold text-primary",
-            isStartAnchor && "bg-success-100 text-success-700 font-bold border-l-4 border-l-success",
-            isEndAnchor && "bg-danger-100 text-danger-700 font-bold border-l-4 border-l-danger"
+            headerRowIndex === rowIndex && "font-bold text-primary"
           )}
         >
           {cellValue}
         </td>
       </PopoverTrigger>
+
       <PopoverContent className="p-1">
         <SpreadsheetCellMenu 
           rowIndex={rowIndex} 

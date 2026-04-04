@@ -22,7 +22,7 @@ export const getActiveColIndices = (params: GetActiveColIndicesParams): number[]
         return selectedColumns.filter(idx => !hiddenColumns.includes(idx));
     }
 
-    const maxCols = Math.max(...allRows.map(r => r.length));
+    const maxCols = allRows.reduce((max, row) => Math.max(max, row.length), 0);
 
     return Array.from({ length: maxCols }, (_, i) => i).filter(idx => {
         const isHidden = hiddenColumns.includes(idx);

@@ -1,11 +1,7 @@
 "use client";
 
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { getActiveColIndices } from "@/features/run-extraction/lib/extraction-utils";
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
 import { Plus, Trash2 } from "lucide-react";
-import { useShallow } from "zustand/shallow";
 import { ColumnSplitLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 
@@ -17,45 +13,13 @@ const TABS: { key: SplitMode, title: string }[] = [
     {key: "regex", title: "Regex (группы)"}
 ]
 
-export const ColumnSplitConfig = (props: ColumnSplitConfigProps) => {
-    const { settings, onUpdate } = props;
+export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSplitConfigProps) => {
+    const headers = prevContext?.headers ?? [];
 
-    const { customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore(
-        useShallow(s => ({
-            customNames: s.customNames,
-            selectedColumns: s.selectedColumns,
-            isManualMode: s.isManualMode,
-            headerRowIndex: s.headerRowIndex,
-        }))
-    );
-
-    const sheets = useSpreadsheetStore(s => s.sheets);
-    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
-
-    const currentSheet = sheets[currentSheetIndex];
-
-    // Определяем список колонок, доступных в паттерне
-    const activeIndices = getActiveColIndices({
-        allRows: currentSheet.data,
-        headerRowIndex,
-        tableHeaderRow: headerRowIndex !== null ? currentSheet.data[headerRowIndex] : [],
-        hiddenColumns: usePatternStore.getState().hiddenColumns,
-        selectedColumns,
-        isManualMode,
-        customNames,
-        merges: currentSheet.merges
-    });
-
-    // 2. Формируем список опций на основе того, что реально увидит пользователь в результате
-    const availableCols = activeIndices.map((originalIdx, relativeIdx) => {
-        const name = customNames[originalIdx] || 
-                     currentSheet.data[headerRowIndex!]?.[originalIdx]?.toString() || 
-                     `Колонка ${String.fromCharCode(65 + originalIdx)}`;
-        return {
-            label: name,
-            value: String(relativeIdx)
-        };
-    });
+    const availableCols = headers.map((h, i) => ({
+        label: h || `Колонка ${i + 1}`,
+        value: String(i)
+    }));
 
     const names = settings.newNames || ["", ""];
 
