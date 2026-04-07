@@ -1,18 +1,5 @@
-import { PipelineContext } from "../../core";
-import { LayerMetadata } from "../../types";
-
-export interface ValueMappingLayerSettings {
-    sourceColIndex: number;
-    mapping: Record<string, string>;
-    fuzzyMatch: boolean;
-}
-
-export const valueMappingLayerMetadata: LayerMetadata<ValueMappingLayerSettings> = {
-    id: 'value-mapping',
-    name: 'Сопоставление значений',
-    description: 'Заменяет значения в колонках по загруженному справочнику',
-    layer: valueMappingLayer,
-}
+import { PipelineContext } from "../../lib/pipeline/core";
+import { ValueMappingLayerSettings } from "./types";
 
 /**
  * Слой сопоставления значений по справочнику

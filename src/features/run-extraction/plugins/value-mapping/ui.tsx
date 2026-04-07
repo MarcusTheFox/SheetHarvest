@@ -1,36 +1,17 @@
 "use client";
 
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { Button, Select, SelectItem } from "@heroui/react";
 import { Upload, FileText, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { LayerConfigProps } from ".";
-import { ValueMappingLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/valueMappingLayer";
-import { useShallow } from "zustand/shallow";
+import { ValueMappingLayerSettings } from "./types";
+import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
 
-export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps) => {
-    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
-        useShallow(s => ({
-            updateLayerSettings: s.updateLayerSettings,
-            customNames: s.customNames,
-            selectedColumns: s.selectedColumns,
-            isManualMode: s.isManualMode,
-            headerRowIndex: s.headerRowIndex,
-        }))
-    );
-    const sheets = useSpreadsheetStore(s => s.sheets);
-    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
-    
+export const ValueMappingConfig = ({ settings, onUpdate, prevContext }: ValueMappingConfigProps) => {
+    const headers = prevContext?.headers ?? [];
     const [fileName, setFileName] = useState<string | null>(null);
-
-    const currentSheet = sheets[currentSheetIndex];
-    const headerRow = (currentSheet && headerRowIndex !== null) ? currentSheet.data[headerRowIndex] : [];
-    const merges = currentSheet?.merges || [];
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -43,8 +24,6 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
             const workbook = XLSX.read(data, { type: "array" });
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
-
-            // Предполагаем, что в файле 2 колонки: [Что ищем, На что меняем]
             const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 });
 
             const mapping: Record<string, string> = {};
@@ -54,26 +33,15 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                 }
             });
 
-            updateLayerSettings(index, { mapping });
+            onUpdate?.({mapping});
         };
         reader.readAsArrayBuffer(file);
     };
 
-    // Доступные колонки: либо явно выбранные, либо все из шапки (исключая дубли объединенных ячеек)
-    const columnIndices = isManualMode
-        ? selectedColumns
-        : headerRow.map((_, idx) => idx).filter(
-            idx => headerRowIndex !== null && !isSecondaryMergeCell(headerRowIndex, idx, merges)
-        );
-
-    const availableCols = columnIndices.map(colIdx => {
-        const cellValue = headerRow[colIdx];
-        const label = customNames[colIdx] || (typeof cellValue === 'string' ? cellValue : null) || `Колонка ${colIdx + 1}`;
-        return {
-            label,
-            value: String(colIdx)
-        };
-    });
+    const availableCols = headers.map((h, i) => ({
+        label: h || `Колонка ${i + 1}`,
+        value: String(i)
+    }));
 
     return (
         <div className="flex flex-col gap-8">
@@ -85,7 +53,7 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                     selectedKeys={settings.sourceColIndex !== undefined ? [String(settings.sourceColIndex)] : []}
                     onSelectionChange={(keys) => {
                         const val = Array.from(keys)[0];
-                        updateLayerSettings(index, { sourceColIndex: Number(val) });
+                        onUpdate?.({sourceColIndex: Number(val)});
                     }}
                 >
                     {availableCols.map((col) => (
@@ -118,11 +86,8 @@ export const ValueMappingConfig = ({ index, settings }: ValueMappingConfigProps)
                                 </div>
                             </div>
                             <Button
-                                isIconOnly
-                                size="sm"
-                                variant="light"
-                                color="danger"
-                                onPress={() => updateLayerSettings(index, { mapping: undefined })}
+                                isIconOnly size="sm" variant="light" color="danger"
+                                onPress={() => { onUpdate?.({mapping: undefined}) }}
                             >
                                 <X size={16} />
                             </Button>

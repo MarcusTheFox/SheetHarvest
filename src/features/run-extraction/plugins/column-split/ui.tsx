@@ -1,61 +1,32 @@
 "use client";
 
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { getActiveColIndices } from "@/features/run-extraction/lib/extraction-utils";
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
 import { Plus, Trash2 } from "lucide-react";
-import { LayerConfigProps } from ".";
-import { ColumnSplitLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/columnSplitLayer";
-import { useShallow } from "zustand/shallow";
+import { ColumnSplitLayerSettings } from "./types";
+import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
+type SplitMode = ColumnSplitLayerSettings["mode"];
 
-export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) => {
-    const { updateLayerSettings, customNames, selectedColumns, isManualMode, headerRowIndex } = usePatternStore(
-        useShallow(s => ({
-            updateLayerSettings: s.updateLayerSettings,
-            customNames: s.customNames,
-            selectedColumns: s.selectedColumns,
-            isManualMode: s.isManualMode,
-            headerRowIndex: s.headerRowIndex,
-        }))
-    );
+const TABS: { key: SplitMode, title: string }[] = [
+    {key: "delimiter", title: "Символ"},
+    {key: "regex", title: "Regex (группы)"}
+]
 
-    const sheets = useSpreadsheetStore(s => s.sheets);
-    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
+export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSplitConfigProps) => {
+    const headers = prevContext?.headers ?? [];
 
-    const currentSheet = sheets[currentSheetIndex];
-
-    // Определяем список колонок, доступных в паттерне
-    const activeIndices = getActiveColIndices({
-        allRows: currentSheet.data,
-        headerRowIndex,
-        tableHeaderRow: headerRowIndex !== null ? currentSheet.data[headerRowIndex] : [],
-        hiddenColumns: usePatternStore.getState().hiddenColumns,
-        selectedColumns,
-        isManualMode,
-        customNames,
-        merges: currentSheet.merges
-    });
-
-    // 2. Формируем список опций на основе того, что реально увидит пользователь в результате
-    const availableCols = activeIndices.map((originalIdx, relativeIdx) => {
-        const name = customNames[originalIdx] || 
-                     currentSheet.data[headerRowIndex!]?.[originalIdx]?.toString() || 
-                     `Колонка ${String.fromCharCode(65 + originalIdx)}`;
-        return {
-            label: name,
-            value: String(relativeIdx)
-        };
-    });
+    const availableCols = headers.map((h, i) => ({
+        label: h || `Колонка ${i + 1}`,
+        value: String(i)
+    }));
 
     const names = settings.newNames || ["", ""];
 
     const handleNameChange = (nameIdx: number, val: string) => {
         const next = [...names];
         next[nameIdx] = val;
-        updateLayerSettings(index, { newNames: next });
+        onUpdate?.({ newNames: next });
     };
 
     return (
@@ -69,7 +40,7 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                     selectedKeys={settings.sourceColIndex !== undefined ? [String(settings.sourceColIndex)] : []}
                     onSelectionChange={(keys) => {
                         const val = Array.from(keys)[0];
-                        updateLayerSettings(index, { sourceColIndex: Number(val) });
+                        onUpdate?.({sourceColIndex: Number(val)})
                     }}
                 >
                     {availableCols.map((col) => (
@@ -86,10 +57,13 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                 <Tabs 
                     fullWidth 
                     selectedKey={settings.mode || 'delimiter'}
-                    onSelectionChange={(key) => updateLayerSettings(index, { mode: key })}
+                    onSelectionChange={(key) => {
+                        onUpdate?.({mode: key as SplitMode})
+                    }}
                 >
-                    <Tab key="delimiter" title="Символ" />
-                    <Tab key="regex" title="Regex (группы)" />
+                    {TABS.map(tab => (
+                        <Tab key={tab.key} title={tab.title} />
+                    ))}
                 </Tabs>
 
                 {settings.mode === 'regex' ? (
@@ -97,7 +71,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                         label="Regex паттерн"
                         placeholder="Пример: (.*?)\s*-\s*(.*)"
                         value={settings.pattern || ""}
-                        onValueChange={(val) => updateLayerSettings(index, { pattern: val })}
+                        onValueChange={(val) => {
+                            onUpdate?.({pattern: val});
+                        }}
                         description="Используйте скобки ( ) для каждой новой колонки"
                     />
                 ) : (
@@ -105,7 +81,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                         label="Символ-разделитель"
                         placeholder="Например: / или , или ;"
                         value={settings.delimiter || ""}
-                        onValueChange={(val) => updateLayerSettings(index, { delimiter: val })}
+                        onValueChange={(val) => {
+                            onUpdate?.({delimiter: val})
+                        }}
                     />
                 )}
             </div>
@@ -130,7 +108,10 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                             />
                             {names.length > 2 && (
                                 <Button isIconOnly size="sm" variant="light" color="danger" 
-                                    onPress={() => updateLayerSettings(index, { newNames: names.filter((_: string, idx: number) => idx !== i) })}>
+                                    onPress={() => {
+                                        onUpdate?.({newNames: names.filter((_: string, idx: number) => idx !== i)})
+                                    }}
+                                >
                                     <Trash2 size={14} />
                                 </Button>
                             )}
@@ -142,7 +123,9 @@ export const ColumnSplitConfig = ({ index, settings }: ColumnSplitConfigProps) =
                     variant="flat" 
                     color="primary"
                     startContent={<Plus size={16}/>}
-                    onPress={() => updateLayerSettings(index, { newNames: [...names, ""] })}
+                    onPress={() => {
+                        onUpdate?.({newNames: [...names, ""]})
+                    }}
                 >
                     Добавить колонку
                 </Button>

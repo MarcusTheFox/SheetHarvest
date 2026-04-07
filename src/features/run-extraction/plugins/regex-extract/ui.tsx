@@ -1,43 +1,18 @@
 "use client";
 
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { isSecondaryMergeCell } from "@/widgets/spreadsheet-view/lib/merge-utils";
 import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
-import { LayerConfigProps } from ".";
-import { RegexExtractionLayerSettings } from "@/features/run-extraction/lib/pipeline/layers/transformers/regexExtractLayer";
-import { useShallow } from "zustand/shallow";
+import { RegexExtractionLayerSettings } from "./types";
+import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
 
-export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps) => {
-    const { updateLayerSettings, selectedColumns, customNames, isManualMode, headerRowIndex } = usePatternStore(
-        useShallow(s => ({
-            updateLayerSettings: s.updateLayerSettings,
-            customNames: s.customNames,
-            selectedColumns: s.selectedColumns,
-            isManualMode: s.isManualMode,
-            headerRowIndex: s.headerRowIndex,
-        }))
-    );
+export const RegexExtractConfig = ({ settings, onUpdate, prevContext }: RegexExtractConfigProps) => {
+    const headers = prevContext?.headers ?? [];
 
-    const sheets = useSpreadsheetStore(s => s.sheets);
-    const currentSheetIndex = useSpreadsheetStore(s => s.currentSheetIndex);
-
-    const currentSheet = sheets[currentSheetIndex];
-    const headerRow = (currentSheet && headerRowIndex !== null) ? currentSheet.data[headerRowIndex] : [];
-    const merges = currentSheet?.merges || [];
-
-    const columnIndices = isManualMode
-        ? selectedColumns
-        : headerRow.map((_, idx) => idx).filter(
-            idx => headerRowIndex !== null && !isSecondaryMergeCell(headerRowIndex, idx, merges)
-        );
-
-    const availableCols = columnIndices.map(colIdx => ({
-        label: customNames[colIdx] || String(headerRow[colIdx] || `Колонка ${colIdx + 1}`),
-        value: String(colIdx)
+    const availableCols = headers.map((h, i) => ({
+        label: h || `Колонка ${i + 1}`,
+        value: String(i)
     }));
 
     return (
@@ -48,7 +23,7 @@ export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps)
                 selectedKeys={settings.sourceColIndex !== undefined ? [String(settings.sourceColIndex)] : []}
                 onSelectionChange={(keys) => {
                     const val = Array.from(keys)[0];
-                    updateLayerSettings(index, { sourceColIndex: Number(val) });
+                    onUpdate?.({sourceColIndex: Number(val)})
                 }}
             >
                 {availableCols.map((col) => (
@@ -61,7 +36,9 @@ export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps)
                 placeholder="Например: [A-Z]{2}-\d{3}"
                 value={settings.pattern || ""}
                 startContent={<Search size={18} className="text-default-400" />}
-                onValueChange={(val) => updateLayerSettings(index, { pattern: val })}
+                onValueChange={(val) => {
+                    onUpdate?.({pattern: val})
+                }}
                 description="Оставьте только ту часть текста, которая подходит под шаблон"
             />
 
@@ -74,7 +51,9 @@ export const RegexExtractConfig = ({ index, settings }: RegexExtractConfigProps)
                     <Switch 
                         size="sm"
                         isSelected={settings.keepOriginalIfNoMatch}
-                        onValueChange={(val) => updateLayerSettings(index, { keepOriginalIfNoMatch: val })}
+                        onValueChange={(val) => {
+                            onUpdate?.({keepOriginalIfNoMatch: val})
+                        }}
                     />
                 </div>
             </Card>

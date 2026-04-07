@@ -1,4 +1,10 @@
-import { ExtractionLayer } from "./core";
+import { ExtractionLayer, PipelineContext } from "./core";
+
+export interface LayerConfigProps<T = unknown> {
+    settings: T;
+    prevContext?: PipelineContext;
+    onUpdate?: (settings: Partial<T>) => void;
+}
 
 export interface LayerMetadata<T> {
     id: string;
@@ -7,4 +13,5 @@ export interface LayerMetadata<T> {
     layer: ExtractionLayer<T>;
     isSystem?: boolean;
     defaultSettings?: T;
+    component?: React.FC<LayerConfigProps<T>>;
 }

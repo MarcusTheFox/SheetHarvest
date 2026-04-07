@@ -32,9 +32,6 @@ export interface ExtractionPattern {
   isManualMode: boolean;
   selectedColumns: number[];
   customNames: Record<number, string>;
-  constraints: ColumnConstraint[];
-  topology: Record<number, TopologyMode>;
-  anchor: PatternAnchor;
   hiddenColumns: number[];
   pipeline: PipelineLayer[];
 }
@@ -46,11 +43,6 @@ export interface PatternState extends ExtractionPattern {
   toggleManualMode: () => void;
   toggleColumn: (colIndex: number) => void;
   updateColumnName: (colIndex: number, name: string) => void;
-  setConstraintType: (colIndex: number, name: string, type: ConstraintType) => void;
-  setConstraintPattern: (colIndex: number, pattern: string) => void;
-  setTopology: (colIndex: number, mode: TopologyMode) => void;
-  setStartAnchor: (point: AnchorPoint | null) => void;
-  setEndAnchor: (point: AnchorPoint | null) => void;
   toggleVisibility: (colIndex: number) => void;
   loadPattern: (config: ExtractionPattern) => void;
 

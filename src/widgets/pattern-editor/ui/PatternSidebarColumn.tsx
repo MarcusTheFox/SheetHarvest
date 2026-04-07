@@ -1,18 +1,9 @@
 "use client";
 
 import { usePatternStore } from "@/entities/pattern/model/store";
-import { Button, Input, Select, SelectItem, Tab, Tabs } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
-import { ConstraintType, TopologyMode } from "@/entities/pattern/model/types";
 import { memo } from "react";
-
-const CONSTRAINT_TYPES = [
-  { label: "Любое", value: "any" },
-  { label: "Не пустое", value: "not_empty" },
-  { label: "Число", value: "is_number" },
-  { label: "Дата", value: "is_date" },
-  { label: "Шаблон (RegExp)", value: "regex" },
-];
 
 interface PatternSidebarColumnProps {
   idx: number;
@@ -22,17 +13,10 @@ interface PatternSidebarColumnProps {
 export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnProps) => {
   const isHidden = usePatternStore(s => s.hiddenColumns.includes(idx));
   const isManualMode = usePatternStore(s => s.isManualMode);
-  const currentTopology = usePatternStore(s => s.topology[idx] || 'any');
-  const currentConstraint = usePatternStore(s => s.constraints.find(c => c.colIndex === idx));
   const currentName = usePatternStore(s => s.customNames[idx] || cell?.toString() || "");
-
 
   const updateColumnName = usePatternStore(s => s.updateColumnName);
   const toggleVisibility = usePatternStore(s => s.toggleVisibility);
-  const setTopology = usePatternStore(s => s.setTopology);
-  const setConstraintType = usePatternStore(s => s.setConstraintType);
-  const setConstraintPattern = usePatternStore(s => s.setConstraintPattern);
-
 
   if (!isManualMode && !cell && !currentName) return null;
 
@@ -44,9 +28,11 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
         <span className="text-[10px] font-black px-2 py-0.5 bg-primary text-white rounded font-mono uppercase">
           COL {String.fromCharCode(65 + idx)}
         </span>
-        <Button isIconOnly size="sm" variant="light" onPress={() => toggleVisibility(idx)}>
-          {isHidden ? <EyeOff size={16} /> : <Eye size={16} />}
-        </Button>
+        <div className="flex gap-1">
+          <Button isIconOnly size="sm" variant="light" onPress={() => toggleVisibility(idx)}>
+            {isHidden ? <EyeOff size={16} /> : <Eye size={16} />}
+          </Button>
+        </div>
       </div>
       
       <Input 
@@ -56,42 +42,6 @@ export const PatternSidebarColumn = memo(({ idx, cell }: PatternSidebarColumnPro
         value={currentName}
         onValueChange={(val) => updateColumnName(idx, val)}
       />
-
-      <div className="flex flex-col gap-1 bg-default-50 p-2 rounded-xl">
-        <span className="text-[9px] font-black text-default-400 uppercase">Структура</span>
-        <Tabs 
-          fullWidth 
-          size="sm" 
-          variant="underlined"
-          selectedKey={currentTopology}
-          onSelectionChange={(key) => setTopology(idx, key as TopologyMode)}
-        >
-          <Tab key="any" title="Любая" />
-          <Tab key="filled" title="Заполнена" />
-          <Tab key="empty" title="Пусто" />
-        </Tabs>
-      </div>
-      
-      <Select 
-        size="sm" 
-        label="Тип данных"
-        variant="bordered"
-        selectedKeys={[currentConstraint?.type || "any"]}
-        onChange={(e) => setConstraintType(idx, currentName, e.target.value as ConstraintType)}
-      >
-        {CONSTRAINT_TYPES.map((type) => <SelectItem key={type.value}>{type.label}</SelectItem>)}
-      </Select>
-
-      {currentConstraint?.type === "regex" && (
-        <Input
-          size="sm"
-          variant="bordered"
-          label="Regex-шаблон"
-          placeholder="Например, ^\d{4}-\d{2}-\d{2}$"
-          value={currentConstraint.pattern || ""}
-          onValueChange={(val) => setConstraintPattern(idx, val)}
-        />
-      )}
     </div>
   );
 });

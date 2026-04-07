@@ -1,17 +1,9 @@
-import { PipelineContext } from "../../core";
-import { LayerMetadata } from "../../types";
+import { PipelineContext } from "../../lib/pipeline/core";
+import { AnchorLayerSettings } from "./types";
 
-export const anchorLayerMetadata: LayerMetadata<never> = {
-    id: 'anchor',
-    name: 'Якоря',
-    description: 'Ограничивает область поиска',
-    isSystem: true,
-    layer: anchorLayer
-};
-
-export function anchorLayer(context: PipelineContext): PipelineContext {
-    const { rows, params } = context;
-    const { anchor } = params;
+export function anchorLayer(context: PipelineContext<AnchorLayerSettings>): PipelineContext {
+    const { rows, settings } = context;
+    const anchor = settings ?? { start: null, end: null };
 
     let isSearchActive = !anchor.start;
     let groupIndex = 0;
@@ -21,18 +13,18 @@ export function anchorLayer(context: PipelineContext): PipelineContext {
         const row = rows[i];
 
         // Проверка стартового якоря
-        if (anchor.start && !isSearchActive) {
+        if (anchor.start && anchor.start.text && !isSearchActive) {
             const cellValue = row.cells[anchor.start.colIndex]?.toString();
-            if (cellValue === anchor.start.text) {
+            if (cellValue && cellValue.includes(anchor.start.text)) {
                 isSearchActive = true;
                 continue; // Строку со стартовым якорем пропускаем
             }
         }
         
         // Проверка конечного якоря
-        if (anchor.end && isSearchActive) {
+        if (anchor.end && anchor.end.text && isSearchActive) {
             const cellValue = row.cells[anchor.end.colIndex]?.toString();
-            if (cellValue === anchor.end.text) {
+            if (cellValue && cellValue.includes(anchor.end.text)) {
                 isSearchActive = false;
                 groupIndex++;
                 continue;
@@ -40,10 +32,7 @@ export function anchorLayer(context: PipelineContext): PipelineContext {
         }
 
         if (isSearchActive) {
-            filteredRows.push({
-                ...row,
-                groupIndex,
-            });
+            filteredRows.push({ ...row, groupIndex });
         }
     }
 

@@ -1,14 +1,5 @@
-import { PipelineContext, PipelineRow } from "../../core";
-import { getActiveColIndices } from "../../../extraction-utils";
-import { LayerMetadata } from "../../types";
-
-export const projectionLayerMetadata: LayerMetadata<never> = {
-    id: 'projection',
-    name: 'Проекция колонок',
-    description: 'Оставляет только выбранные колонки и формирует заголовки',
-    isSystem: true,
-    layer: projectionLayer,
-}
+import { getActiveColIndices } from "../../lib/extraction-utils";
+import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 
 export function projectionLayer(context: PipelineContext): PipelineContext {
     const { rows, params } = context;

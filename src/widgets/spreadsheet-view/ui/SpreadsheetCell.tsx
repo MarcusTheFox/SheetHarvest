@@ -13,34 +13,39 @@ interface SpreadsheetCellProps {
   colIndex: number;
   cellValue: string;
   merges: MergeRange[];
+  isActive: boolean;
+  onActivate: (r: number, c: number) => void;
 }
 
-export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges }: SpreadsheetCellProps) => {
+export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges, isActive, onActivate }: SpreadsheetCellProps) => {
   const headerRowIndex = usePatternStore(s => s.headerRowIndex);
-  const anchor = usePatternStore(s => s.anchor);
 
   const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, colIndex, merges);
   if (isHidden) return null;
 
-  const isStartAnchor = anchor.start?.text === cellValue && anchor.start?.colIndex === colIndex;
-  const isEndAnchor = anchor.end?.text === cellValue && anchor.end?.colIndex === colIndex;
+  const cellElement = (
+    <td
+      rowSpan={rowSpan}
+      colSpan={colSpan}
+      className={clsx(
+        "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
+        headerRowIndex === rowIndex && "font-bold text-primary text-medium",
+        isActive && "bg-primary-50 ring-2 ring-primary ring-inset z-10 relative"
+      )}
+      onClick={() => onActivate(rowIndex, colIndex)}
+    >
+      {cellValue}
+    </td>
+  );
+
+  if (!isActive) return cellElement;
 
   return (
-    <Popover placement="bottom" showArrow shadow="lg">
+    <Popover placement="bottom" showArrow shadow="lg" isOpen={true} onOpenChange={(open) => !open && onActivate(-1, -1)}>
       <PopoverTrigger>
-        <td
-          rowSpan={rowSpan}
-          colSpan={colSpan}
-          className={clsx(
-            "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
-            headerRowIndex === rowIndex && "font-bold text-primary",
-            isStartAnchor && "bg-success-100 text-success-700 font-bold border-l-4 border-l-success",
-            isEndAnchor && "bg-danger-100 text-danger-700 font-bold border-l-4 border-l-danger"
-          )}
-        >
-          {cellValue}
-        </td>
+        {cellElement}
       </PopoverTrigger>
+
       <PopoverContent className="p-1">
         <SpreadsheetCellMenu 
           rowIndex={rowIndex} 
