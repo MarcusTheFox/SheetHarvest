@@ -2,16 +2,14 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
 import {
-    Button, Card, CardBody, Popover, PopoverTrigger, PopoverContent,
-    Input, ScrollShadow, Listbox, ListboxItem, Chip
-} from "@heroui/react";
-import {
-    ArrowDown, ArrowUp, PlusCircle, Settings2, Trash2,
-    ExternalLink, CheckCircle2, Play, Search
+    ArrowDown, ArrowUp, Settings2, Trash2,
+    ExternalLink, CheckCircle2, Play
 } from "lucide-react";
 import { memo, useState, useMemo } from "react";
 import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
+import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
@@ -19,8 +17,6 @@ import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarPipeline = memo(() => {
     const [isEditorOpen, setIsEditorOpen] = useState(false);
-    const [searchAvailable, setSearchAvailable] = useState("");
-    const [isAddOpen, setIsAddOpen] = useState(false);
 
     const params = useExtractionParams();
     const { runExtraction } = useRunExtraction();
@@ -42,15 +38,15 @@ export const PatternSidebarPipeline = memo(() => {
         }))
     );
 
-    const availableLayers = useMemo(() => {
-        const layers = Object.values(LAYER_REGISTRY).filter(
+    const availableLayersFlat = useMemo(() => {
+        return Object.values(LAYER_REGISTRY).filter(
             (l) => !pipeline.some(p => p.id === l.id) || !l.isSystem
-        );
-        if (!searchAvailable) return layers;
-        return layers.filter(l => 
-            l.name.toLowerCase().includes(searchAvailable.toLowerCase())
-        );
-    }, [pipeline, searchAvailable]);
+        ).map(l => ({
+            id: l.id,
+            name: l.name,
+            description: l.description
+        }));
+    }, [pipeline]);
 
     return (
         <>
@@ -74,42 +70,12 @@ export const PatternSidebarPipeline = memo(() => {
                             <ExternalLink size={16} />
                         </Button>
 
-                        <Popover isOpen={isAddOpen} onOpenChange={setIsAddOpen} placement="bottom-end">
-                            <PopoverTrigger>
-                                <Button isIconOnly size="sm" variant="flat" color="primary">
-                                    <PlusCircle size={18} />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-0 w-64 overflow-hidden">
-                                <div className="p-2 border-b border-default-100 w-full">
-                                    <Input
-                                        autoFocus
-                                        size="sm"
-                                        placeholder="Поиск слоя..."
-                                        startContent={<Search size={14} />}
-                                        value={searchAvailable}
-                                        onValueChange={setSearchAvailable}
-                                        variant="flat"
-                                    />
-                                </div>
-                                <ScrollShadow className="max-h-64 w-full">
-                                    <Listbox 
-                                        aria-label="Добавить слой"
-                                        onAction={(key) => {
-                                            addLayer(key as string);
-                                            setIsAddOpen(false);
-                                            setSearchAvailable("");
-                                        }}
-                                    >
-                                        {availableLayers.map(l => (
-                                            <ListboxItem key={l.id} description={l.description}>
-                                                {l.name}
-                                            </ListboxItem>
-                                        ))}
-                                    </Listbox>
-                                </ScrollShadow>
-                            </PopoverContent>
-                        </Popover>
+                        <SearchSelectPopover 
+                            items={availableLayersFlat}
+                            onSelect={addLayer}
+                            placeholder="Поиск слоя..."
+                            label="Добавить слой"
+                        />
                     </div>
                 </div>
 
