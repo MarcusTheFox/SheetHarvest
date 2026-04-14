@@ -19,12 +19,12 @@ export const PatternSidebar = () => {
   const currentSheet = sheets[currentSheetIndex];
   if (!currentSheet) return null;
 
-  const headerRow = headerRowIndex !== null ? currentSheet.data[headerRowIndex] : currentSheet.data[0] || [];
+  const headerRow = headerRowIndex !== null ? currentSheet.data[headerRowIndex] : [];
   const merges = currentSheet.merges || [];
 
   return (
     <Card className="w-80 h-[85vh] shrink-0 sticky top-24 border-none shadow-2xl bg-white">
-      <CardBody className="gap-4 overflow-y-auto p-5 scrollbar-hide">
+      <CardBody className="gap-4 overflow-y-auto p-5 pb-0 scrollbar-hide">
         <PatternSidebarHeader />
         <PatternSidebarModeToggle />
         

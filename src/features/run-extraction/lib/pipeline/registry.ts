@@ -7,6 +7,9 @@ import { valueMappingLayerMetadata } from "../../plugins/value-mapping";
 import { regexExtractLayerMetadata } from "../../plugins/regex-extract";
 import { columnSplitLayerMetadata } from "../../plugins/column-split";
 import { columnDeleteLayerMetadata } from "../../plugins/column-delete";
+import { columnAddLayerMetadata } from "../../plugins/column-add";
+import { columnRenameLayerMetadata } from "../../plugins/column-rename";
+import { columnReorderLayerMetadata } from "../../plugins/column-reorder";
 import { LayerMetadata } from "./types";
 
 const allLayers = [
@@ -19,6 +22,9 @@ const allLayers = [
     regexExtractLayerMetadata,
     columnSplitLayerMetadata,
     columnDeleteLayerMetadata,
+    columnAddLayerMetadata,
+    columnRenameLayerMetadata,
+    columnReorderLayerMetadata,
 ] as LayerMetadata<unknown>[];
 
 

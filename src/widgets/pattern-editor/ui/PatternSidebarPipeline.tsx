@@ -2,10 +2,14 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
-import { Button, Card, CardBody, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
-import { ArrowDown, ArrowUp, PlusCircle, Settings2, Trash2, ExternalLink, CheckCircle2, Play } from "lucide-react";
-import { memo, useState } from "react";
+import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
+import {
+    ArrowDown, ArrowUp, Settings2, Trash2,
+    ExternalLink, CheckCircle2, Play
+} from "lucide-react";
+import { memo, useState, useMemo } from "react";
 import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
+import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
@@ -13,6 +17,7 @@ import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarPipeline = memo(() => {
     const [isEditorOpen, setIsEditorOpen] = useState(false);
+
     const params = useExtractionParams();
     const { runExtraction } = useRunExtraction();
 
@@ -33,10 +38,15 @@ export const PatternSidebarPipeline = memo(() => {
         }))
     );
 
-    // Доступные слои — те, которых нет в списке (или которые не системные, если мы разрешим дубли)
-    const availableLayers = Object.values(LAYER_REGISTRY).filter(
-        (l) => !pipeline.some(p => p.id === l.id) || !l.isSystem
-    );
+    const availableLayersFlat = useMemo(() => {
+        return Object.values(LAYER_REGISTRY).filter(
+            (l) => !pipeline.some(p => p.id === l.id) || !l.isSystem
+        ).map(l => ({
+            id: l.id,
+            name: l.name,
+            description: l.description
+        }));
+    }, [pipeline]);
 
     return (
         <>
@@ -45,6 +55,7 @@ export const PatternSidebarPipeline = memo(() => {
                     <div className="flex items-center gap-2 text-default-600">
                         <Settings2 size={16} />
                         <span className="text-[11px] font-bold uppercase tracking-wider">Пайплайн</span>
+                        <Chip size="sm" variant="flat" className="h-5 text-[10px]">{pipeline.length}</Chip>
                     </div>
 
                     <div className="flex items-center gap-1">
@@ -59,30 +70,16 @@ export const PatternSidebarPipeline = memo(() => {
                             <ExternalLink size={16} />
                         </Button>
 
-                        {availableLayers.length > 0 && (
-                            <Dropdown>
-                                <DropdownTrigger>
-                                    <Button isIconOnly size="sm" variant="light" color="primary">
-                                        <PlusCircle size={18} />
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu aria-label="Add layer">
-                                    {availableLayers.map((layer) => (
-                                        <DropdownItem
-                                            key={layer.id}
-                                            description={layer.description}
-                                            onPress={() => addLayer(layer.id)}
-                                        >
-                                            {layer.name}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
-                        )}
+                        <SearchSelectPopover 
+                            items={availableLayersFlat}
+                            onSelect={addLayer}
+                            placeholder="Поиск слоя..."
+                            label="Добавить слой"
+                        />
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <ScrollShadow className="flex flex-col gap-2 max-h-105 pr-1">
                     {pipeline.map((entry, index) => {
                         const metadata = LAYER_REGISTRY[entry.id];
                         if (!metadata) return null;
@@ -91,7 +88,7 @@ export const PatternSidebarPipeline = memo(() => {
                         const isActivePreview = activePreviewId === entry.instanceId;
 
                         return (
-                            <Card key={entry.instanceId} shadow="none" className="border border-default-100 bg-default-50/50 overflow-hidden">
+                            <Card key={entry.instanceId} shadow="none" className="border border-default-100 bg-default-50/50 overflow-hidden shrink-0">
                                 <CardBody className="p-3">
                                     <div className="flex items-start justify-between gap-2">
                                         <div className="shrink-0">
@@ -102,17 +99,16 @@ export const PatternSidebarPipeline = memo(() => {
                                                 variant={isCached ? "flat" : "solid"}
                                                 color={isActivePreview ? "primary" : isCached ? "success" : "default"}
                                                 isLoading={isExecuting && isActivePreview}
-                                                onPress={() => {
-                                                    if (params) runUpToLayer(entry.instanceId, pipeline, params);
-                                                }}
+                                                onPress={() => params && runUpToLayer(entry.instanceId, pipeline, params)}
                                             >
                                                 {isCached ? <CheckCircle2 size={16} /> : <Play size={14} className="ml-0.5" />}
                                             </Button>
                                         </div>
 
-                                        <div className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer" onClick={() => {
-                                            if(isCached) usePreviewStore.getState().setActivePreview(entry.instanceId);
-                                        }}>
+                                        <div 
+                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer" 
+                                            onClick={() => isCached && usePreviewStore.getState().setActivePreview(entry.instanceId)}
+                                        >
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] font-bold text-default-400 font-mono">#{index + 1}</span>
                                                 <span className="text-[12px] font-semibold truncate leading-tight">{metadata.name}</span>
@@ -169,7 +165,7 @@ export const PatternSidebarPipeline = memo(() => {
                             <span className="text-[11px]">Нет активных слоев</span>
                         </div>
                     )}
-                </div>
+                </ScrollShadow>
             </div>
 
             <PipelineEditor
