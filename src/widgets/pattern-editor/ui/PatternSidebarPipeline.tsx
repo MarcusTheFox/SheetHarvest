@@ -17,6 +17,12 @@ import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarPipeline = memo(() => {
     const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [editorInitialIndex, setEditorInitialIndex] = useState<number | null>(null);
+
+    const handleOpenEditor = (index: number | null = null) => {
+        setEditorInitialIndex(index);
+        setIsEditorOpen(true);
+    };
 
     const params = useExtractionParams();
     const { runExtraction } = useRunExtraction();
@@ -65,7 +71,7 @@ export const PatternSidebarPipeline = memo(() => {
                             variant="light"
                             color="primary"
                             title="Открыть редактор"
-                            onPress={() => setIsEditorOpen(true)}
+                            onPress={() => handleOpenEditor()}
                         >
                             <ExternalLink size={16} />
                         </Button>
@@ -106,12 +112,12 @@ export const PatternSidebarPipeline = memo(() => {
                                         </div>
 
                                         <div 
-                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer" 
-                                            onClick={() => isCached && usePreviewStore.getState().setActivePreview(entry.instanceId)}
+                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group" 
+                                            onClick={() => handleOpenEditor(index)}
                                         >
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] font-bold text-default-400 font-mono">#{index + 1}</span>
-                                                <span className="text-[12px] font-semibold truncate leading-tight">{metadata.name}</span>
+                                                <span className="text-[12px] font-semibold truncate leading-tight group-hover:text-primary transition-colors">{metadata.name}</span>
                                             </div>
                                             <span className="text-[10px] text-default-500 line-clamp-1 italic">{metadata.description}</span>
                                         </div>
@@ -170,6 +176,7 @@ export const PatternSidebarPipeline = memo(() => {
 
             <PipelineEditor
                 isOpen={isEditorOpen}
+                initialSelectedIndex={editorInitialIndex}
                 onClose={() => setIsEditorOpen(false)}
                 onApply={runExtraction}
             />
