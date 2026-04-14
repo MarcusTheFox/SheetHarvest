@@ -1,6 +1,6 @@
 "use client";
 
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { AnchorLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 import { AnchorPoint } from "@/entities/pattern/model/types";
@@ -83,10 +83,23 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                 onChange={(end) => onUpdate?.({ end })}
             />
 
-            <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+            <div className="flex flex-col gap-2 p-4 bg-default-50 rounded-xl border border-default-100">
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-medium">Объединять результаты</span>
+                        <span className="text-xs text-default-400">Склеивать найденные таблицы в одну</span>
+                    </div>
+                    <Switch 
+                        isSelected={settings?.mergeResults ?? false}
+                        onValueChange={(val) => onUpdate?.({ mergeResults: val })}
+                    />
+                </div>
+            </div>
+
+            <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
                 <p className="text-[11px] text-blue-700 leading-relaxed">
                     Якоря ограничивают диапазон строк для обработки. Если задан только стартовый — данные захватываются от него до конца.
-                    Если заданы оба — каждый диапазон между якорями экспортируется отдельной таблицей.
+                    Если заданы оба — каждый диапазон между якорями экспортируется отдельной таблицей (если не включено объединение).
                 </p>
             </div>
         </div>
