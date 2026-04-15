@@ -26,7 +26,9 @@ export function anchorLayer(context: PipelineContext<AnchorLayerSettings>): Pipe
             const cellValue = row.cells[anchor.end.colIndex]?.toString();
             if (cellValue && cellValue.includes(anchor.end.text)) {
                 isSearchActive = false;
-                groupIndex++;
+                if (!anchor.mergeResults) {
+                    groupIndex++;
+                }
                 continue;
             }
         }

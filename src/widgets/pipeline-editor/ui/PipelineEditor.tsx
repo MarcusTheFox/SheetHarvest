@@ -3,7 +3,7 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { LayerSettingsPanel } from "./layer-settings/LayerSettingsPanel";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from "@heroui/react";
-import { memo, useState, useCallback } from "react";
+import { memo, useState, useCallback, useEffect } from "react";
 import { PipelineEditorHeader } from "./PipelineEditorHeader";
 import { PipelineEditorSidebar } from "./PipelineEditorSidebar";
 import { PipelineEditorFooter } from "./PipelineEditorFooter";
@@ -13,10 +13,17 @@ interface PipelineEditorProps {
     isOpen: boolean;
     onClose: () => void;
     onApply?: () => void;
+    initialSelectedIndex?: number | null;
 }
 
-export const PipelineEditor = memo(({ isOpen, onClose, onApply }: PipelineEditorProps) => {
-    const [selectedLayerIndex, setSelectedLayerIndex] = useState<number | null>(null);
+export const PipelineEditor = memo(({ isOpen, onClose, onApply, initialSelectedIndex = null }: PipelineEditorProps) => {
+    const [selectedLayerIndex, setSelectedLayerIndex] = useState<number | null>(initialSelectedIndex);
+
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedLayerIndex(initialSelectedIndex);
+        }
+    }, [isOpen, initialSelectedIndex]);
 
     const { pipeline, removeLayer, moveLayer, addLayer } = usePatternStore(
         useShallow(s => ({
