@@ -6,7 +6,13 @@ import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell, Chip, 
 import { Table as TableIcon, LayoutGrid, Rows } from "lucide-react";
 import { useMemo } from "react";
 
-const PREVIEW_LIMIT = 50; // Сколько строк показывать для каждой таблицы в превью
+const PREVIEW_LIMIT = 50;
+
+const NonePreview = () => (
+  <div className="h-full flex items-center justify-center border-default-200">
+    <p className="text-default-400">Запустите слой в пайплайне (кнопка Play) для просмотра результата</p>
+  </div>
+)
 
 export const PreviewTable = () => {
   const { cache, activePreviewId } = usePreviewStore();
@@ -32,9 +38,7 @@ export const PreviewTable = () => {
   // 3. Теперь можно делать ранний возврат, если нет кеша
   if (!context) {
     return (
-      <div className="flex-1 h-[60vh] flex flex-col items-center justify-center border-2 border-dashed border-default-200 rounded-2xl bg-default-50/50">
-        <p className="text-default-400 font-medium">Запустите слой в пайплайне (кнопка Play) для просмотра результата</p>
-      </div>
+      <NonePreview />
     );
   }
 
@@ -45,7 +49,7 @@ export const PreviewTable = () => {
     : Array.from({ length: maxCols }, (_, i) => String.fromCharCode(65 + i));
 
   return (
-    <div className="flex flex-col gap-4 w-full h-[75vh] overflow-hidden">
+    <div className="flex flex-col gap-4 h-full overflow-hidden">
       
       {/* Топ-бар с общей статистикой превью */}
       <div className="shrink-0 flex justify-between items-center bg-primary-50 px-4 py-3 rounded-xl border border-primary-100">

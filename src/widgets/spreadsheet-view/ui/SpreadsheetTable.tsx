@@ -22,7 +22,7 @@ export const SpreadsheetTable = () => {
   }, []);
 
   return (
-    <div className="overflow-auto border-none rounded-2xl bg-white shadow-xl max-h-[75vh] w-full relative">
+    <div className="overflow-auto border-none rounded-2xl bg-white shadow-xl max-h-full">
       <table className="w-full border-collapse text-sm">
         <SpreadsheetHeader columns={columns} />
         <tbody>

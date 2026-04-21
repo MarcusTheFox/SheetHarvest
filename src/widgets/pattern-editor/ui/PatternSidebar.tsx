@@ -23,7 +23,7 @@ export const PatternSidebar = () => {
   const merges = currentSheet.merges || [];
 
   return (
-    <Card className="w-80 h-[85vh] shrink-0 sticky top-24 border-none shadow-2xl bg-white">
+    <Card className="h-full" radius="none">
       <CardBody className="gap-4 overflow-y-auto p-5 pb-0 scrollbar-hide">
         <PatternSidebarHeader />
         <PatternSidebarModeToggle />
