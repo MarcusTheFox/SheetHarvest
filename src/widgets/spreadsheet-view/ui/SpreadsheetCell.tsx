@@ -1,10 +1,7 @@
 "use client";
 
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { getCellMergeInfo } from "../lib/merge-utils";
 import { clsx } from "clsx";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
-import { MergeRange } from "@/shared/types/spreadsheet";
 import { memo } from "react";
 import { SpreadsheetCellMenu } from "./SpreadsheetCellMenu";
 
@@ -12,15 +9,27 @@ interface SpreadsheetCellProps {
   rowIndex: number;
   colIndex: number;
   cellValue: string;
-  merges: MergeRange[];
-  isActive: boolean;
-  onActivate: (r: number, c: number) => void;
+  rowSpan?: number;
+  colSpan?: number;
+  isActive?: boolean;
+  isHidden?: boolean;
+  classNames?: string;
+  onActivate?: (r: number, c: number) => void;
 }
 
-export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges, isActive, onActivate }: SpreadsheetCellProps) => {
-  const headerRowIndex = usePatternStore(s => s.headerRowIndex);
+export const SpreadsheetCell = memo((props: SpreadsheetCellProps) => {
+  const {
+    rowIndex,
+    colIndex,
+    cellValue,
+    rowSpan,
+    colSpan,
+    isActive,
+    isHidden,
+    classNames,
+    onActivate,
+  } = props;
 
-  const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, colIndex, merges);
   if (isHidden) return null;
 
   const cellElement = (
@@ -28,11 +37,11 @@ export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges, is
       rowSpan={rowSpan}
       colSpan={colSpan}
       className={clsx(
-        "p-3 border-b border-r border-default-50 align-top break-words cursor-cell transition-all",
-        headerRowIndex === rowIndex && "font-bold text-primary text-medium",
-        isActive && "bg-primary-50 ring-2 ring-primary ring-inset z-10 relative"
+        "p-2 border-b border-r border-slate-200 align-top wrap-break-words cursor-cell transition-all",
+        isActive && "bg-primary-50 ring-2 ring-primary ring-inset z-10 relative",
+        classNames,
       )}
-      onClick={() => onActivate(rowIndex, colIndex)}
+      onClick={() => onActivate?.(rowIndex, colIndex)}
     >
       {cellValue}
     </td>
@@ -41,7 +50,7 @@ export const SpreadsheetCell = memo(({ rowIndex, colIndex, cellValue, merges, is
   if (!isActive) return cellElement;
 
   return (
-    <Popover placement="bottom" showArrow shadow="lg" isOpen={true} onOpenChange={(open) => !open && onActivate(-1, -1)}>
+    <Popover placement="bottom" showArrow shadow="lg" isOpen={true} onOpenChange={(open) => !open && onActivate?.(-1, -1)}>
       <PopoverTrigger>
         {cellElement}
       </PopoverTrigger>
