@@ -65,7 +65,7 @@ Table.HCell = ({
         <th
             {...props}
             className={clsx(
-                "px-3 py-2 bg-gray-100 font-semibold border-y border-r border-gray-300",
+                "px-3 py-2 bg-gray-100 text-center font-semibold border-y border-r border-gray-300",
                 stickyHeader && "sticky top-0 z-20",
                 className,
             )}
@@ -121,7 +121,7 @@ Table.RowIndexCell = ({
         <td
             {...props}
             className={clsx(
-                "px-2 py-2 bg-gray-100 text-gray-600 text-right w-10 border-b border-x border-gray-300",
+                "px-2 py-2 bg-gray-100 text-gray-600 text-center w-10 border-b border-x border-gray-300",
                 stickyRowIndex && "sticky left-0 z-30",
                 className,
             )}
