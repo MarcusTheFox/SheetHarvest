@@ -18,7 +18,7 @@ export const createInitialContext = (params: ExtractionParams): PipelineContext 
             return String(headerRowVal);
         }
 
-        return String.fromCharCode(65 + (i % 26)); // Fallback to A, B, C...
+        return (i + 1).toString(); // Fallback to 1, 2, 3...
     });
 
     return {
