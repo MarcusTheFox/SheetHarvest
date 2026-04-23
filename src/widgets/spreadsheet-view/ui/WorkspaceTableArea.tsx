@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 
 export const WorkspaceTableArea = () => {
-    const { selectedLayerIndex, inputContext } = useSelectedLayer();
+    const { selectedLayerIndex, inputContext, outputContext } = useSelectedLayer();
 
     if (selectedLayerIndex === undefined) {
         return (
@@ -62,7 +62,8 @@ export const WorkspaceTableArea = () => {
                         <ChevronRight size={16} className="text-slate-500" />
                         Данные на выходе
                     </CardHeader>
-                    <PreviewTable />
+                    <SpreadsheetTable context={outputContext} />
+                    {/* <PreviewTable /> */}
                 </Card>
             </Panel>
         </Group>

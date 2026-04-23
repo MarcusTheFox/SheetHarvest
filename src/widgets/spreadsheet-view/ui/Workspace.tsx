@@ -37,21 +37,25 @@ export const Workspace = () => {
             </Panel>
             <Separator className="w-1" />
             <Panel defaultSize="20">
-                <Card radius="sm" shadow="none" className="h-full border border-slate-200">
-                    <CardHeader className={clsx(
-                        "rounded-none bg-slate-200",
-                        "text-[10px] font-extrabold text-slate-500 uppercase",
-                        "py-2 flex items-center",
-                    )}>
-                        <ChevronRight size={16} className="text-slate-500" />
-                        Настройки
-                    </CardHeader>
-                    <LayerSettingsPanel
-                        selectedEntry={selectedLayer ?? null}
-                        selectedIndex={selectedLayerIndex ?? null}
-                        onRemove={() => {}}
-                    />
-                </Card>
+                <Group orientation="vertical">
+                    <Panel>
+                        <Card radius="sm" shadow="none" className="h-full border border-slate-200">
+                            <CardHeader className={clsx(
+                                "rounded-none bg-slate-200",
+                                "text-[10px] font-extrabold text-slate-500 uppercase",
+                                "py-2 flex items-center",
+                            )}>
+                                <ChevronRight size={16} className="text-slate-500" />
+                                Настройки
+                            </CardHeader>
+                            <LayerSettingsPanel
+                                selectedEntry={selectedLayer ?? null}
+                                selectedIndex={selectedLayerIndex ?? null}
+                                onRemove={() => { }}
+                            />
+                        </Card>
+                    </Panel>
+                </Group>
             </Panel>
         </Group>
     )
