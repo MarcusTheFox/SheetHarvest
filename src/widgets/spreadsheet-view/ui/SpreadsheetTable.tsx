@@ -83,7 +83,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                             </Table.RowIndexCell>
                             {headers.map((_, idx) => {
                                 const cellValue = row.cells[idx]?.toString() || "";
-                                const { isHidden, rowSpan, colSpan } = getCellMergeInfo(rowIndex, idx, merges);
+                                const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, merges);
 
                                 if (isHidden) return null;
 

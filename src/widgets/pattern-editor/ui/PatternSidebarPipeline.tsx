@@ -7,25 +7,22 @@ import {
     ArrowDown, ArrowUp, Settings2, Trash2,
     ExternalLink, CheckCircle2, Play
 } from "lucide-react";
-import { memo, useState, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
 import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
-import { useRunExtraction } from "@/features/run-extraction/lib/useRunExtraction";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
 import { useShallow } from "zustand/shallow";
+import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
 
 export const PatternSidebarPipeline = memo(() => {
-    const [isEditorOpen, setIsEditorOpen] = useState(false);
-    const [editorInitialIndex, setEditorInitialIndex] = useState<number | null>(null);
+    const setSelectedLayerIndex = useSelectedLayerStore(s => s.setSelectedLayerIndex);
 
     const handleOpenEditor = (index: number | null = null) => {
-        setEditorInitialIndex(index);
-        setIsEditorOpen(true);
+        setSelectedLayerIndex(index ?? undefined);
     };
 
     const params = useExtractionParams();
-    const { runExtraction } = useRunExtraction();
 
     const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore(
         useShallow(s => ({
@@ -173,13 +170,6 @@ export const PatternSidebarPipeline = memo(() => {
                     )}
                 </ScrollShadow>
             </div>
-
-            <PipelineEditor
-                isOpen={isEditorOpen}
-                initialSelectedIndex={editorInitialIndex}
-                onClose={() => setIsEditorOpen(false)}
-                onApply={runExtraction}
-            />
         </>
     );
 });
