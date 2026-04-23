@@ -3,12 +3,12 @@ import { Separator } from "@/shared/ui/Separator";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { PreviewTable } from "@/widgets/preview-view/ui/PreviewTable";
 import { useSelectedLayer } from "../lib/useSelectedLayer";
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Card, CardHeader } from "@heroui/card";
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 
 export const WorkspaceTableArea = () => {
-    const { selectedLayerIndex } = useSelectedLayer();
+    const { selectedLayerIndex, inputContext } = useSelectedLayer();
 
     if (selectedLayerIndex === undefined) {
         return (
@@ -23,9 +23,7 @@ export const WorkspaceTableArea = () => {
                             <ChevronRight size={16} className="text-slate-500" />
                             Исходные данные
                         </CardHeader>
-                        <CardBody className="p-0 overflow-auto">
-                            <SpreadsheetTable />
-                        </CardBody>
+                        <SpreadsheetTable context={inputContext} />
                     </Card>
                 </Panel>
             </Group>
@@ -47,7 +45,7 @@ export const WorkspaceTableArea = () => {
                         <ChevronRight size={16} className="text-slate-500" />
                         Данные на входе
                     </CardHeader>
-                    <SpreadsheetTable />
+                    <SpreadsheetTable context={inputContext} />
                 </Card>
             </Panel>
             <Separator className="h-1" />
