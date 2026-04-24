@@ -75,7 +75,6 @@ export const Workspace = () => {
                             <LayerSettingsPanel
                                 selectedEntry={selectedLayer ?? null}
                                 selectedIndex={selectedLayerIndex ?? null}
-                                onRemove={() => { }}
                             />
                         </Card>
                     </Panel>

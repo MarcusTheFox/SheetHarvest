@@ -13,10 +13,9 @@ import { createInitialContext } from "@/features/run-extraction/lib/context-buil
 interface LayerSettingsPanelProps {
     selectedEntry: PipelineLayer | null;
     selectedIndex: number | null;
-    onRemove: (index: number) => void;
 }
 
-export const LayerSettingsPanel = ({ selectedEntry, selectedIndex, onRemove }: LayerSettingsPanelProps) => {
+export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettingsPanelProps) => {
     const pipeline = usePatternStore(s => s.pipeline);
     const params = useExtractionParams();
     const cache = usePreviewStore(s => s.cache);
@@ -50,8 +49,6 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex, onRemove }: L
         <div className="flex flex-col h-full bg-white">
             <LayerSettingsHeader 
                 metadata={metadata}
-                index={selectedIndex}
-                onRemove={onRemove}
             />
 
             <ScrollShadow className="flex-1 p-8">
