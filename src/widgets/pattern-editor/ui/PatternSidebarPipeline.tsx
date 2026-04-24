@@ -32,9 +32,10 @@ export const PatternSidebarPipeline = memo(() => {
             isExecuting: s.isExecuting,
         }))
     );
-    const { pipeline, moveLayer, removeLayer, addLayer } = usePatternStore(
+    const { pipeline, resetPattern, moveLayer, removeLayer, addLayer } = usePatternStore(
         useShallow(s => ({
             pipeline: s.pipeline,
+            resetPattern: s.resetPattern,
             moveLayer: s.moveLayer,
             removeLayer: s.removeLayer,
             addLayer: s.addLayer,
@@ -64,16 +65,15 @@ export const PatternSidebarPipeline = memo(() => {
                     <div className="flex items-center gap-1">
                         <Button
                             isIconOnly
-                            size="sm"
                             variant="light"
-                            color="primary"
-                            title="Открыть редактор"
-                            onPress={() => handleOpenEditor()}
+                            color="danger"
+                            size="sm"
+                            onPress={resetPattern}
                         >
-                            <ExternalLink size={16} />
+                            <Trash2 size={16} />
                         </Button>
 
-                        <SearchSelectPopover 
+                        <SearchSelectPopover
                             items={availableLayersFlat}
                             onSelect={addLayer}
                             placeholder="Поиск слоя..."
@@ -82,7 +82,23 @@ export const PatternSidebarPipeline = memo(() => {
                     </div>
                 </div>
 
-                <ScrollShadow className="flex flex-col gap-2 max-h-105 pr-1">
+                <ScrollShadow className="flex flex-col gap-2">
+                    <Card shadow="none" radius="sm" className="border border-default-100 bg-default-50/50 overflow-hidden shrink-0">
+                        <CardBody className="p-3">
+                            <div className="flex items-start justify-between gap-2">
+                                <div
+                                    className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group"
+                                    onClick={() => handleOpenEditor()}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-bold text-default-400 font-mono">#0</span>
+                                        <span className="text-[12px] font-semibold truncate leading-tight group-hover:text-primary transition-colors">Исходные данные</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardBody>
+                    </Card>
+                    <div className="border-b border-slate-200 h-px" />
                     {pipeline.map((entry, index) => {
                         const metadata = LAYER_REGISTRY[entry.id];
                         if (!metadata) return null;
@@ -108,8 +124,8 @@ export const PatternSidebarPipeline = memo(() => {
                                             </Button>
                                         </div>
 
-                                        <div 
-                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group" 
+                                        <div
+                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group"
                                             onClick={() => handleOpenEditor(index)}
                                         >
                                             <div className="flex items-center gap-2">
