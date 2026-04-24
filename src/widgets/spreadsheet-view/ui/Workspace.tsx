@@ -16,10 +16,10 @@ export const Workspace = () => {
     return (
         <Group orientation="horizontal" className="gap-0.5">
             <Panel
+                collapsible
                 maxSize={400}
                 minSize={400}
                 defaultSize={400}
-                disabled
             >
                 <Group orientation="vertical" className="gap-0.5">
                     <Panel minSize={32}>

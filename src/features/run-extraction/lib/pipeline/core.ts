@@ -24,6 +24,7 @@ export interface PipelineContext<T = unknown> {
     headers: string[];
     params: ExtractionParams;
     settings?: T;
+    isColumnStructureModified: boolean;
 }
 
 export type ExtractionLayer<T = unknown> = (context: PipelineContext<T>) => PipelineContext;

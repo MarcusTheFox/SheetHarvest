@@ -33,6 +33,7 @@ export function projectionLayer(context: PipelineContext): PipelineContext {
     return {
         ...context,
         rows: projectedRows,
-        headers: headers
+        headers: headers,
+        isColumnStructureModified: true,
     };
 };

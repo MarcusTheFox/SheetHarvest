@@ -37,6 +37,7 @@ export function columnReorderLayer(context: PipelineContext<ColumnReorderLayerSe
     return {
         ...context,
         headers: updatedHeaders,
-        rows: updatedRows
+        rows: updatedRows,
+        isColumnStructureModified: true,
     };
 }

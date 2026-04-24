@@ -18,6 +18,7 @@ export function columnAddLayer(context: PipelineContext<ColumnAddLayerSettings>)
     return {
         ...context,
         headers: updatedHeaders,
-        rows: updatedRows
+        rows: updatedRows,
+        isColumnStructureModified: true,
     };
 }

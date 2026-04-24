@@ -33,7 +33,7 @@ export const WorkspaceTableArea = () => {
     return (
         <Group orientation="vertical" className="gap-0.5">
             <Panel
-                minSize="10%"
+                minSize={32}
                 defaultSize="50%"
             >
                 <Card radius="sm" shadow="none" className="h-full border border-slate-200">
@@ -50,7 +50,7 @@ export const WorkspaceTableArea = () => {
             </Panel>
             <Separator className="h-1" />
             <Panel
-                minSize="10%"
+                minSize={32}
                 defaultSize="50%"
             >
                 <Card radius="sm" shadow="none" className="h-full border border-slate-200">

@@ -1,5 +1,6 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { ColumnDeleteLayerSettings } from "./types";
+import { RowValue } from "@/shared/types/spreadsheet";
 
 export function columnDeleteLayer(context: PipelineContext<ColumnDeleteLayerSettings>): PipelineContext {
     const { rows, headers, settings } = context;
@@ -11,14 +12,26 @@ export function columnDeleteLayer(context: PipelineContext<ColumnDeleteLayerSett
     const nextHeaders = headers.filter((_, i) => !toDelete.has(i));
 
     // 2. Filter cells in rows
-    const nextRows = rows.map(row => ({
+    const nextRows: PipelineRow[] = rows.map(row => ({
         ...row,
-        cells: row.cells.filter((_, i) => !toDelete.has(i))
+        cells: row.cells.reduce((result, cell, idx) => {
+            let newCellIndex = idx;
+            for (const deleteIndex of toDelete) {
+                if (idx === deleteIndex) {
+                    return result;
+                }
+                if (idx > deleteIndex) newCellIndex--;
+            }
+
+            result[newCellIndex] = cell;
+            return result;
+        }, [] as RowValue)
     }));
 
     return {
         ...context,
         headers: nextHeaders,
-        rows: nextRows
+        rows: nextRows,
+        isColumnStructureModified: true,
     };
 };

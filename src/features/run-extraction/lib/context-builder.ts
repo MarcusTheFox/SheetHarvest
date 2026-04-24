@@ -24,6 +24,7 @@ export const createInitialContext = (params: ExtractionParams): PipelineContext 
     return {
         rows,
         headers,
-        params
+        params,
+        isColumnStructureModified: false,
     };
 };

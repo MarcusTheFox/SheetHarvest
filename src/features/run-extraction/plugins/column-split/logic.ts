@@ -60,6 +60,7 @@ export function columnSplitLayer(context: PipelineContext<ColumnSplitLayerSettin
     return {
         ...context,
         headers: newHeaders,
-        rows: transformedRows
+        rows: transformedRows,
+        isColumnStructureModified: true,
     };
 };

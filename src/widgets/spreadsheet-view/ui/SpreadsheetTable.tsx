@@ -50,7 +50,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
     }
 
     const rows = context.rows;
-    const merges = context.params.merges || [];
+    const merges = !context.isColumnStructureModified ? (context.params.merges || []) : [];
 
     const maxCols = rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
     const headers = context.headers.length
