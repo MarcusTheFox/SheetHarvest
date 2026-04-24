@@ -52,13 +52,18 @@ export const PatternSidebarPipeline = memo(() => {
         }));
     }, [pipeline]);
 
+    const handleClearPipeline = () => {
+        handleOpenEditor();
+        resetPattern();
+    };
+
     return (
         <>
             <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-2 text-default-600">
                         <Settings2 size={16} />
-                        <span className="text-[11px] font-bold uppercase tracking-wider">Пайплайн</span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider">Функций</span>
                         <Chip size="sm" variant="flat" className="h-5 text-[10px]">{pipeline.length}</Chip>
                     </div>
 
@@ -68,7 +73,7 @@ export const PatternSidebarPipeline = memo(() => {
                             variant="light"
                             color="danger"
                             size="sm"
-                            onPress={resetPattern}
+                            onPress={handleClearPipeline}
                         >
                             <Trash2 size={16} />
                         </Button>

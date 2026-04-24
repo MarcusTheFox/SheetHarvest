@@ -24,6 +24,9 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
 
     useEffect(() => {
         if (selectedIndex !== null && selectedIndex > 0 && params) {
+            const selectedLayer = pipeline[selectedIndex - 1];
+            if (!selectedLayer) return;
+
             const prevLayerId = pipeline[selectedIndex - 1].instanceId;
             if (!cache[prevLayerId]) {
                 runUpToLayer(prevLayerId, pipeline, params);
@@ -35,6 +38,9 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
         if (!selectedEntry || selectedIndex === null || !params) return undefined;
         if (selectedIndex === 0) return createInitialContext(params);
         
+        const selectedLayer = pipeline[selectedIndex - 1];
+        if (!selectedLayer) return;
+
         const prevLayerId = pipeline[selectedIndex - 1].instanceId;
         return cache[prevLayerId];
     }, [selectedEntry, selectedIndex, params, pipeline, cache]);
@@ -47,7 +53,7 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
 
     return (
         <div className="flex flex-col h-full bg-white">
-            <LayerSettingsHeader 
+            <LayerSettingsHeader
                 metadata={metadata}
             />
 
@@ -58,9 +64,9 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
                         <span className="text-sm">Вычисляем контекст...</span>
                     </div>
                 ) : (
-                    <LayerConfigRenderer 
-                        entry={selectedEntry} 
-                        index={selectedIndex} 
+                    <LayerConfigRenderer
+                        entry={selectedEntry}
+                        index={selectedIndex}
                         prevContext={prevContext}
                     />
                 )}
