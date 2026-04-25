@@ -32,6 +32,7 @@ export const UploadButton = () => {
         variant="flat" 
         startContent={<Upload size={18} />}
         onPress={() => fileInputRef.current?.click()}
+        className="shrink-0"
       >
         Загрузить таблицу
       </Button>

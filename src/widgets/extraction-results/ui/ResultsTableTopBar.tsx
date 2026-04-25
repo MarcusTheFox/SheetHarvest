@@ -12,7 +12,7 @@ interface ResultsTableTopBarProps {
 
 export const ResultsTableTopBar = memo(({ tablesCount, totalRowsCount, onClear }: ResultsTableTopBarProps) => {
   return (
-    <Card className="mb-8 shadow-md border border-default-100 sticky top-12 z-30">
+    <Card className="mb-8 shadow-md border border-default-100 sticky top-12 z-30 shrink-0">
       <CardBody className="flex flex-row items-center justify-between p-6">
         <div className="flex items-center gap-6">
           <div className="flex flex-col gap-1">

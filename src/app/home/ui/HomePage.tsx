@@ -6,6 +6,7 @@ import { UploadButton } from "@/features/upload-spreadsheet/ui/UploadButton";
 import { ResultsTable } from "@/widgets/extraction-results/ui/ResultsTable";
 import { TableProperties } from "lucide-react";
 import { Workspace } from "@/widgets/spreadsheet-view/ui/Workspace";
+import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
 
 const Logo = () => (
   <div className="flex items-center gap-3">
@@ -28,7 +29,10 @@ export const HomePage = () => {
     <div className="h-screen flex flex-col">
       <header className="flex justify-between items-center p-2 border-b shrink-0">
         <Logo />
-        {!isExtracted && <UploadButton />}
+        <div className="flex flex-row gap-4 items-center">
+          {!isExtracted && <UploadButton />}
+          {hasData && <RunExtractionButton />}
+        </div>
       </header>
 
       <main className="h-full flex gap-6 p-1">
