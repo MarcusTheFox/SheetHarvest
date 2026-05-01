@@ -1,7 +1,6 @@
 import { Group, Panel } from "react-resizable-panels";
 import { Separator } from "@/shared/ui/Separator";
-import { SpreadsheetTable } from "./SpreadsheetTable";
-import { PreviewTable } from "@/widgets/preview-view/ui/PreviewTable";
+import { SpreadsheetTableContainer } from "./SpreadsheetTable";
 import { useSelectedLayer } from "../lib/useSelectedLayer";
 import { Card, CardHeader } from "@heroui/card";
 import clsx from "clsx";
@@ -23,7 +22,7 @@ export const WorkspaceTableArea = () => {
                             <ChevronRight size={16} className="text-slate-500" />
                             Исходные данные
                         </CardHeader>
-                        <SpreadsheetTable context={inputContext} />
+                        <SpreadsheetTableContainer context={inputContext} showGroupSeparator />
                     </Card>
                 </Panel>
             </Group>
@@ -45,7 +44,7 @@ export const WorkspaceTableArea = () => {
                         <ChevronRight size={16} className="text-slate-500" />
                         Данные на входе
                     </CardHeader>
-                    <SpreadsheetTable context={inputContext} />
+                    <SpreadsheetTableContainer context={inputContext} showGroupSeparator />
                 </Card>
             </Panel>
             <Separator className="h-1" />
@@ -62,8 +61,7 @@ export const WorkspaceTableArea = () => {
                         <ChevronRight size={16} className="text-slate-500" />
                         Данные на выходе
                     </CardHeader>
-                    <SpreadsheetTable context={outputContext} />
-                    {/* <PreviewTable /> */}
+                    <SpreadsheetTableContainer context={outputContext} showGroupSeparator />
                 </Card>
             </Panel>
         </Group>

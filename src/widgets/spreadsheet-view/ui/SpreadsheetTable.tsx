@@ -3,24 +3,27 @@
 import clsx from "clsx";
 import { Table } from "@/shared/ui/Table";
 import { getCellMergeInfo } from "../lib/merge-utils";
-import { PipelineContext } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineContext, PipelineRow } from "@/features/run-extraction/lib/pipeline/core";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
 import { Fragment } from "react";
+import { MergeRange } from "@/shared/types/spreadsheet";
 
-interface SpreadsheetTableProps {
+interface SpreadsheetTableContainerProps {
     context?: PipelineContext;
     isLoading?: boolean;
     isExecuting?: boolean;
     emptyMessage?: string;
+    showGroupSeparator?: boolean;
 }
 
-export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
+export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps) => {
     const {
         context,
         isLoading = false,
         isExecuting = false,
         emptyMessage = "Нет данных для отображения",
+        showGroupSeparator,
     } = props;
 
     if (isLoading) {
@@ -50,17 +53,36 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
         );
     }
 
-    const rows = context.rows;
-    const tables = rows.reduce((acc, row) => {
+    const merges = !context.isColumnStructureModified ? (context.params.merges || []) : [];
+
+    return (
+        <SpreadsheetTable
+            rows={context.rows}
+            headers={context.headers}
+            merges={merges}
+            showGroupSeparator={showGroupSeparator}
+        />
+    );
+};
+
+interface SpreadsheetTableProps {
+    rows: PipelineRow[];
+    merges?: MergeRange[];
+    headers?: string[] | number[];
+    showGroupSeparator?: boolean;
+}
+
+export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
+    const tables = props.rows.reduce((acc, row) => {
         acc[row.groupIndex] = (acc[row.groupIndex] ?? 0) + 1;
         return acc;
     }, [] as number[])
 
-    const merges = !context.isColumnStructureModified ? (context.params.merges || []) : [];
+    const merges = props.merges ?? [];
 
-    const maxCols = rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
-    const headers = context.headers.length
-        ? context.headers
+    const maxCols = props.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
+    const headers = props.headers?.length
+        ? props.headers
         : Array.from({ length: maxCols }, (_, i) => i);
 
     return (
@@ -77,13 +99,13 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                     </Table.HeaderRow>
                 </Table.Header>
                 <Table.Body>
-                    {rows.map((row, rowIndex) => {
+                    {props.rows.map((row, rowIndex) => {
                         const isNewGroup =
-                            rowIndex === 0 || rows[rowIndex - 1].groupIndex !== row.groupIndex;
+                            rowIndex === 0 || props.rows[rowIndex - 1].groupIndex !== row.groupIndex;
 
                         return (
                             <Fragment key={`${row.originalIndex}-${rowIndex}`}>
-                                {isNewGroup && (
+                                {props.showGroupSeparator && isNewGroup && (
                                     <Table.Row>
                                         <Table.Cell
                                             colSpan={headers.length + 1}
@@ -91,7 +113,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                                         >
                                             <div className="flex flex-row justify-between">
                                                 <p>
-                                                    Table {row.groupIndex + 1}
+                                                    Таблица: #{row.groupIndex}
                                                 </p>
                                                 <p>
                                                     Строк: {tables[row.groupIndex]}

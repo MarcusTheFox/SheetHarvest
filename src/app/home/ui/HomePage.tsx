@@ -3,10 +3,11 @@
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { UploadButton } from "@/features/upload-spreadsheet/ui/UploadButton";
-import { ResultsTable } from "@/widgets/extraction-results/ui/ResultsTable";
-import { TableProperties } from "lucide-react";
+import { TableProperties, X } from "lucide-react";
 import { Workspace } from "@/widgets/spreadsheet-view/ui/Workspace";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
+import { ResultSpace } from "@/widgets/spreadsheet-view/ui/ResultSpace";
+import { Button } from "@heroui/button";
 
 const Logo = () => (
   <div className="flex items-center gap-3">
@@ -24,6 +25,7 @@ const EmptyPage = () => (
 export const HomePage = () => {
   const hasData = useSpreadsheetStore((state) => state.sheets.length > 0);
   const isExtracted = useExtractionStore((state) => state.isExtracted);
+  const clearResults = useExtractionStore((state) => state.clearResults);
 
   return (
     <div className="h-screen flex flex-col">
@@ -31,7 +33,18 @@ export const HomePage = () => {
         <Logo />
         <div className="flex flex-row gap-4 items-center">
           {!isExtracted && <UploadButton />}
-          {hasData && <RunExtractionButton />}
+          {isExtracted && (
+            <Button
+              variant="flat"
+              color="danger"
+              className="font-semibold"
+              onPress={clearResults}
+              startContent={<X size={18} />}
+            >
+              Закрыть результаты
+            </Button>
+          )}
+          {hasData && !isExtracted && <RunExtractionButton />}
         </div>
       </header>
 
@@ -43,7 +56,7 @@ export const HomePage = () => {
             {!isExtracted ? (
               <Workspace />
             ) : (
-              <ResultsTable />
+              <ResultSpace />
             )}
           </>
         )}

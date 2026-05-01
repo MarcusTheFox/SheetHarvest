@@ -1,12 +1,11 @@
-import { PipelineContext, ExtractionParams } from "./pipeline/core";
+import { PipelineContext, ExtractionParams, PipelineRow, PipelineTable } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
-import { TableValue } from "@/shared/types/spreadsheet";
 import { createInitialContext } from "./context-builder";
 
 export const extractData = (
     params: ExtractionParams,
     cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
-): { tables: TableValue[]; headers: string[] } => {
+): { tables: PipelineTable[]; headers: string[] } => {
     
     let currentContext = createInitialContext(params);
     let startIndex = 0;
@@ -45,18 +44,28 @@ export const extractData = (
     }
 
     // 3. Формируем итоговые таблицы из финального контекста
-    const tablesMap = new Map<number, TableValue>();
+    const rowsMap = new Map<number, PipelineRow[]>();
 
     for (const row of currentContext.rows) {
-        if (!tablesMap.has(row.groupIndex)) {
-            tablesMap.set(row.groupIndex, []);
+        if (!rowsMap.has(row.groupIndex)) {
+            rowsMap.set(row.groupIndex, []);
         }
-        tablesMap.get(row.groupIndex)!.push(row.cells);
+        rowsMap.get(row.groupIndex)!.push(row);
     }
+
+    let tables: PipelineTable[] = [];
+
+    rowsMap.forEach((rows, key) => {
+        tables.push({
+            id: key,
+            name: `#${key}`,
+            rows: rows
+        })
+    });
 
     // 4. Возвращаем результат
     return {
-        tables: Array.from(tablesMap.values()),
+        tables,
         headers: currentContext.headers
     };
 };

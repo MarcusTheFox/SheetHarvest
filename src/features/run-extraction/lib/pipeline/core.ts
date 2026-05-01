@@ -19,6 +19,12 @@ export interface PipelineRow {
     groupIndex: number;
 }
 
+export interface PipelineTable {
+    rows: PipelineRow[];
+    name: string;
+    id: number;
+}
+
 export interface PipelineContext<T = unknown> {
     rows: PipelineRow[];
     headers: string[];
