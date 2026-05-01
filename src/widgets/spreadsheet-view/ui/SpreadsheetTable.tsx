@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { Table } from "@/shared/ui/Table";
 import { getCellMergeInfo } from "../lib/merge-utils";
-import { PipelineContext, PipelineRow } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
 import { Fragment } from "react";
@@ -73,10 +73,20 @@ interface SpreadsheetTableProps {
 }
 
 export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
-    const tables = props.rows.reduce((acc, row) => {
-        acc[row.groupIndex] = (acc[row.groupIndex] ?? 0) + 1;
-        return acc;
-    }, [] as number[])
+    const groupMap = new Map<number, PipelineTable>();
+
+    for (const row of props.rows) {
+        if (!groupMap.has(row.groupIndex)) {
+            groupMap.set(row.groupIndex, {
+                id: row.groupIndex,
+                name: `#${row.groupIndex}`,
+                rows: []
+            });
+        }
+        groupMap.get(row.groupIndex)?.rows.push(row);
+    }
+
+    const tables = Array.from(groupMap.values());
 
     const merges = props.merges ?? [];
 
@@ -99,13 +109,10 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                     </Table.HeaderRow>
                 </Table.Header>
                 <Table.Body>
-                    {props.rows.map((row, rowIndex) => {
-                        const isNewGroup =
-                            rowIndex === 0 || props.rows[rowIndex - 1].groupIndex !== row.groupIndex;
-
+                    {tables.map((table) => {
                         return (
-                            <Fragment key={`${row.originalIndex}-${rowIndex}`}>
-                                {props.showGroupSeparator && isNewGroup && (
+                            <Fragment key={table.id}>
+                                {props.showGroupSeparator && (
                                     <Table.Row>
                                         <Table.Cell
                                             colSpan={headers.length + 1}
@@ -113,41 +120,44 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                                         >
                                             <div className="flex flex-row justify-between">
                                                 <p>
-                                                    Таблица: #{row.groupIndex}
+                                                    Таблица: {table.name}
                                                 </p>
                                                 <p>
-                                                    Строк: {tables[row.groupIndex]}
+                                                    Строк: {table.rows.length}
                                                 </p>
                                             </div>
                                         </Table.Cell>
                                     </Table.Row>
                                 )}
-                                <Table.Row
-                                    key={rowIndex}
-                                    className={clsx(
-                                        "group transition-all",
-                                    )}
-                                >
-                                    <Table.RowIndexCell>
-                                        {row.originalIndex + 1}
-                                    </Table.RowIndexCell>
-                                    {headers.map((_, idx) => {
-                                        const cellValue = row.cells[idx]?.toString() || "";
-                                        const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, merges);
 
-                                        if (isHidden) return null;
+                                {table.rows.map((row, rowIdx) =>
+                                    <Table.Row
+                                        key={row.originalIndex}
+                                        className={clsx(
+                                            "group transition-all",
+                                        )}
+                                    >
+                                        <Table.RowIndexCell>
+                                            {row.originalIndex + 1}
+                                        </Table.RowIndexCell>
+                                        {headers.map((_, idx) => {
+                                            const cellValue = row.cells[idx]?.toString() || "";
+                                            const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, merges);
 
-                                        return (
-                                            <Table.Cell
-                                                key={`${rowIndex}-${idx}`}
-                                                rowSpan={rowSpan}
-                                                colSpan={colSpan}
-                                            >
-                                                {cellValue}
-                                            </Table.Cell>
-                                        );
-                                    })}
-                                </Table.Row>
+                                            if (isHidden) return null;
+
+                                            return (
+                                                <Table.Cell
+                                                    key={`${row.originalIndex}-${idx}`}
+                                                    rowSpan={rowSpan}
+                                                    colSpan={colSpan}
+                                                >
+                                                    {cellValue}
+                                                </Table.Cell>
+                                            );
+                                        })}
+                                    </Table.Row>
+                                )}
                             </Fragment>
                         )
                     })}
