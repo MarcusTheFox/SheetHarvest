@@ -5,10 +5,9 @@ import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry"
 import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
 import {
     ArrowDown, ArrowUp, Settings2, Trash2,
-    ExternalLink, CheckCircle2, Play
+    CheckCircle2, Play
 } from "lucide-react";
 import { memo, useMemo } from "react";
-import { PipelineEditor } from "../../pipeline-editor/ui/PipelineEditor";
 import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";

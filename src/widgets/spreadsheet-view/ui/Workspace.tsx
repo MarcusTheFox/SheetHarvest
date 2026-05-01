@@ -1,4 +1,3 @@
-import { PatternSidebar } from "@/widgets/pattern-editor/ui/PatternSidebar";
 import { ChevronRight } from "lucide-react";
 import { Group, Panel } from "react-resizable-panels";
 import { Card, CardBody, CardHeader } from "@heroui/card";
