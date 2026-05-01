@@ -3,12 +3,6 @@ import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
     allRows: TableValue;
-    headerRowIndex: number | null;
-    tableHeaderRow: RowValue;
-    isManualMode: boolean;
-    selectedColumns: number[];
-    customNames: Record<number, string>;
-    hiddenColumns: number[];
     pipeline: PipelineLayer[];
     merges: MergeRange[];
 }

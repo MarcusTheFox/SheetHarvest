@@ -5,30 +5,24 @@ import { useShallow } from "zustand/shallow";
 import { useMemo } from "react";
 
 export const useExtractionParams = (): ExtractionParams | null => {
-  const { sheets, currentSheetIndex } = useSpreadsheetStore();
-  const pattern = usePatternStore(
+  const { sheets, currentSheetIndex } = useSpreadsheetStore(
     useShallow(s => ({
-      headerRowIndex: s.headerRowIndex,
-      isManualMode: s.isManualMode,
-      selectedColumns: s.selectedColumns,
-      customNames: s.customNames,
-      hiddenColumns: s.hiddenColumns,
-      pipeline: s.pipeline,
+      sheets: s.sheets,
+      currentSheetIndex: s.currentSheetIndex,
     }))
   );
-  
+
+  const pipeline = usePatternStore(s => s.pipeline);
+
   const currentSheet = useMemo(() => {
     return sheets[currentSheetIndex];
   }, [sheets, currentSheetIndex]);
   
   if (!currentSheet) return null;
 
-  const tableHeaderRow = pattern.headerRowIndex !== null ? currentSheet.data[pattern.headerRowIndex] : [];
-
   return {
-      allRows: currentSheet.data,
-      tableHeaderRow,
-      merges: currentSheet.merges || [],
-      ...pattern,
+    allRows: currentSheet.data,
+    merges: currentSheet.merges || [],
+    pipeline,
   };
 };
