@@ -1,39 +1,56 @@
-import { getActiveColIndices } from "../../lib/extraction-utils";
 import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
+import { ProjectionLayerSettings, ProjectionColumn } from "./types";
 
-export function projectionLayer(context: PipelineContext): PipelineContext {
-    const { rows, params } = context;
+export function projectionLayer(context: PipelineContext<ProjectionLayerSettings>): PipelineContext {
+    const { rows, headers, settings } = context;
 
-    // Получаем индексы колонок, которые должны остаться (активные)
-    const activeColIndices = getActiveColIndices({
-        allRows: params.allRows,
-        headerRowIndex: params.headerRowIndex,
-        tableHeaderRow: params.tableHeaderRow,
-        hiddenColumns: params.hiddenColumns,
-        selectedColumns: params.selectedColumns,
-        isManualMode: params.isManualMode,
-        customNames: params.customNames,
-        merges: params.merges
+    if (!settings) {
+        return context;
+    }
+    
+    let targetColumns: ProjectionColumn[] = [];
+
+    if (settings.mode === 'manual') {
+        // В ручном режиме просто берем то, что настроил пользователь
+        targetColumns = settings.columns || [];
+    } else {
+        // В автоматическом режиме ищем строку-заголовок в текущем наборе строк
+        const hIdx = settings.headerRowIndex - 1;
+        // Ищем строку по originalIndex, так как до проекции индексы строк еще "сырые"
+        const headerRow = rows.find(r => r.originalIndex === hIdx);
+        
+        if (headerRow) {
+            headerRow.cells.forEach((cell, idx) => {
+                const val = cell?.toString().trim();
+                // Если ячейка в строке заголовка не пуста - фиксируем колонку
+                if (val) {
+                    targetColumns.push({
+                        index: idx,
+                        name: val 
+                    });
+                }
+            });
+        }
+    }
+
+    // Если ничего не выбрано, возвращаем контекст как есть, чтобы не "сломать" данные
+    if (targetColumns.length === 0) return context;
+
+    // Формируем новые заголовки
+    const nextHeaders = targetColumns.map(col => {
+        return col.name || headers[col.index] || `Col ${col.index}`;
     });
 
-    // Формируем новые заголовки для оставшихся столбцов
-    const headers = activeColIndices.map(idx => {
-        return params.customNames[idx] ||
-            params.tableHeaderRow[idx]?.toString() ||
-            String.fromCharCode(65 + idx);
-    });
-
-    // Оставляем в строках только данные из активных столбцов
-    const projectedRows = rows.map((row): PipelineRow => ({
-        originalIndex: row.originalIndex,
-        cells: activeColIndices.map(idx => row.cells[idx]),
-        groupIndex: row.groupIndex
+    // Трансформируем строки: оставляем только выбранные ячейки
+    const nextRows = rows.map((row): PipelineRow => ({
+        ...row,
+        cells: targetColumns.map(col => row.cells[col.index])
     }));
 
     return {
         ...context,
-        rows: projectedRows,
-        headers: headers,
+        headers: nextHeaders,
+        rows: nextRows,
         isColumnStructureModified: true,
     };
-};
+}
