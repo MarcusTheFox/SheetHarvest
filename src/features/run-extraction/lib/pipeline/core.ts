@@ -2,9 +2,8 @@ import { PipelineLayer } from "@/entities/pattern/model/types";
 import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
-    allRows: TableValue;
+    tables: PipelineTable[];
     pipeline: PipelineLayer[];
-    merges: MergeRange[];
 }
 
 export interface PipelineRow {
@@ -17,6 +16,7 @@ export interface PipelineTable {
     rows: PipelineRow[];
     name: string;
     id: number;
+    merges?: MergeRange[];
 }
 
 export interface PipelineContext<T = unknown> {

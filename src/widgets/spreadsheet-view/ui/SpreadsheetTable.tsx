@@ -53,7 +53,9 @@ export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps)
         );
     }
 
-    const merges = !context.isColumnStructureModified ? (context.params.merges || []) : [];
+    const merges = context.isColumnStructureModified
+        ? undefined
+        : new Map(context.params.tables.map(table => [table.id, table.merges ?? []]));
 
     return (
         <SpreadsheetTable
@@ -67,7 +69,7 @@ export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps)
 
 interface SpreadsheetTableProps {
     rows: PipelineRow[];
-    merges?: MergeRange[];
+    merges?: Map<number, MergeRange[]>;
     headers?: string[] | number[];
     showGroupSeparator?: boolean;
 }
@@ -88,7 +90,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
 
     const tables = Array.from(groupMap.values());
 
-    const merges = props.merges ?? [];
+    const merges = props.merges ?? new Map<number, MergeRange[]>();
 
     const maxCols = props.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
     const headers = props.headers?.length
@@ -110,6 +112,8 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                 </Table.Header>
                 <Table.Body>
                     {tables.map((table) => {
+                        const tableMerges = merges.get(table.id) ?? [];
+
                         return (
                             <Fragment key={table.id}>
                                 {props.showGroupSeparator && (
@@ -142,7 +146,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                                         </Table.RowIndexCell>
                                         {headers.map((_, idx) => {
                                             const cellValue = row.cells[idx]?.toString() || "";
-                                            const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, merges);
+                                            const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, tableMerges);
 
                                             if (isHidden) return null;
 
