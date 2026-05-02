@@ -3,11 +3,11 @@
 import clsx from "clsx";
 import { Table } from "@/shared/ui/Table";
 import { getCellMergeInfo } from "../lib/merge-utils";
-import { PipelineContext, PipelineRow, PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineContext, PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
 import { Fragment } from "react";
-import { MergeRange } from "@/shared/types/spreadsheet";
+import { createHeadersFromTables } from "@/features/run-extraction/lib/pipeline/utils";
 
 interface SpreadsheetTableContainerProps {
     context?: PipelineContext;
@@ -53,49 +53,27 @@ export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps)
         );
     }
 
-    const merges = context.isColumnStructureModified
-        ? undefined
-        : new Map(context.params.tables.map(table => [table.id, table.merges ?? []]));
-
     return (
         <SpreadsheetTable
-            rows={context.rows}
+            tables={context.tables}
             headers={context.headers}
-            merges={merges}
             showGroupSeparator={showGroupSeparator}
         />
     );
 };
 
 interface SpreadsheetTableProps {
-    rows: PipelineRow[];
-    merges?: Map<number, MergeRange[]>;
+    tables: PipelineTable[];
     headers?: string[] | number[];
     showGroupSeparator?: boolean;
 }
 
 export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
-    const groupMap = new Map<number, PipelineTable>();
+    const tables = props.tables;
 
-    for (const row of props.rows) {
-        if (!groupMap.has(row.groupIndex)) {
-            groupMap.set(row.groupIndex, {
-                id: row.groupIndex,
-                name: `#${row.groupIndex}`,
-                rows: []
-            });
-        }
-        groupMap.get(row.groupIndex)?.rows.push(row);
-    }
-
-    const tables = Array.from(groupMap.values());
-
-    const merges = props.merges ?? new Map<number, MergeRange[]>();
-
-    const maxCols = props.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
     const headers = props.headers?.length
         ? props.headers
-        : Array.from({ length: maxCols }, (_, i) => i);
+        : createHeadersFromTables(tables);
 
     return (
         <div className="overflow-auto border-none bg-white">
@@ -112,7 +90,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                 </Table.Header>
                 <Table.Body>
                     {tables.map((table) => {
-                        const tableMerges = merges.get(table.id) ?? [];
+                        const tableMerges = table.merges ?? [];
 
                         return (
                             <Fragment key={table.id}>

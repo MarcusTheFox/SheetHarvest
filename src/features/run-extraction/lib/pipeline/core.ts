@@ -18,7 +18,7 @@ export interface PipelineTable {
 }
 
 export interface PipelineContext {
-    rows: PipelineRow[];
+    tables: PipelineTable[];
     headers: string[];
     params: ExtractionParams;
     isColumnStructureModified: boolean;

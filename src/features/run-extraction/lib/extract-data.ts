@@ -1,7 +1,8 @@
-import { PipelineContext, ExtractionParams, PipelineRow, PipelineTable } from "./pipeline/core";
+import { PipelineContext, PipelineTable } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
 import { createInitialContext } from "./context-builder";
 import { PipelineLayer } from "@/entities/pattern/model/types";
+import { createHeadersFromTables } from "./pipeline/utils";
 
 export const extractData = (
     sourceTables: PipelineTable[],
@@ -38,36 +39,13 @@ export const extractData = (
         }
     }
 
-    if (currentContext.headers.length === 0 && currentContext.rows.length > 0) {
-        const maxCols = currentContext.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
-        currentContext.headers = Array.from({ length: maxCols }, (_, i) => 
-            String.fromCharCode(65 + i)
-        );
+    if (currentContext.headers.length === 0 && currentContext.tables.length > 0) {
+        currentContext.headers = createHeadersFromTables(currentContext.tables);
     }
-
-    // 3. Формируем итоговые таблицы из финального контекста
-    const rowsMap = new Map<number, PipelineRow[]>();
-
-    for (const row of currentContext.rows) {
-        if (!rowsMap.has(row.groupIndex)) {
-            rowsMap.set(row.groupIndex, []);
-        }
-        rowsMap.get(row.groupIndex)!.push(row);
-    }
-
-    let tables: PipelineTable[] = [];
-
-    rowsMap.forEach((rows, key) => {
-        tables.push({
-            id: key,
-            name: `#${key}`,
-            rows: rows
-        })
-    });
 
     // 4. Возвращаем результат
     return {
-        tables,
+        tables: currentContext.tables,
         headers: currentContext.headers
     };
 };

@@ -10,9 +10,11 @@ import { useState } from "react";
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
 
-    const [selectedTableId, setSelectedTableId] = useState(results[0]?.id ?? 0);
+    const [selectedTableId, setSelectedTableId] = useState(0);
 
     const isEmpty = results.length === 0;
+
+    const selectedTable = results[selectedTableId];
 
     const handleTableClick = (id: number) => {
         setSelectedTableId(id);
@@ -94,12 +96,12 @@ export const ResultSpace = () => {
                                 <ChevronRight size={16} className="text-slate-500" />
                                 {isEmpty
                                     ? <p>Результат</p>
-                                    : <p>Таблица: {results[selectedTableId].name}</p>
+                                    : <p>Таблица: { selectedTable.name }</p>
                                 }
                             </CardHeader>
                             {!isEmpty &&
                                 <SpreadsheetTable
-                                    rows={results[selectedTableId].rows}
+                                    tables={[ selectedTable ]}
                                     headers={headers}
                                 />
                             }
