@@ -4,12 +4,12 @@ import { createInitialContext } from "./context-builder";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 
 export const extractData = (
-    params: ExtractionParams,
+    sourceTables: PipelineTable[],
     pipeline: PipelineLayer[],
     cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
 ): { tables: PipelineTable[]; headers: string[] } => {
     
-    let currentContext = createInitialContext(params);
+    let currentContext = createInitialContext(sourceTables);
     let startIndex = 0;
 
     // 1. Ищем самый "глубокий" слой, который уже есть в кеше

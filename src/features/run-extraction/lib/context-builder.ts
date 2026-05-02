@@ -1,7 +1,7 @@
-import { ExtractionParams, PipelineContext, PipelineRow } from "./pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "./pipeline/core";
 
-export const createInitialContext = (params: ExtractionParams): PipelineContext => {
-    const rows = params.tables.map(table =>
+export const createInitialContext = (tables: PipelineTable[]): PipelineContext => {
+    const rows = tables.map(table =>
         table.rows.map((row, idx) => ({
             originalIndex: idx,
             cells: structuredClone(row.cells),
@@ -18,7 +18,7 @@ export const createInitialContext = (params: ExtractionParams): PipelineContext 
     return {
         rows,
         headers,
-        params,
+        params: {tables},
         isColumnStructureModified: false,
     };
 };

@@ -28,7 +28,7 @@ export const usePreviewStore = create<PreviewState>((set, get) => ({
     setTimeout(() => {
       const { cache } = get();
       const newCache = { ...cache };
-      let currentContext = createInitialContext(params);
+      let currentContext = createInitialContext(params.tables);
 
       for (let i = 0; i < pipeline.length; i++) {
         const layer = pipeline[i];

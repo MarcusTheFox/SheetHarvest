@@ -10,7 +10,7 @@ import {
 import { memo, useMemo } from "react";
 import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { usePreviewStore } from "@/entities/preview/model/store";
-import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
+import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
 import { useShallow } from "zustand/shallow";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
 
@@ -21,7 +21,7 @@ export const PatternSidebarPipeline = memo(() => {
         setSelectedLayerIndex(index ?? undefined);
     };
 
-    const params = useExtractionParams();
+    const sourceTables = useExtractionSource();
 
     const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore(
         useShallow(s => ({
@@ -122,7 +122,7 @@ export const PatternSidebarPipeline = memo(() => {
                                                 variant={isCached ? "flat" : "solid"}
                                                 color={isActivePreview ? "primary" : isCached ? "success" : "default"}
                                                 isLoading={isExecuting && isActivePreview}
-                                                onPress={() => params && runUpToLayer(entry.instanceId, pipeline, params)}
+                                                onPress={() => runUpToLayer(entry.instanceId, pipeline, { tables: sourceTables })}
                                             >
                                                 {isCached ? <CheckCircle2 size={16} /> : <Play size={14} className="ml-0.5" />}
                                             </Button>

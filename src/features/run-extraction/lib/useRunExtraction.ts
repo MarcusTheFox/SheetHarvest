@@ -2,11 +2,11 @@ import { useCallback } from "react";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { extractData } from "./extract-data";
-import { useExtractionParams } from "./useExtractionParams";
+import { useExtractionSource } from "./useExtractionParams";
 import { usePatternStore } from "@/entities/pattern/model/store";
 
 export const useRunExtraction = () => {
-    const params = useExtractionParams();
+    const sourceTables = useExtractionSource();
 
     const pipeline = usePatternStore(s => s.pipeline);
 
@@ -14,15 +14,15 @@ export const useRunExtraction = () => {
     const cache = usePreviewStore(s => s.cache);
 
     const runExtraction = useCallback(() => {
-        if (!params) {
-            console.error('No sheet selected');
+        if (!sourceTables.length) {
+            console.error('No sheets data');
             return;
         }
 
-        const results = extractData(params, pipeline, cache);
+        const results = extractData(sourceTables, pipeline, cache);
 
         setResults(results);
-    }, [params, cache, setResults]);
+    }, [sourceTables, cache, setResults]);
 
     return { runExtraction };
 };

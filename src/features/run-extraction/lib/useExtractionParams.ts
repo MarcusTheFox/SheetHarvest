@@ -1,15 +1,9 @@
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { ExtractionParams, PipelineTable } from "./pipeline/core";
-import { useShallow } from "zustand/shallow";
+import { PipelineTable } from "./pipeline/core";
 import { useMemo } from "react";
 
-export const useExtractionParams = (): ExtractionParams | undefined => {
-  const { sheets } = useSpreadsheetStore(
-    useShallow(s => ({
-      sheets: s.sheets,
-      currentSheetIndex: s.currentSheetIndex,
-    }))
-  );
+export const useExtractionSource = (): PipelineTable[] => {
+  const sheets = useSpreadsheetStore(s => s.sheets);
 
   const tables = useMemo(() => {
     return sheets.map((sheet, idx) => ({
@@ -24,9 +18,5 @@ export const useExtractionParams = (): ExtractionParams | undefined => {
     } as PipelineTable))
   }, [sheets]);
 
-  if (tables.length === 0) return;
-
-  return {
-    tables,
-  };
+  return tables;
 };
