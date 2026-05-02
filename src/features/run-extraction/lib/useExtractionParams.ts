@@ -1,4 +1,3 @@
-import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { ExtractionParams, PipelineTable } from "./pipeline/core";
 import { useShallow } from "zustand/shallow";
@@ -11,8 +10,6 @@ export const useExtractionParams = (): ExtractionParams | undefined => {
       currentSheetIndex: s.currentSheetIndex,
     }))
   );
-
-  const pipeline = usePatternStore(s => s.pipeline);
 
   const tables = useMemo(() => {
     return sheets.map((sheet, idx) => ({
@@ -31,6 +28,5 @@ export const useExtractionParams = (): ExtractionParams | undefined => {
 
   return {
     tables,
-    pipeline,
   };
 };

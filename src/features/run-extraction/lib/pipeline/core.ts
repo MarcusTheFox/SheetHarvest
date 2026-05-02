@@ -1,9 +1,7 @@
-import { PipelineLayer } from "@/entities/pattern/model/types";
-import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
+import { MergeRange, RowValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
     tables: PipelineTable[];
-    pipeline: PipelineLayer[];
 }
 
 export interface PipelineRow {

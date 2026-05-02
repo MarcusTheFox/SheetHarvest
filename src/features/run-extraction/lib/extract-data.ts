@@ -1,9 +1,11 @@
 import { PipelineContext, ExtractionParams, PipelineRow, PipelineTable } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
 import { createInitialContext } from "./context-builder";
+import { PipelineLayer } from "@/entities/pattern/model/types";
 
 export const extractData = (
     params: ExtractionParams,
+    pipeline: PipelineLayer[],
     cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
 ): { tables: PipelineTable[]; headers: string[] } => {
     
@@ -13,8 +15,8 @@ export const extractData = (
     // 1. Ищем самый "глубокий" слой, который уже есть в кеше
     if (cache) {
         // Идем с конца пайплайна к началу
-        for (let i = params.pipeline.length - 1; i >= 0; i--) {
-            const layer = params.pipeline[i];
+        for (let i = pipeline.length - 1; i >= 0; i--) {
+            const layer = pipeline[i];
             if (cache[layer.instanceId]) {
                 // Нашли кеш! Берем его как стартовую точку
                 currentContext = cache[layer.instanceId];
@@ -26,8 +28,8 @@ export const extractData = (
     }
 
     // 2. Прогоняем данные только через оставшиеся (некешированные) слои
-    for (let i = startIndex; i < params.pipeline.length; i++) {
-        const entry = params.pipeline[i];
+    for (let i = startIndex; i < pipeline.length; i++) {
+        const entry = pipeline[i];
         const metadata = LAYER_REGISTRY[entry.id];
         
         if (metadata) {
