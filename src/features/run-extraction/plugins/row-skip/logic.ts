@@ -1,8 +1,8 @@
 import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { RowSkipLayerSettings } from "./types";
 
-export function rowSkipLayer(context: PipelineContext<RowSkipLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function rowSkipLayer(context: PipelineContext, settings: RowSkipLayerSettings): PipelineContext {
+    const { rows } = context;
     const skipCount = settings?.skipCount ?? 1;
 
     if (skipCount <= 0) return context;

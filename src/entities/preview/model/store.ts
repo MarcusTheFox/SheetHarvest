@@ -41,7 +41,7 @@ export const usePreviewStore = create<PreviewState>((set, get) => ({
           const metadata = LAYER_REGISTRY[layer.id];
           if (metadata) {
             try {
-              currentContext = metadata.layer({ ...currentContext, settings: layer.settings });
+              currentContext = metadata.layer({ ...currentContext }, layer.settings );
               newCache[layer.instanceId] = currentContext;
             } catch (error) {
               console.error(`Error executing layer ${layer.id}:`, error);

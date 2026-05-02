@@ -1,8 +1,8 @@
 import { PipelineContext } from "../../lib/pipeline/core";
 import { AnchorLayerSettings } from "./types";
 
-export function anchorLayer(context: PipelineContext<AnchorLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function anchorLayer(context: PipelineContext, settings: AnchorLayerSettings): PipelineContext {
+    const { rows } = context;
     const anchor = settings ?? { start: null, end: null };
 
     let isSearchActive = !anchor.start;

@@ -11,8 +11,8 @@ import { ColumnSplitLayerSettings } from "./types";
  *   newNames: string[];     // Имена для новых колонок
  * }
  */
-export function columnSplitLayer(context: PipelineContext<ColumnSplitLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnSplitLayer(context: PipelineContext, settings: ColumnSplitLayerSettings): PipelineContext {
+    const { rows, headers } = context;
 
     if (settings?.sourceColIndex === undefined || headers.length === 0) {
         return context;

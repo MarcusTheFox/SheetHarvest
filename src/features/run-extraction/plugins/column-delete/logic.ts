@@ -2,8 +2,8 @@ import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { ColumnDeleteLayerSettings } from "./types";
 import { RowValue } from "@/shared/types/spreadsheet";
 
-export function columnDeleteLayer(context: PipelineContext<ColumnDeleteLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnDeleteLayer(context: PipelineContext, settings: ColumnDeleteLayerSettings): PipelineContext {
+    const { rows, headers } = context;
     const toDelete = new Set(settings?.columnIndices ?? []);
 
     if (toDelete.size === 0) return context;

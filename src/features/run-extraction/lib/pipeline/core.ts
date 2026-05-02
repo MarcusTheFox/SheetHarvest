@@ -17,12 +17,11 @@ export interface PipelineTable {
     merges?: MergeRange[];
 }
 
-export interface PipelineContext<T = unknown> {
+export interface PipelineContext {
     rows: PipelineRow[];
     headers: string[];
     params: ExtractionParams;
-    settings?: T;
     isColumnStructureModified: boolean;
 }
 
-export type ExtractionLayer<T = unknown> = (context: PipelineContext<T>) => PipelineContext;
+export type ExtractionLayer<T = never> = (context: PipelineContext, settings: T) => PipelineContext;

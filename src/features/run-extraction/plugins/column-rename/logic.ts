@@ -1,8 +1,8 @@
 import { PipelineContext } from "../../lib/pipeline/core";
 import { ColumnRenameLayerSettings } from "./types";
 
-export function columnRenameLayer(context: PipelineContext<ColumnRenameLayerSettings>): PipelineContext {
-    const { headers, settings } = context;
+export function columnRenameLayer(context: PipelineContext, settings: ColumnRenameLayerSettings): PipelineContext {
+    const { headers } = context;
 
     if (!settings) return context;
     

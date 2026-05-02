@@ -1,8 +1,8 @@
 import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { ProjectionLayerSettings, ProjectionColumn } from "./types";
 
-export function projectionLayer(context: PipelineContext<ProjectionLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function projectionLayer(context: PipelineContext, settings: ProjectionLayerSettings): PipelineContext {
+    const { rows, headers } = context;
 
     if (!settings) {
         return context;

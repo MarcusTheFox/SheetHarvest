@@ -2,8 +2,8 @@ import { RowValue } from "@/shared/types/spreadsheet";
 import { PipelineContext } from "../../lib/pipeline/core";
 import { TopologyLayerSettings } from "./types";
 
-export function topologyLayer(context: PipelineContext<TopologyLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function topologyLayer(context: PipelineContext, settings: TopologyLayerSettings): PipelineContext {
+    const { rows } = context;
     const topology = settings?.topology ?? {};
 
     const checkTopology = (row: RowValue, topology: Record<number, 'any' | 'filled' | 'empty'>): boolean => {

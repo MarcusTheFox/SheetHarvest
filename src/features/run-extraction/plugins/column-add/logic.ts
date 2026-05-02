@@ -1,8 +1,8 @@
 import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { ColumnAddLayerSettings } from "./types";
 
-export function columnAddLayer(context: PipelineContext<ColumnAddLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnAddLayer(context: PipelineContext, settings: ColumnAddLayerSettings): PipelineContext {
+    const { rows, headers } = context;
     
     if (!settings) return context;
     

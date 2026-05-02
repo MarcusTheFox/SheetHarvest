@@ -4,8 +4,8 @@ import { ColumnConstraint } from "@/entities/pattern/model/types";
 import { validators } from "@/shared/lib/validators";
 import { ConstraintsLayerSettings } from "./types";
 
-export function constraintsLayer(context: PipelineContext<ConstraintsLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function constraintsLayer(context: PipelineContext, settings: ConstraintsLayerSettings): PipelineContext {
+    const { rows } = context;
     const constraints = settings?.constraints ?? [];
 
     if (constraints.length === 0) return context;

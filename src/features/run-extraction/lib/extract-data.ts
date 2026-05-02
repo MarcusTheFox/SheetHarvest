@@ -34,7 +34,7 @@ export const extractData = (
         
         if (metadata) {
             // Передаем текущий контекст в слой и обновляем его
-            currentContext = metadata.layer({ ...currentContext, settings: entry.settings });
+            currentContext = metadata.layer({ ...currentContext }, entry.settings );
         }
     }
 

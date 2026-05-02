@@ -1,8 +1,8 @@
 import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
 import { ColumnReorderLayerSettings } from "./types";
 
-export function columnReorderLayer(context: PipelineContext<ColumnReorderLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnReorderLayer(context: PipelineContext, settings: ColumnReorderLayerSettings): PipelineContext {
+    const { rows, headers } = context;
 
     if (!settings) return context;
     

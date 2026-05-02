@@ -9,8 +9,8 @@ import { RegexExtractionLayerSettings } from "./types";
  *   keepOriginalIfNoMatch: boolean;
  * }
  */
-export function regexExtractLayer(context: PipelineContext<RegexExtractionLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function regexExtractLayer(context: PipelineContext, settings: RegexExtractionLayerSettings): PipelineContext {
+    const { rows } = context;
 
     if (!settings || !settings.pattern || settings.sourceColIndex === undefined) {
         return context;

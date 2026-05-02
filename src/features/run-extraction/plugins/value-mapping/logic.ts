@@ -8,8 +8,8 @@ import { useMappingStore } from "@/entities/value-mapping/model/store";
  *   sourceColIndex: number; // Индекс колонки в исходных данных (до проекции)
  * }
  */
-export function valueMappingLayer(context: PipelineContext<ValueMappingLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function valueMappingLayer(context: PipelineContext, settings: ValueMappingLayerSettings): PipelineContext {
+    const { rows } = context;
 
     if (!settings || settings.sourceColIndex === undefined) {
         return context;
