@@ -7,7 +7,7 @@ export const useExtractionSource = (): PipelineTable[] => {
 
   const tables = useMemo(() => {
     return sheets.map((sheet, idx) => ({
-      id: idx,
+      id: `${idx}`,
       name: sheet.name,
       merges: structuredClone(sheet.merges),
       rows: sheet.data.map((row, rowIdx) => ({

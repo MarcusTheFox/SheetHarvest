@@ -10,13 +10,13 @@ import { useState } from "react";
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
 
-    const [selectedTableId, setSelectedTableId] = useState(0);
+    const [selectedTableId, setSelectedTableId] = useState(results[0]?.id);
 
-    const isEmpty = results.length === 0;
+    const selectedTable = results.find(table => table.id === selectedTableId);
+    
+    const isEmpty = results.length === 0 || !selectedTable;
 
-    const selectedTable = results[selectedTableId];
-
-    const handleTableClick = (id: number) => {
+    const handleTableClick = (id: string) => {
         setSelectedTableId(id);
     };
 
@@ -94,14 +94,14 @@ export const ResultSpace = () => {
                                 "py-2 flex items-center",
                             )}>
                                 <ChevronRight size={16} className="text-slate-500" />
-                                {isEmpty
+                                {isEmpty || !selectedTable
                                     ? <p>Результат</p>
-                                    : <p>Таблица: { selectedTable.name }</p>
+                                    : <p>Таблица: {selectedTable.name}</p>
                                 }
                             </CardHeader>
-                            {!isEmpty &&
+                            {!isEmpty && selectedTable &&
                                 <SpreadsheetTable
-                                    tables={[ selectedTable ]}
+                                    tables={[selectedTable]}
                                     headers={headers}
                                 />
                             }

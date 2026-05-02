@@ -13,7 +13,7 @@ export interface PipelineRow {
 export interface PipelineTable {
     rows: PipelineRow[];
     name: string;
-    id: number;
+    id: string;
     merges?: MergeRange[];
 }
 
