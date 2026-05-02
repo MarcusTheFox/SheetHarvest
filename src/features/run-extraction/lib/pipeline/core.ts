@@ -26,7 +26,3 @@ export interface PipelineContext<T = unknown> {
 }
 
 export type ExtractionLayer<T = unknown> = (context: PipelineContext<T>) => PipelineContext;
-
-export const executePipeline = (initialContext: PipelineContext, layers: ExtractionLayer[]): PipelineContext => {
-    return layers.reduce((context, layer) => layer(context), initialContext);
-};
