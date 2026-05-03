@@ -17,3 +17,7 @@ export function createMockTable(
         merges,
     }
 }
+
+export function getRowValues(rows: PipelineRow[]): RowValue[] {
+    return rows.map(row => row.cells);
+}
