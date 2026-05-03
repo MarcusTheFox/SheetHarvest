@@ -1,8 +1,9 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ColumnDeleteLayerSettings } from "./types";
+import { RowValue } from "@/shared/types/spreadsheet";
 
-export function columnDeleteLayer(context: PipelineContext<ColumnDeleteLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnDeleteLayer(context: PipelineContext, settings: ColumnDeleteLayerSettings): PipelineContext {
+    const { tables, headers } = context;
     const toDelete = new Set(settings?.columnIndices ?? []);
 
     if (toDelete.size === 0) return context;
@@ -11,14 +12,40 @@ export function columnDeleteLayer(context: PipelineContext<ColumnDeleteLayerSett
     const nextHeaders = headers.filter((_, i) => !toDelete.has(i));
 
     // 2. Filter cells in rows
-    const nextRows = rows.map(row => ({
-        ...row,
-        cells: row.cells.filter((_, i) => !toDelete.has(i))
-    }));
+    const processRow = (row: PipelineRow): PipelineRow => {
+        const cells = row.cells.reduce((result, cell, idx) => {
+            let newCellIndex = idx;
+            for (const deleteIndex of toDelete) {
+                if (idx === deleteIndex) {
+                    return result;
+                }
+                if (idx > deleteIndex) newCellIndex--;
+            }
+
+            result[newCellIndex] = cell;
+            return result;
+        }, [] as RowValue);
+
+        return {
+            ...row,
+            cells,
+        }
+    }
+
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
 
     return {
         ...context,
         headers: nextHeaders,
-        rows: nextRows
+        tables: newTables,
+        isColumnStructureModified: true,
     };
 };

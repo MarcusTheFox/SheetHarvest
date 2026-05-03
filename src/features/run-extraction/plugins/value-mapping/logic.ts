@@ -1,4 +1,4 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ValueMappingLayerSettings } from "./types";
 import { useMappingStore } from "@/entities/value-mapping/model/store";
 
@@ -8,8 +8,8 @@ import { useMappingStore } from "@/entities/value-mapping/model/store";
  *   sourceColIndex: number; // Индекс колонки в исходных данных (до проекции)
  * }
  */
-export function valueMappingLayer(context: PipelineContext<ValueMappingLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function valueMappingLayer(context: PipelineContext, settings: ValueMappingLayerSettings): PipelineContext {
+    const { tables } = context;
 
     if (!settings || settings.sourceColIndex === undefined) {
         return context;
@@ -23,7 +23,7 @@ export function valueMappingLayer(context: PipelineContext<ValueMappingLayerSett
         return context;
     }
 
-    const newRows = rows.map(row => {
+    const processRow = (row: PipelineRow): PipelineRow => {
         const originalValue = String(row.cells[sourceIdx] || '').trim();
 
         if (!originalValue) return row;
@@ -44,10 +44,20 @@ export function valueMappingLayer(context: PipelineContext<ValueMappingLayerSett
         }
 
         return row;
-    });
+    }
+
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
 
     return {
         ...context,
-        rows: newRows
+        tables: newTables,
     };
 };

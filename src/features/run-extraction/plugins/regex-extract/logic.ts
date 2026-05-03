@@ -1,4 +1,4 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { RegexExtractionLayerSettings } from "./types";
 
 /**
@@ -9,8 +9,8 @@ import { RegexExtractionLayerSettings } from "./types";
  *   keepOriginalIfNoMatch: boolean;
  * }
  */
-export function regexExtractLayer(context: PipelineContext<RegexExtractionLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function regexExtractLayer(context: PipelineContext, settings: RegexExtractionLayerSettings): PipelineContext {
+    const { tables } = context;
 
     if (!settings || !settings.pattern || settings.sourceColIndex === undefined) {
         return context;
@@ -26,22 +26,34 @@ export function regexExtractLayer(context: PipelineContext<RegexExtractionLayerS
         return context;
     }
 
-    const newRows = rows.map(row => {
+    const processRow = (row: PipelineRow): PipelineRow => {
         const originalValue = String(row.cells[sourceIdx] || '').trim();
         if (!originalValue) return row;
 
         const match = originalValue.match(regex);
-        
         const newCells = [...row.cells];
-        // Если нашли — берем первую группу (match[0]), если нет — решаем по настройке
+
         if (match) {
             newCells[sourceIdx] = match[0];
         } else if (!settings.keepOriginalIfNoMatch) {
             newCells[sourceIdx] = "";
         }
 
-        return { ...row, cells: newCells };
-    });
+        return {
+            ...row,
+            cells: newCells
+        };
+    }
 
-    return { ...context, rows: newRows };
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
+
+    return { ...context, tables: newTables };
 };

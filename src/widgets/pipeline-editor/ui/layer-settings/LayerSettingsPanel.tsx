@@ -6,39 +6,44 @@ import { LayerSettingsHeader } from "./LayerSettingsHeader";
 import { LayerConfigRenderer } from "./LayerConfigRenderer";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { usePreviewStore } from "@/entities/preview/model/store";
-import { useExtractionParams } from "@/features/run-extraction/lib/useExtractionParams";
+import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
 import { useEffect, useMemo } from "react";
 import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
 
 interface LayerSettingsPanelProps {
     selectedEntry: PipelineLayer | null;
     selectedIndex: number | null;
-    onRemove: (index: number) => void;
 }
 
-export const LayerSettingsPanel = ({ selectedEntry, selectedIndex, onRemove }: LayerSettingsPanelProps) => {
+export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettingsPanelProps) => {
     const pipeline = usePatternStore(s => s.pipeline);
-    const params = useExtractionParams();
+    const sourceTables = useExtractionSource();
     const cache = usePreviewStore(s => s.cache);
     const isExecuting = usePreviewStore(s => s.isExecuting);
     const runUpToLayer = usePreviewStore(s => s.runUpToLayer);
 
     useEffect(() => {
-        if (selectedIndex !== null && selectedIndex > 0 && params) {
+        if (selectedIndex !== null && selectedIndex > 0 && sourceTables) {
+            const selectedLayer = pipeline[selectedIndex - 1];
+            if (!selectedLayer) return;
+
             const prevLayerId = pipeline[selectedIndex - 1].instanceId;
             if (!cache[prevLayerId]) {
-                runUpToLayer(prevLayerId, pipeline, params);
+                runUpToLayer(prevLayerId, pipeline, { tables: sourceTables });
             }
         }
-    }, [selectedIndex, pipeline, params, cache, runUpToLayer]);
+    }, [selectedIndex, pipeline, sourceTables, cache, runUpToLayer]);
 
     const prevContext = useMemo(() => {
-        if (!selectedEntry || selectedIndex === null || !params) return undefined;
-        if (selectedIndex === 0) return createInitialContext(params);
-        
+        if (!selectedEntry || selectedIndex === null || !sourceTables) return undefined;
+        if (selectedIndex === 0) return createInitialContext(sourceTables);
+
+        const selectedLayer = pipeline[selectedIndex - 1];
+        if (!selectedLayer) return;
+
         const prevLayerId = pipeline[selectedIndex - 1].instanceId;
         return cache[prevLayerId];
-    }, [selectedEntry, selectedIndex, params, pipeline, cache]);
+    }, [selectedEntry, selectedIndex, sourceTables, pipeline, cache]);
 
     if (!selectedEntry || selectedIndex === null) {
         return <EmptyLayerState />;
@@ -48,10 +53,8 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex, onRemove }: L
 
     return (
         <div className="flex flex-col h-full bg-white">
-            <LayerSettingsHeader 
+            <LayerSettingsHeader
                 metadata={metadata}
-                index={selectedIndex}
-                onRemove={onRemove}
             />
 
             <ScrollShadow className="flex-1 p-8">
@@ -61,9 +64,9 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex, onRemove }: L
                         <span className="text-sm">Вычисляем контекст...</span>
                     </div>
                 ) : (
-                    <LayerConfigRenderer 
-                        entry={selectedEntry} 
-                        index={selectedIndex} 
+                    <LayerConfigRenderer
+                        entry={selectedEntry}
+                        index={selectedIndex}
                         prevContext={prevContext}
                     />
                 )}

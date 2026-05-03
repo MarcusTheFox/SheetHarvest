@@ -10,7 +10,7 @@ export const RunExtractionButton = () => {
   return (
     <Button
       color="success"
-      className="w-full font-bold text-white shadow-xl py-6 rounded-2xl"
+      className="font-bold text-white shadow-xl py-6 rounded-2xl shrink-0"
       startContent={<Play size={20} fill="currentColor" />}
       onPress={runExtraction}
     >

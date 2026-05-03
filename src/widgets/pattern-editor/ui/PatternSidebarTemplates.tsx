@@ -15,17 +15,8 @@ export const PatternSidebarTemplates = () => {
             removeTemplate: s.removeTemplate,
         }))
     );
-    const pattern = usePatternStore(
-        useShallow(s => ({
-            headerRowIndex: s.headerRowIndex,
-            isManualMode: s.isManualMode,
-            selectedColumns: s.selectedColumns,
-            customNames: s.customNames,
-            hiddenColumns: s.hiddenColumns,
-            pipeline: s.pipeline,
-        }))
-    );
 
+    const pipeline = usePatternStore(s => s.pipeline);
     const loadPattern = usePatternStore(s => s.loadPattern);
     
     const [newTemplateName, setNewTemplateName] = useState("");
@@ -35,7 +26,7 @@ export const PatternSidebarTemplates = () => {
         
         addTemplate({
             name: newTemplateName,
-            config: { ...pattern }
+            config: { pipeline }
         });
         setNewTemplateName("");
     };

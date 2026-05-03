@@ -4,6 +4,7 @@ import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { AnchorLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 import { AnchorPoint } from "@/entities/pattern/model/types";
+import { useMemo } from "react";
 
 type AnchorConfigProps = LayerConfigProps<AnchorLayerSettings>;
 
@@ -22,9 +23,9 @@ const AnchorPointEditor = ({
         onChange({ text: point?.text ?? "", colIndex });
     };
     const handleTextChange = (text: string) => {
-        onChange({ 
-            colIndex: point?.colIndex ?? 0, 
-            text 
+        onChange({
+            colIndex: point?.colIndex ?? 0,
+            text
         });
     };
 
@@ -58,15 +59,17 @@ const AnchorPointEditor = ({
 
 export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigProps) => {
     const headers = prevContext?.headers ?? [];
-    const rowCount = prevContext?.rows.length ?? 0;
 
-    // Build column list from previous context headers
-    const columns = headers.length > 0
-        ? headers.map((h, i) => ({ label: h || `Колонка ${i + 1}`, value: String(i) }))
-        : Array.from({ length: Math.max(rowCount > 0 ? prevContext!.rows[0].cells.length : 0, 1) }, (_, i) => ({
-            label: `Колонка ${i + 1}`,
-            value: String(i),
-        }));
+    const columns = useMemo(() => {
+        if (headers.length > 0) {
+            return headers.map((h, i) => ({
+                label: h || `Колонка ${i + 1}`,
+                value: String(i)
+            }));
+        }
+
+        return [];
+    }, [headers, prevContext?.tables]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -89,7 +92,7 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                         <span className="text-sm font-medium">Объединять результаты</span>
                         <span className="text-xs text-default-400">Склеивать найденные таблицы в одну</span>
                     </div>
-                    <Switch 
+                    <Switch
                         isSelected={settings?.mergeResults ?? false}
                         onValueChange={(val) => onUpdate?.({ mergeResults: val })}
                     />

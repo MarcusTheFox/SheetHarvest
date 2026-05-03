@@ -1,34 +1,22 @@
-import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { ExtractionParams } from "./pipeline/core";
-import { useShallow } from "zustand/shallow";
+import { PipelineTable } from "./pipeline/core";
 import { useMemo } from "react";
 
-export const useExtractionParams = (): ExtractionParams | null => {
-  const { sheets, currentSheetIndex } = useSpreadsheetStore();
-  const pattern = usePatternStore(
-    useShallow(s => ({
-      headerRowIndex: s.headerRowIndex,
-      isManualMode: s.isManualMode,
-      selectedColumns: s.selectedColumns,
-      customNames: s.customNames,
-      hiddenColumns: s.hiddenColumns,
-      pipeline: s.pipeline,
-    }))
-  );
-  
-  const currentSheet = useMemo(() => {
-    return sheets[currentSheetIndex];
-  }, [sheets, currentSheetIndex]);
-  
-  if (!currentSheet) return null;
+export const useExtractionSource = (): PipelineTable[] => {
+  const sheets = useSpreadsheetStore(s => s.sheets);
 
-  const tableHeaderRow = pattern.headerRowIndex !== null ? currentSheet.data[pattern.headerRowIndex] : [];
+  const tables = useMemo(() => {
+    return sheets.map((sheet, idx) => ({
+      id: `${idx}`,
+      name: sheet.name,
+      merges: structuredClone(sheet.merges),
+      rows: sheet.data.map((row, rowIdx) => ({
+        groupIndex: idx,
+        originalIndex: rowIdx,
+        cells: structuredClone(row),
+      })),
+    } as PipelineTable))
+  }, [sheets]);
 
-  return {
-      allRows: currentSheet.data,
-      tableHeaderRow,
-      merges: currentSheet.merges || [],
-      ...pattern,
-  };
+  return tables;
 };

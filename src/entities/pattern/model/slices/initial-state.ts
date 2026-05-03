@@ -1,13 +1,7 @@
 import { DEFAULT_PIPELINE, LAYER_REGISTRY } from '@/features/run-extraction/lib/pipeline/registry';
 import { ExtractionPattern } from '../types';
 
-export const getInitialState = (): ExtractionPattern & { selectedColumns: number[] } => ({
-  headerRowIndex: null,
-  isManualMode: false,
-  selectedColumns: [],
-  customNames: {},
-  hiddenColumns: [],
-
+export const getInitialState = (): ExtractionPattern => ({
   pipeline: DEFAULT_PIPELINE.map(id => {
     const metadata = LAYER_REGISTRY[id];
     return {
