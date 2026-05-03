@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { topologyLayer } from './logic';
 import { PipelineContext, PipelineTable } from '../../lib/pipeline/core';
 import { TopologyLayerSettings } from './types';
-import { createMockTable } from '../../lib/pipeline/test-utils';
+import { createMockTable, getRowValues } from '../../lib/pipeline/test-utils';
 
 const MOCK_CONTEXT: PipelineContext = {
     isColumnStructureModified: false,
@@ -13,7 +13,7 @@ const MOCK_CONTEXT: PipelineContext = {
             ["2", "", "400"],
             ["3", "C-300", "300"],
             ["4", "D-400", ""],
-            ["5", "", ""],
+            ["5", "   ", "   "],
         ]),
         createMockTable("2", "Table 2", [
             ["1", "AA-111", "10"],
@@ -36,10 +36,18 @@ describe('topologyLayer', () => {
         const result = topologyLayer(context, settings);
 
         expect(result.tables[0].rows).toHaveLength(3);
-        expect(result.tables[0].rows[2].cells).toEqual(["4", "D-400", ""]);
+        expect(getRowValues(result.tables[0].rows)).toEqual([
+            ["1", "A-100", "500"],
+            ["3", "C-300", "300"],
+            ["4", "D-400", ""],
+        ]);
 
         expect(result.tables[1].rows).toHaveLength(3);
-        expect(result.tables[1].rows[2].cells).toEqual(["4", "DD-444", undefined]);
+        expect(getRowValues(result.tables[1].rows)).toEqual([
+            ["1", "AA-111", "10"],
+            ["3", "CC-333", "30"],
+            ["4", "DD-444", undefined],
+        ]);
     });
 
     it('должен фильтровать строки по правилу "empty" (пусто)', () => {
@@ -52,10 +60,16 @@ describe('topologyLayer', () => {
         const result = topologyLayer(context, settings);
 
         expect(result.tables[0].rows).toHaveLength(2);
-        expect(result.tables[0].rows[1].cells).toEqual(["5", "", ""]);
+        expect(getRowValues(result.tables[0].rows)).toEqual([
+            ["4", "D-400", ""],
+            ["5", "   ", "   "],
+        ]);
 
         expect(result.tables[1].rows).toHaveLength(2);
-        expect(result.tables[1].rows[1].cells).toEqual(["5"]);
+        expect(getRowValues(result.tables[1].rows)).toEqual([
+            ["4", "DD-444", undefined],
+            ["5"],
+        ]);
     });
 
     it('должен комбинировать несколько правил для разных колонок', () => {
@@ -71,10 +85,14 @@ describe('topologyLayer', () => {
         const result = topologyLayer(context, settings);
 
         expect(result.tables[0].rows).toHaveLength(1);
-        expect(result.tables[0].rows[0].cells).toEqual(["2", "", "400"]);
+        expect(getRowValues(result.tables[0].rows)).toEqual([
+            ["2", "", "400"],
+        ]);
 
         expect(result.tables[1].rows).toHaveLength(1);
-        expect(result.tables[1].rows[0].cells).toEqual(["2", null, "20"]);
+        expect(getRowValues(result.tables[1].rows)).toEqual([
+            ["2", null, "20"],
+        ]);
     });
 
     it('должен игнорировать колонки с правилом "any"', () => {
