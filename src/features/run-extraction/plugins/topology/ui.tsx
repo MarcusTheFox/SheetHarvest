@@ -15,7 +15,7 @@ const MODE_OPTIONS: { key: TopologyMode; label: string; color: 'default' | 'succ
 
 export const TopologyConfig = ({ settings, onUpdate, prevContext }: TopologyConfigProps) => {
     const headers = prevContext?.headers ?? [];
-    const topology = settings?.topology ?? {};
+    const topology = settings.topology ?? {};
 
     const handleModeChange = (colIdx: number, mode: TopologyMode) => {
         const next = { ...topology };

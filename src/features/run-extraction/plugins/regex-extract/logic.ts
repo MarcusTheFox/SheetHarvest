@@ -12,7 +12,7 @@ import { RegexExtractionLayerSettings } from "./types";
 export function regexExtractLayer(context: PipelineContext, settings: RegexExtractionLayerSettings): PipelineContext {
     const { tables } = context;
 
-    if (!settings || !settings.pattern || settings.sourceColIndex === undefined) {
+    if (!settings.pattern || settings.sourceColIndex === undefined) {
         return context;
     }
 

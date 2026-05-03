@@ -1,7 +1,7 @@
 "use client";
 
-import { Select, SelectItem, Button, Input, Card, Divider } from "@heroui/react";
-import { Trash2, Plus, Settings2 } from "lucide-react";
+import { Select, SelectItem, Button, Input, Card } from "@heroui/react";
+import { Trash2, Plus } from "lucide-react";
 import { ConstraintsLayerSettings } from "./types";
 import { LayerConfigProps } from "../../lib/pipeline/types";
 import { ColumnConstraint, ConstraintType } from "@/entities/pattern/model/types";
@@ -32,8 +32,7 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: Constrain
         const usedIndices = new Set(constraints.map(c => c.colIndex));
         const freeIdx = headers.findIndex((_, i) => !usedIndices.has(i));
         const colIndex = freeIdx >= 0 ? freeIdx : 0;
-        const header = headers[colIndex] || `Колонка ${colIndex + 1}`;
-        const next: ColumnConstraint[] = [...constraints, { colIndex, name: header, type: 'not_empty' }];
+        const next: ColumnConstraint[] = [...constraints, { colIndex, type: 'not_empty' }];
         onUpdate?.({ constraints: next });
     };
 
@@ -42,9 +41,8 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: Constrain
     };
 
     const handleColChange = (idx: number, colIndex: number) => {
-        const header = headers[colIndex] || `Колонка ${colIndex + 1}`;
         const next = [...constraints];
-        next[idx] = { ...next[idx], colIndex, name: header };
+        next[idx] = { ...next[idx], colIndex };
         onUpdate?.({ constraints: next });
     };
 

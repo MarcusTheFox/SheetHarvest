@@ -11,9 +11,7 @@ export interface AnchorPoint {
 export interface ColumnConstraint {
   colIndex: number;
   type: ConstraintType;
-  name: string;
   pattern?: string;
-  flags?: string;
 }
 
 export interface PatternAnchor {

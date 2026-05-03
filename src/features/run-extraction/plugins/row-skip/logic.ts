@@ -3,7 +3,7 @@ import { RowSkipLayerSettings } from "./types";
 
 export function rowSkipLayer(context: PipelineContext, settings: RowSkipLayerSettings): PipelineContext {
     const { tables } = context;
-    const skipCount = settings?.skipCount ?? 1;
+    const skipCount = settings.skipCount ?? 1;
 
     if (skipCount <= 0) return context;
 
