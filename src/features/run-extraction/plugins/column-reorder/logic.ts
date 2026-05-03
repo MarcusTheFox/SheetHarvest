@@ -3,14 +3,11 @@ import { ColumnReorderLayerSettings } from "./types";
 
 export function columnReorderLayer(context: PipelineContext, settings: ColumnReorderLayerSettings): PipelineContext {
     const { tables, headers } = context;
-
-    if (!settings) return context;
-
     const { order } = settings;
 
     // Если порядок не задан или не совпадает по количеству с текущими колонками, 
     // пробуем сохранить текущий порядок, если это первая настройка
-    if (!order || order.length === 0) {
+    if (order.length === 0) {
         return context;
     }
 
