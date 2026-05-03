@@ -1,8 +1,8 @@
-import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ColumnAddLayerSettings } from "./types";
 
-export function columnAddLayer(context: PipelineContext<ColumnAddLayerSettings>): PipelineContext {
-    const { rows, headers, settings } = context;
+export function columnAddLayer(context: PipelineContext, settings: ColumnAddLayerSettings): PipelineContext {
+    const { tables, headers } = context;
     
     if (!settings) return context;
     
@@ -10,14 +10,27 @@ export function columnAddLayer(context: PipelineContext<ColumnAddLayerSettings>)
 
     const updatedHeaders = [...headers, columnName || 'Новая колонка'];
 
-    const updatedRows = rows.map((row): PipelineRow => ({
-        ...row,
-        cells: [...row.cells, value]
-    }));
+    const processRow = (row: PipelineRow): PipelineRow => {
+        return {
+            ...row,
+            cells: [...row.cells, value],
+        }
+    }
+
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
 
     return {
         ...context,
         headers: updatedHeaders,
-        rows: updatedRows
+        tables: newTables,
+        isColumnStructureModified: true,
     };
 }

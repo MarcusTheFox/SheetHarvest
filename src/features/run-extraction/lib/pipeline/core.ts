@@ -1,33 +1,25 @@
-import { PipelineLayer } from "@/entities/pattern/model/types";
-import { MergeRange, RowValue, TableValue } from "@/shared/types/spreadsheet";
+import { MergeRange, RowValue } from "@/shared/types/spreadsheet";
 
 export interface ExtractionParams {
-    allRows: TableValue;
-    headerRowIndex: number | null;
-    tableHeaderRow: RowValue;
-    isManualMode: boolean;
-    selectedColumns: number[];
-    customNames: Record<number, string>;
-    hiddenColumns: number[];
-    pipeline: PipelineLayer[];
-    merges: MergeRange[];
+    tables: PipelineTable[];
 }
 
 export interface PipelineRow {
     originalIndex: number;
     cells: RowValue;
-    groupIndex: number;
 }
 
-export interface PipelineContext<T = unknown> {
+export interface PipelineTable {
     rows: PipelineRow[];
-    headers: string[];
-    params: ExtractionParams;
-    settings?: T;
+    name: string;
+    id: string;
+    merges?: MergeRange[];
 }
 
-export type ExtractionLayer<T = unknown> = (context: PipelineContext<T>) => PipelineContext;
+export interface PipelineContext {
+    tables: PipelineTable[];
+    headers: string[];
+    isColumnStructureModified: boolean;
+}
 
-export const executePipeline = (initialContext: PipelineContext, layers: ExtractionLayer[]): PipelineContext => {
-    return layers.reduce((context, layer) => layer(context), initialContext);
-};
+export type ExtractionLayer<T = never> = (context: PipelineContext, settings: T) => PipelineContext;

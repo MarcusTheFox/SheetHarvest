@@ -1,21 +1,23 @@
-import { PipelineContext, ExtractionParams } from "./pipeline/core";
+import { PipelineContext, PipelineTable } from "./pipeline/core";
 import { LAYER_REGISTRY } from "./pipeline/registry";
-import { TableValue } from "@/shared/types/spreadsheet";
 import { createInitialContext } from "./context-builder";
+import { PipelineLayer } from "@/entities/pattern/model/types";
+import { createHeadersFromTables } from "./pipeline/utils";
 
 export const extractData = (
-    params: ExtractionParams,
+    sourceTables: PipelineTable[],
+    pipeline: PipelineLayer[],
     cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
-): { tables: TableValue[]; headers: string[] } => {
+): { tables: PipelineTable[]; headers: string[] } => {
     
-    let currentContext = createInitialContext(params);
+    let currentContext = createInitialContext(sourceTables);
     let startIndex = 0;
 
     // 1. Ищем самый "глубокий" слой, который уже есть в кеше
     if (cache) {
         // Идем с конца пайплайна к началу
-        for (let i = params.pipeline.length - 1; i >= 0; i--) {
-            const layer = params.pipeline[i];
+        for (let i = pipeline.length - 1; i >= 0; i--) {
+            const layer = pipeline[i];
             if (cache[layer.instanceId]) {
                 // Нашли кеш! Берем его как стартовую точку
                 currentContext = cache[layer.instanceId];
@@ -27,36 +29,23 @@ export const extractData = (
     }
 
     // 2. Прогоняем данные только через оставшиеся (некешированные) слои
-    for (let i = startIndex; i < params.pipeline.length; i++) {
-        const entry = params.pipeline[i];
+    for (let i = startIndex; i < pipeline.length; i++) {
+        const entry = pipeline[i];
         const metadata = LAYER_REGISTRY[entry.id];
         
         if (metadata) {
             // Передаем текущий контекст в слой и обновляем его
-            currentContext = metadata.layer({ ...currentContext, settings: entry.settings });
+            currentContext = metadata.layer({ ...currentContext }, entry.settings );
         }
     }
 
-    if (currentContext.headers.length === 0 && currentContext.rows.length > 0) {
-        const maxCols = currentContext.rows.reduce((max, row) => Math.max(max, row.cells.length), 0);
-        currentContext.headers = Array.from({ length: maxCols }, (_, i) => 
-            String.fromCharCode(65 + i)
-        );
-    }
-
-    // 3. Формируем итоговые таблицы из финального контекста
-    const tablesMap = new Map<number, TableValue>();
-
-    for (const row of currentContext.rows) {
-        if (!tablesMap.has(row.groupIndex)) {
-            tablesMap.set(row.groupIndex, []);
-        }
-        tablesMap.get(row.groupIndex)!.push(row.cells);
+    if (currentContext.headers.length === 0 && currentContext.tables.length > 0) {
+        currentContext.headers = createHeadersFromTables(currentContext.tables);
     }
 
     // 4. Возвращаем результат
     return {
-        tables: Array.from(tablesMap.values()),
+        tables: currentContext.tables,
         headers: currentContext.headers
     };
 };

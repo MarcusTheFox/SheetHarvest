@@ -11,9 +11,7 @@ export interface AnchorPoint {
 export interface ColumnConstraint {
   colIndex: number;
   type: ConstraintType;
-  name: string; 
   pattern?: string;
-  flags?: string;
 }
 
 export interface PatternAnchor {
@@ -28,22 +26,10 @@ export interface PipelineLayer<T = unknown> {
 }
 
 export interface ExtractionPattern {
-  headerRowIndex: number | null;
-  isManualMode: boolean;
-  selectedColumns: number[];
-  customNames: Record<number, string>;
-  hiddenColumns: number[];
   pipeline: PipelineLayer[];
 }
 
 export interface PatternState extends ExtractionPattern {
-  selectedColumns: number[];
-
-  setHeaderRow: (index: number) => void;
-  toggleManualMode: () => void;
-  toggleColumn: (colIndex: number) => void;
-  updateColumnName: (colIndex: number, name: string) => void;
-  toggleVisibility: (colIndex: number) => void;
   loadPattern: (config: ExtractionPattern) => void;
 
   // Pipeline actions

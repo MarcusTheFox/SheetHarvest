@@ -1,10 +1,14 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineTable } from "../../lib/pipeline/core";
 import { TopologyLayerSettings } from "./types";
 
-export function topologyLayer(context: PipelineContext<TopologyLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
-    const topology = settings?.topology ?? {};
+export function topologyLayer(context: PipelineContext, settings: TopologyLayerSettings): PipelineContext {
+    const { tables } = context;
+    const topology = settings.topology ?? {};
+
+    if (Object.keys(topology).length === 0) {
+        return context;
+    }
 
     const checkTopology = (row: RowValue, topology: Record<number, 'any' | 'filled' | 'empty'>): boolean => {
         return Object.entries(topology).every(([colIdx, mode]) => {
@@ -17,8 +21,15 @@ export function topologyLayer(context: PipelineContext<TopologyLayerSettings>): 
         });
     };
 
-    return {
-        ...context,
-        rows: rows.filter(r => checkTopology(r.cells, topology))
-    };
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.filter(row => checkTopology(row.cells, topology));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
+
+    return { ...context, tables: newTables };
 };

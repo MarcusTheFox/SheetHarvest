@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import { TableValue } from '@/shared/types/spreadsheet';
+import { PipelineTable } from '@/features/run-extraction/lib/pipeline/core';
 
 interface ExtractionState {
-  results: TableValue[];
+  results: PipelineTable[];
   headers: string[];
   isExtracted: boolean;
 
-  setResults: (data: { tables: TableValue[]; headers: string[] }) => void;
+  setResults: (data: { tables: PipelineTable[]; headers: string[] }) => void;
   clearResults: () => void;
 }
 

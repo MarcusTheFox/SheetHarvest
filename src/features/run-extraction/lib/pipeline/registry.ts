@@ -11,6 +11,7 @@ import { columnAddLayerMetadata } from "../../plugins/column-add";
 import { columnRenameLayerMetadata } from "../../plugins/column-rename";
 import { columnReorderLayerMetadata } from "../../plugins/column-reorder";
 import { LayerMetadata } from "./types";
+import { matrixSplitLayerMetadata } from "../../plugins/matrix-split";
 
 const allLayers = [
     anchorLayerMetadata,
@@ -25,6 +26,7 @@ const allLayers = [
     columnAddLayerMetadata,
     columnRenameLayerMetadata,
     columnReorderLayerMetadata,
+    matrixSplitLayerMetadata,
 ] as LayerMetadata<unknown>[];
 
 

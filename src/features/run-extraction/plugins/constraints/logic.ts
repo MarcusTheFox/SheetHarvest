@@ -1,11 +1,11 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ColumnConstraint } from "@/entities/pattern/model/types";
 import { validators } from "@/shared/lib/validators";
 import { ConstraintsLayerSettings } from "./types";
 
-export function constraintsLayer(context: PipelineContext<ConstraintsLayerSettings>): PipelineContext {
-    const { rows, settings } = context;
+export function constraintsLayer(context: PipelineContext, settings: ConstraintsLayerSettings): PipelineContext {
+    const { tables } = context;
     const constraints = settings?.constraints ?? [];
 
     if (constraints.length === 0) return context;
@@ -21,8 +21,15 @@ export function constraintsLayer(context: PipelineContext<ConstraintsLayerSettin
         });
     };
 
-    return {
-        ...context,
-        rows: rows.filter(r => checkConstraints(r.cells, constraints))
-    };
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.filter(row => checkConstraints(row.cells, constraints));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
+
+    return { ...context, tables: newTables };
 };
