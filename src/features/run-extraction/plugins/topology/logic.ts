@@ -4,7 +4,11 @@ import { TopologyLayerSettings } from "./types";
 
 export function topologyLayer(context: PipelineContext, settings: TopologyLayerSettings): PipelineContext {
     const { tables } = context;
-    const topology = settings?.topology ?? {};
+    const topology = settings.topology ?? {};
+
+    if (Object.keys(topology).length === 0) {
+        return context;
+    }
 
     const checkTopology = (row: RowValue, topology: Record<number, 'any' | 'filled' | 'empty'>): boolean => {
         return Object.entries(topology).every(([colIdx, mode]) => {
