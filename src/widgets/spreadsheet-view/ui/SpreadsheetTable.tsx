@@ -58,6 +58,7 @@ export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps)
             tables={context.tables}
             headers={context.headers}
             showGroupSeparator={showGroupSeparator}
+            showMerges={!context.isColumnStructureModified}
         />
     );
 };
@@ -66,6 +67,7 @@ interface SpreadsheetTableProps {
     tables: PipelineTable[];
     headers?: string[] | number[];
     showGroupSeparator?: boolean;
+    showMerges?: boolean;
 }
 
 export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
@@ -90,7 +92,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                 </Table.Header>
                 <Table.Body>
                     {tables.map((table) => {
-                        const tableMerges = table.merges ?? [];
+                        const tableMerges = props.showMerges ? table.merges ?? [] : [];
 
                         return (
                             <Fragment key={table.id}>
@@ -112,7 +114,7 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
                                     </Table.Row>
                                 )}
 
-                                {table.rows.map((row, rowIdx) =>
+                                {table.rows.map(row =>
                                     <Table.Row
                                         key={row.originalIndex}
                                         className={clsx(
