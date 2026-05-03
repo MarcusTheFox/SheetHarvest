@@ -14,7 +14,7 @@ export const RowSkipConfig = ({ settings, onUpdate }: RowSkipConfigProps) => {
                 label="Количество пропускаемых строк"
                 placeholder="1"
                 min={0}
-                value={String(settings?.skipCount ?? 1)}
+                value={String(settings.skipCount ?? 1)}
                 onValueChange={(val) => {
                     const num = parseInt(val);
                     if (!isNaN(num) && num >= 0) {
@@ -26,7 +26,7 @@ export const RowSkipConfig = ({ settings, onUpdate }: RowSkipConfigProps) => {
 
             <Card className="p-4 bg-default-50 shadow-none border-none">
                 <p className="text-[11px] text-default-500 leading-relaxed">
-                    Используйте этот слой, чтобы пропустить строку заголовка таблицы или несколько первых 
+                    Используйте этот слой, чтобы пропустить строку заголовка таблицы или несколько первых
                     технических строк, которые не являются данными.
                 </p>
             </Card>
