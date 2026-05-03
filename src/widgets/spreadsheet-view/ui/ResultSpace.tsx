@@ -1,3 +1,5 @@
+"use client";
+
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import clsx from "clsx";
@@ -6,22 +8,37 @@ import { Group, Panel } from "react-resizable-panels";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { Separator } from "@/shared/ui/Separator";
 import { useState } from "react";
+import { ExportPanel } from "./ExportPanel";
 
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
 
+    const [customNames, setCustomNames] = useState<Record<string, string>>({});
     const [selectedTableId, setSelectedTableId] = useState(results[0]?.id);
 
     const selectedTable = results.find(table => table.id === selectedTableId);
-    
+
     const isEmpty = results.length === 0 || !selectedTable;
 
     const handleTableClick = (id: string) => {
         setSelectedTableId(id);
     };
 
+    const handleRename = (id: string, newName: string) => {
+        setCustomNames(prev => ({ ...prev, [id]: newName }));
+    };
+
+    const handleResetName = (id: string) => {
+        setCustomNames(prev => {
+            const next = { ...prev };
+            delete next[id];
+            return next;
+        });
+    };
+
     const resultTables = results.map((t) => {
         const isSelected = selectedTableId === t.id;
+        const displayName = customNames[t.id] ?? t.name;
 
         return (
             <Card
@@ -50,9 +67,14 @@ export const ResultSpace = () => {
                             onClick={() => handleTableClick(t.id)}
                         >
                             <h4>
-                                {t.name}
+                                {displayName}
                             </h4>
-                            <p>
+                            <p className={clsx(
+                                "font-mono",
+                                isSelected
+                                    ? "text-slate-100"
+                                    : "text-slate-400",
+                            )}>
                                 {t.rows.length}
                             </p>
                         </div>
@@ -94,17 +116,17 @@ export const ResultSpace = () => {
                                 "py-2 flex items-center",
                             )}>
                                 <ChevronRight size={16} className="text-slate-500" />
-                                {isEmpty || !selectedTable
-                                    ? <p>Результат</p>
-                                    : <p>Таблица: {selectedTable.name}</p>
+                                {isEmpty
+                                    ? "Результат"
+                                    : `Просмотр: ${customNames[selectedTable.id] ?? selectedTable.name}`
                                 }
                             </CardHeader>
-                            {!isEmpty && selectedTable &&
+                            {!isEmpty && (
                                 <SpreadsheetTable
                                     tables={[selectedTable]}
                                     headers={headers}
                                 />
-                            }
+                            )}
                         </Card>
                     </Panel>
                 </Group>
@@ -122,8 +144,12 @@ export const ResultSpace = () => {
                                 <ChevronRight size={16} className="text-slate-500" />
                                 Экспорт
                             </CardHeader>
-                            <CardBody className="overflow-auto">
-                            </CardBody>
+                            <ExportPanel
+                                selectedTableId={selectedTableId}
+                                customNames={customNames}
+                                onRename={handleRename}
+                                onReset={handleResetName}
+                            />
                         </Card>
                     </Panel>
                 </Group>
