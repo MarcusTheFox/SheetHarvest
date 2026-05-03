@@ -1,13 +1,9 @@
-import { PipelineContext, PipelineRow } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ProjectionLayerSettings, ProjectionColumn } from "./types";
 
 export function projectionLayer(context: PipelineContext, settings: ProjectionLayerSettings): PipelineContext {
-    const { rows, headers } = context;
+    const { tables, headers } = context;
 
-    if (!settings) {
-        return context;
-    }
-    
     let targetColumns: ProjectionColumn[] = [];
 
     if (settings.mode === 'manual') {
@@ -17,8 +13,8 @@ export function projectionLayer(context: PipelineContext, settings: ProjectionLa
         // В автоматическом режиме ищем строку-заголовок в текущем наборе строк
         const hIdx = settings.headerRowIndex - 1;
         // Ищем строку по originalIndex, так как до проекции индексы строк еще "сырые"
-        const headerRow = rows.find(r => r.originalIndex === hIdx);
-        
+        const headerRow = tables[0].rows.find(r => r.originalIndex === hIdx);
+
         if (headerRow) {
             headerRow.cells.forEach((cell, idx) => {
                 const val = cell?.toString().trim();
@@ -26,7 +22,7 @@ export function projectionLayer(context: PipelineContext, settings: ProjectionLa
                 if (val) {
                     targetColumns.push({
                         index: idx,
-                        name: val 
+                        name: val
                     });
                 }
             });
@@ -42,15 +38,28 @@ export function projectionLayer(context: PipelineContext, settings: ProjectionLa
     });
 
     // Трансформируем строки: оставляем только выбранные ячейки
-    const nextRows = rows.map((row): PipelineRow => ({
-        ...row,
-        cells: targetColumns.map(col => row.cells[col.index])
-    }));
+    const processRow = (row: PipelineRow): PipelineRow => {
+        const cells = targetColumns.map(col => row.cells[col.index])
+        return {
+            ...row,
+            cells,
+        }
+    }
+
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
 
     return {
         ...context,
         headers: nextHeaders,
-        rows: nextRows,
+        tables: newTables,
         isColumnStructureModified: true,
     };
 }

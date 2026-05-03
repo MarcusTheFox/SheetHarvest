@@ -1,4 +1,4 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ColumnSplitLayerSettings } from "./types";
 
 /**
@@ -12,7 +12,7 @@ import { ColumnSplitLayerSettings } from "./types";
  * }
  */
 export function columnSplitLayer(context: PipelineContext, settings: ColumnSplitLayerSettings): PipelineContext {
-    const { rows, headers } = context;
+    const { tables, headers } = context;
 
     if (settings?.sourceColIndex === undefined || headers.length === 0) {
         return context;
@@ -20,15 +20,12 @@ export function columnSplitLayer(context: PipelineContext, settings: ColumnSplit
 
     const sourceIdx = settings.sourceColIndex;
     const mode = settings.mode || 'delimiter';
-    const newNames = (settings.newNames as string[]) || ['Часть 1', 'Часть 2'];
+    const newNames = settings.newNames || ['Часть 1', 'Часть 2'];
 
-    // 1. Обновляем заголовки
     const newHeaders = [...headers];
-    // Заменяем один старый заголовок на список новых
     newHeaders.splice(sourceIdx, 1, ...newNames);
 
-    // 2. Трансформируем данные в строках
-    const transformedRows = rows.map(row => {
+    const processRow = (row: PipelineRow): PipelineRow => {
         const originalValue = String(row.cells[sourceIdx] || '').trim();
         let parts: string[] = [];
 
@@ -41,7 +38,7 @@ export function columnSplitLayer(context: PipelineContext, settings: ColumnSplit
                 const match = originalValue.match(regex);
                 if (match) {
                     // match[0] - это вся строка, match[1...N] - это группы ()
-                    parts = match.slice(1); 
+                    parts = match.slice(1);
                 }
             } catch (e) {
                 console.error("Split Regex error:", e);
@@ -54,13 +51,26 @@ export function columnSplitLayer(context: PipelineContext, settings: ColumnSplit
         const newCells = [...row.cells];
         newCells.splice(sourceIdx, 1, ...splitCells);
 
-        return { ...row, cells: newCells };
-    });
+        return {
+            ...row,
+            cells: newCells
+        };
+    }
+
+    const processTable = (table: PipelineTable): PipelineTable => {
+        const rows = table.rows.map(row => processRow(row));
+        return {
+            ...table,
+            rows,
+        }
+    }
+
+    const newTables = tables.map(table => processTable(table));
 
     return {
         ...context,
         headers: newHeaders,
-        rows: transformedRows,
+        tables: newTables,
         isColumnStructureModified: true,
     };
 };
