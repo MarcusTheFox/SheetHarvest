@@ -6,37 +6,26 @@ import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
 import { Settings2, Trash2 } from "lucide-react";
 import { useMemo } from "react";
 import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
-import { usePreviewStore } from "@/entities/preview/model/store";
 import { useShallow } from "zustand/shallow";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
 import { PatternSidebarPipelineLayer } from "./PatternSidebarPipelineLayer";
-import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
 
 export const PatternSidebarPipeline = () => {
     const setSelectedLayerIndex = useSelectedLayerStore(s => s.setSelectedLayerIndex);
 
-    const sourceTables = useExtractionSource();
+    const pipeline = usePatternStore(s => s.pipeline);
 
-    const preview = usePreviewStore(
-        useShallow(s => ({
-            cache: s.cache,
-            activePreviewId: s.activePreviewId,
-            setActivePreview: s.setActivePreview,
-            runUpToLayer: s.runUpToLayer,
-            executingLayerId: s.executingLayerId,
-            isExecuting: s.isExecuting,
-            executingIndex: s.executingIndex,
-            targetIndex: s.targetIndex,
-        }))
-    );
+    const pipelineIds = useMemo(() => pipeline.map(p => ({
+        instanceId: p.instanceId,
+        id: p.id
+    })), [pipeline]);
 
     const handleOpenEditor = (index: number | null = null) => {
         setSelectedLayerIndex(index ?? undefined);
     };
 
-    const { pipeline, resetPattern, moveLayer, removeLayer, addLayer } = usePatternStore(
+    const { resetPattern, moveLayer, removeLayer, addLayer } = usePatternStore(
         useShallow(s => ({
-            pipeline: s.pipeline,
             resetPattern: s.resetPattern,
             moveLayer: s.moveLayer,
             removeLayer: s.removeLayer,
@@ -46,13 +35,13 @@ export const PatternSidebarPipeline = () => {
 
     const availableLayersFlat = useMemo(() => {
         return Object.values(LAYER_REGISTRY).filter(
-            (l) => !pipeline.some(p => p.id === l.id) || !l.isSystem
+            (l) => !pipelineIds.some(p => p.id === l.id) || !l.isSystem
         ).map(l => ({
             id: l.id,
             name: l.name,
             description: l.description
         }));
-    }, [pipeline]);
+    }, [pipelineIds]);
 
     const handleClearPipeline = () => {
         handleOpenEditor();
@@ -66,7 +55,7 @@ export const PatternSidebarPipeline = () => {
                     <div className="flex items-center gap-2 text-default-600">
                         <Settings2 size={16} />
                         <span className="text-[11px] font-bold uppercase tracking-wider">Функций</span>
-                        <Chip size="sm" variant="flat" className="h-5 text-[10px]">{pipeline.length}</Chip>
+                        <Chip size="sm" variant="flat" className="h-5 text-[10px]">{pipelineIds.length}</Chip>
                     </div>
 
                     <div className="flex items-center gap-1">
@@ -106,7 +95,7 @@ export const PatternSidebarPipeline = () => {
                         </CardBody>
                     </Card>
                     <div className="border-b border-slate-200 h-px" />
-                    {pipeline.map((entry, index) => {
+                    {pipelineIds.map((entry, index) => {
                         const metadata = LAYER_REGISTRY[entry.id];
                         if (!metadata) return null;
 
@@ -114,26 +103,14 @@ export const PatternSidebarPipeline = () => {
                             <PatternSidebarPipelineLayer
                                 key={entry.instanceId}
                                 index={index}
+                                layerId={entry.id}
+                                instanceId={entry.instanceId}
                                 name={metadata.name}
                                 description={metadata.description}
-                                isCached={!!preview.cache[entry.instanceId]}
-                                isActive={preview.activePreviewId === entry.instanceId}
-                                isExecuting={preview.executingLayerId === entry.instanceId}
-                                isLoading={
-                                    preview.isExecuting &&
-                                    preview.executingIndex <= index &&
-                                    preview.targetIndex >= index
-                                }
-                                isMoveUpDisabled={index === 0}
-                                isMoveDownDisabled={index === pipeline.length - 1}
-                                isSystem={metadata.isSystem}
-                                onLayerPress={() => {
-                                    preview.setActivePreview(entry.instanceId);
-                                    handleOpenEditor(index)
-                                }}
-                                onRunLayerPress={() => {
-                                    preview.runUpToLayer(entry.instanceId, pipeline, sourceTables);
-                                }}
+
+                                isFirst={index === 0}
+                                isLast={index === pipelineIds.length - 1}
+
                                 onMoveUp={() => moveLayer(index, index - 1)}
                                 onMoveDown={() => moveLayer(index, index + 1)}
                                 onRemove={() => removeLayer(index)}
@@ -141,7 +118,7 @@ export const PatternSidebarPipeline = () => {
                         );
                     })}
 
-                    {pipeline.length === 0 && (
+                    {pipelineIds.length === 0 && (
                         <div className="py-8 border-2 border-dashed border-default-100 rounded-2xl flex flex-col items-center justify-center text-default-400 gap-2">
                             <Settings2 size={24} className="opacity-20" />
                             <span className="text-[11px]">Нет активных слоев</span>
