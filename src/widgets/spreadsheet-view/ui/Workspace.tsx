@@ -5,13 +5,10 @@ import clsx from "clsx";
 import { Separator } from "@/shared/ui/Separator";
 import { WorkspaceTableArea } from "./WorkspaceTableArea";
 import { LayerSettingsPanel } from "@/widgets/pipeline-editor/ui/layer-settings/LayerSettingsPanel";
-import { useSelectedLayer } from "../lib/useSelectedLayer";
 import { PatternSidebarTemplates } from "@/widgets/pattern-editor/ui/PatternSidebarTemplates";
 import { PatternSidebarPipeline } from "@/widgets/pattern-editor/ui/PatternSidebarPipeline";
 
 export const Workspace = () => {
-    const { selectedLayerIndex, selectedLayer } = useSelectedLayer();
-
     return (
         <Group orientation="horizontal" className="gap-0.5">
             <Panel
@@ -71,10 +68,7 @@ export const Workspace = () => {
                                 <ChevronRight size={16} className="text-slate-500" />
                                 Настройки
                             </CardHeader>
-                            <LayerSettingsPanel
-                                selectedEntry={selectedLayer ?? null}
-                                selectedIndex={selectedLayerIndex ?? null}
-                            />
+                            <LayerSettingsPanel />
                         </Card>
                     </Panel>
                 </Group>
