@@ -29,7 +29,7 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
 
             const prevLayerId = pipeline[selectedIndex - 1].instanceId;
             if (!cache[prevLayerId]) {
-                runUpToLayer(prevLayerId, pipeline, { tables: sourceTables });
+                runUpToLayer(prevLayerId, pipeline, sourceTables);
             }
         }
     }, [selectedIndex, pipeline, sourceTables, cache, runUpToLayer]);

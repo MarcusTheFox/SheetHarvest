@@ -23,7 +23,7 @@ export const useSelectedLayer = () => {
         if (selectedLayerIndex !== undefined && selectedLayerIndex > 0 && sourceTables) {
             const previousLayerId = pipeline[selectedLayerIndex - 1]?.instanceId;
             if (previousLayerId && !cache[previousLayerId]) {
-                runUpToLayer(previousLayerId, pipeline, { tables: sourceTables });
+                runUpToLayer(prevLayerId, pipeline, sourceTables);
             }
         }
     }, [selectedLayerIndex, pipeline, sourceTables, cache, runUpToLayer])

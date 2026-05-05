@@ -3,34 +3,37 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
-import {
-    ArrowDown, ArrowUp, Settings2, Trash2,
-    CheckCircle2, Play
-} from "lucide-react";
-import { memo, useMemo } from "react";
+import { Settings2, Trash2 } from "lucide-react";
+import { useMemo } from "react";
 import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { usePreviewStore } from "@/entities/preview/model/store";
-import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
 import { useShallow } from "zustand/shallow";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
+import { PatternSidebarPipelineLayer } from "./PatternSidebarPipelineLayer";
+import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
 
-export const PatternSidebarPipeline = memo(() => {
+export const PatternSidebarPipeline = () => {
     const setSelectedLayerIndex = useSelectedLayerStore(s => s.setSelectedLayerIndex);
+
+    const sourceTables = useExtractionSource();
+
+    const preview = usePreviewStore(
+        useShallow(s => ({
+            cache: s.cache,
+            activePreviewId: s.activePreviewId,
+            setActivePreview: s.setActivePreview,
+            runUpToLayer: s.runUpToLayer,
+            executingLayerId: s.executingLayerId,
+            isExecuting: s.isExecuting,
+            executingIndex: s.executingIndex,
+            targetIndex: s.targetIndex,
+        }))
+    );
 
     const handleOpenEditor = (index: number | null = null) => {
         setSelectedLayerIndex(index ?? undefined);
     };
 
-    const sourceTables = useExtractionSource();
-
-    const { cache, runUpToLayer, activePreviewId, isExecuting } = usePreviewStore(
-        useShallow(s => ({
-            cache: s.cache,
-            runUpToLayer: s.runUpToLayer,
-            activePreviewId: s.activePreviewId,
-            isExecuting: s.isExecuting,
-        }))
-    );
     const { pipeline, resetPattern, moveLayer, removeLayer, addLayer } = usePatternStore(
         useShallow(s => ({
             pipeline: s.pipeline,
@@ -107,78 +110,34 @@ export const PatternSidebarPipeline = memo(() => {
                         const metadata = LAYER_REGISTRY[entry.id];
                         if (!metadata) return null;
 
-                        const isCached = !!cache[entry.instanceId];
-                        const isActivePreview = activePreviewId === entry.instanceId;
-
                         return (
-                            <Card key={entry.instanceId} shadow="none" className="border border-default-100 bg-default-50/50 overflow-hidden shrink-0">
-                                <CardBody className="p-3">
-                                    <div className="flex items-start justify-between gap-2">
-                                        <div className="shrink-0">
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                radius="full"
-                                                variant={isCached ? "flat" : "solid"}
-                                                color={isActivePreview ? "primary" : isCached ? "success" : "default"}
-                                                isLoading={isExecuting && isActivePreview}
-                                                onPress={() => runUpToLayer(entry.instanceId, pipeline, { tables: sourceTables })}
-                                            >
-                                                {isCached ? <CheckCircle2 size={16} /> : <Play size={14} className="ml-0.5" />}
-                                            </Button>
-                                        </div>
-
-                                        <div
-                                            className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group"
-                                            onClick={() => handleOpenEditor(index)}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-bold text-default-400 font-mono">#{index + 1}</span>
-                                                <span className="text-[12px] font-semibold truncate leading-tight group-hover:text-primary transition-colors">{metadata.name}</span>
-                                            </div>
-                                            <span className="text-[10px] text-default-500 line-clamp-1 italic">{metadata.description}</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <div className="flex flex-col">
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    className="h-5 w-5 min-w-0"
-                                                    isDisabled={index === 0}
-                                                    onPress={() => moveLayer(index, index - 1)}
-                                                >
-                                                    <ArrowUp size={12} />
-                                                </Button>
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    className="h-5 w-5 min-w-0"
-                                                    isDisabled={index === pipeline.length - 1}
-                                                    onPress={() => moveLayer(index, index + 1)}
-                                                >
-                                                    <ArrowDown size={12} />
-                                                </Button>
-                                            </div>
-
-                                            {!metadata.isSystem && (
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    color="danger"
-                                                    className="h-7 w-7 min-w-0"
-                                                    onPress={() => removeLayer(index)}
-                                                >
-                                                    <Trash2 size={14} />
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </CardBody>
-                            </Card>
+                            <PatternSidebarPipelineLayer
+                                key={entry.instanceId}
+                                index={index}
+                                name={metadata.name}
+                                description={metadata.description}
+                                isCached={!!preview.cache[entry.instanceId]}
+                                isActive={preview.activePreviewId === entry.instanceId}
+                                isExecuting={preview.executingLayerId === entry.instanceId}
+                                isLoading={
+                                    preview.isExecuting &&
+                                    preview.executingIndex <= index &&
+                                    preview.targetIndex >= index
+                                }
+                                isMoveUpDisabled={index === 0}
+                                isMoveDownDisabled={index === pipeline.length - 1}
+                                isSystem={metadata.isSystem}
+                                onLayerPress={() => {
+                                    preview.setActivePreview(entry.instanceId);
+                                    handleOpenEditor(index)
+                                }}
+                                onRunLayerPress={() => {
+                                    preview.runUpToLayer(entry.instanceId, pipeline, sourceTables);
+                                }}
+                                onMoveUp={() => moveLayer(index, index - 1)}
+                                onMoveDown={() => moveLayer(index, index + 1)}
+                                onRemove={() => removeLayer(index)}
+                            />
                         );
                     })}
 
@@ -192,6 +151,6 @@ export const PatternSidebarPipeline = memo(() => {
             </div>
         </>
     );
-});
+};
 
 PatternSidebarPipeline.displayName = "PatternSidebarPipeline";
