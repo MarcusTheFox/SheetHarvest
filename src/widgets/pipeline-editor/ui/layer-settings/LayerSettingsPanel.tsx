@@ -1,55 +1,26 @@
 import { ScrollShadow, Spinner } from "@heroui/react";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
-import { PipelineLayer } from "@/entities/pattern/model/types";
 import { EmptyLayerState } from "./EmptyLayerState";
 import { LayerSettingsHeader } from "./LayerSettingsHeader";
 import { LayerConfigRenderer } from "./LayerConfigRenderer";
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { usePreviewStore } from "@/entities/preview/model/store";
-import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
-import { useEffect, useMemo } from "react";
-import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
+import { useSelectedLayer } from "@/widgets/spreadsheet-view/lib/useSelectedLayer";
+import { memo } from "react";
 
-interface LayerSettingsPanelProps {
-    selectedEntry: PipelineLayer | null;
-    selectedIndex: number | null;
-}
+export const LayerSettingsPanel = memo(() => {
+    const {
+        selectedLayerIndex,
+        selectedLayer,
+        isExecuting,
+        inputContext,
+    } = useSelectedLayer();
 
-export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettingsPanelProps) => {
-    const pipeline = usePatternStore(s => s.pipeline);
-    const sourceTables = useExtractionSource();
-    const cache = usePreviewStore(s => s.cache);
-    const isExecuting = usePreviewStore(s => s.isExecuting);
-    const runUpToLayer = usePreviewStore(s => s.runUpToLayer);
-
-    useEffect(() => {
-        if (selectedIndex !== null && selectedIndex > 0 && sourceTables) {
-            const selectedLayer = pipeline[selectedIndex - 1];
-            if (!selectedLayer) return;
-
-            const prevLayerId = pipeline[selectedIndex - 1].instanceId;
-            if (!cache[prevLayerId]) {
-                runUpToLayer(prevLayerId, pipeline, sourceTables);
-            }
-        }
-    }, [selectedIndex, pipeline, sourceTables, cache, runUpToLayer]);
-
-    const prevContext = useMemo(() => {
-        if (!selectedEntry || selectedIndex === null || !sourceTables) return undefined;
-        if (selectedIndex === 0) return createInitialContext(sourceTables);
-
-        const selectedLayer = pipeline[selectedIndex - 1];
-        if (!selectedLayer) return;
-
-        const prevLayerId = pipeline[selectedIndex - 1].instanceId;
-        return cache[prevLayerId];
-    }, [selectedEntry, selectedIndex, sourceTables, pipeline, cache]);
-
-    if (!selectedEntry || selectedIndex === null) {
+    if (selectedLayerIndex === undefined || !selectedLayer) {
         return <EmptyLayerState />;
     }
 
-    const metadata = LAYER_REGISTRY[selectedEntry.id];
+    const metadata = LAYER_REGISTRY[selectedLayer.id];
+
+    const isWaitingForContext = isExecuting && selectedLayerIndex > 0 && !inputContext;
 
     return (
         <div className="flex flex-col h-full bg-white">
@@ -58,19 +29,21 @@ export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettin
             />
 
             <ScrollShadow className="flex-1 p-8">
-                {isExecuting && selectedIndex > 0 && !prevContext ? (
+                {isWaitingForContext ? (
                     <div className="flex items-center justify-center h-48 text-default-400 gap-3">
                         <Spinner size="sm" />
                         <span className="text-sm">Вычисляем контекст...</span>
                     </div>
                 ) : (
                     <LayerConfigRenderer
-                        entry={selectedEntry}
-                        index={selectedIndex}
-                        prevContext={prevContext}
+                        entry={selectedLayer}
+                        index={selectedLayerIndex}
+                        prevContext={inputContext}
                     />
                 )}
             </ScrollShadow>
         </div>
     );
-};
+});
+
+LayerSettingsPanel.displayName = "LayerSettingsPanel";
