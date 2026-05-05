@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { PatternState } from './types';
-import { getInitialState } from './slices/initial-state';
+import { getInitialState } from './initial-state';
 import { usePreviewStore } from '@/entities/preview/model/store';
 import { DEFAULT_PIPELINE, LAYER_REGISTRY } from '@/features/run-extraction/lib/pipeline/registry';
 
