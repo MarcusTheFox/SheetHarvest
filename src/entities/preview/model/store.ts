@@ -40,11 +40,17 @@ export const usePreviewStore = create<PreviewState>((set, get) => ({
   runUpToLayer: async (targetInstanceId: string, pipeline: PipelineLayer[], sourceTables: PipelineTable[]) => {
     const state = get();
     const targetIndex = pipeline.findIndex(layer => layer.instanceId === targetInstanceId);
-    
+
     if (state.isExecuting || pipeline.length === 0) return;
-    
+
+    const hasUncached = pipeline
+      .slice(0, targetIndex + 1)
+      .some(layer => !state.cache[layer.instanceId]);
+
+    if (!hasUncached) return;
+
     const firstLayerId = pipeline[0].instanceId;
-    
+
     if (!firstLayerId) return;
 
     set({
