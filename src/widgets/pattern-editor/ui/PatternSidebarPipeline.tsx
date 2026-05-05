@@ -9,9 +9,11 @@ import { SearchSelectPopover } from "@/shared/ui/SearchSelectPopover";
 import { useShallow } from "zustand/shallow";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
 import { PatternSidebarPipelineLayer } from "./PatternSidebarPipelineLayer";
+import { usePreviewStore } from "@/entities/preview/model/store";
 
 export const PatternSidebarPipeline = () => {
     const setSelectedLayerIndex = useSelectedLayerStore(s => s.setSelectedLayerIndex);
+    const setActivePreview = usePreviewStore(s => s.setActivePreview);
 
     const pipeline = usePatternStore(s => s.pipeline);
 
@@ -21,6 +23,7 @@ export const PatternSidebarPipeline = () => {
     })), [pipeline]);
 
     const handleOpenEditor = (index: number | null = null) => {
+        setActivePreview(null);
         setSelectedLayerIndex(index ?? undefined);
     };
 
