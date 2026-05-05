@@ -1,4 +1,7 @@
-import { AnchorPoint } from "@/entities/pattern/model/types";
+export interface AnchorPoint {
+  text: string;
+  colIndex: number;
+}
 
 export interface AnchorLayerSettings {
     start: AnchorPoint | null;

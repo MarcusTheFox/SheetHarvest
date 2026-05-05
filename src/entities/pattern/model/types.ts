@@ -1,24 +1,3 @@
-import { ValidatorType } from "@/shared/lib/validators";
-
-export type ConstraintType = ValidatorType;
-export type TopologyMode = 'any' | 'filled' | 'empty';
-
-export interface AnchorPoint {
-  text: string;
-  colIndex: number;
-}
-
-export interface ColumnConstraint {
-  colIndex: number;
-  type: ConstraintType;
-  pattern?: string;
-}
-
-export interface PatternAnchor {
-  start: AnchorPoint | null;
-  end: AnchorPoint | null;
-}
-
 export interface PipelineLayer<T = unknown> {
   id: string;
   instanceId: string;

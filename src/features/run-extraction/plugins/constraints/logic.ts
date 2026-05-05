@@ -1,8 +1,7 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
-import { ColumnConstraint } from "@/entities/pattern/model/types";
+import { PipelineContext, PipelineTable } from "../../lib/pipeline/core";
 import { validators } from "@/shared/lib/validators";
-import { ConstraintsLayerSettings } from "./types";
+import { ColumnConstraint, ConstraintsLayerSettings } from "./types";
 
 export function constraintsLayer(context: PipelineContext, settings: ConstraintsLayerSettings): PipelineContext {
     const { tables } = context;
