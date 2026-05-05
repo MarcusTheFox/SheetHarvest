@@ -1,5 +1,4 @@
 import { ISpreadsheetParser } from './types';
-import { XLSXParser } from './xlsx-parser';
 import { CSVParser } from './csv-parser';
 import { XLSLegacyParser } from './xls-legacy-parser';
 import { Sheet } from '@/shared/types/spreadsheet';
@@ -9,14 +8,13 @@ export const getParserForFile = (file: File): ISpreadsheetParser => {
 
   switch (extension) {
     case 'xlsx':
+    case 'xls':
     case 'xlsm':
       return new XLSLegacyParser();
     case 'csv':
       return new CSVParser();
-    case 'xls':
-      return new XLSLegacyParser();
     default:
-      return new XLSXParser();
+      return new XLSLegacyParser();
   }
 };
 
