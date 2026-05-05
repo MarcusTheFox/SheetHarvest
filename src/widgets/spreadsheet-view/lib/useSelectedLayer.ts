@@ -11,36 +11,36 @@ export const useSelectedLayer = () => {
     const pipeline = usePatternStore((s) => s.pipeline);
     const sourceTables = useExtractionSource();
 
-    const { cache, isExecuting, runUpToLayer } = usePreviewStore(
+    const { isExecuting, runUpToLayer } = usePreviewStore(
         useShallow(s => ({
-            cache: s.cache,
             isExecuting: s.isExecuting,
             runUpToLayer: s.runUpToLayer,
         }))
-    )
+    );
+
+    const selectedLayer = selectedLayerIndex !== undefined ? pipeline[selectedLayerIndex] : undefined;
+    const prevLayerId = (selectedLayerIndex !== undefined && selectedLayerIndex > 0)
+        ? pipeline[selectedLayerIndex - 1]?.instanceId
+        : undefined;
+
+    const inputContextFromCache = usePreviewStore(s => prevLayerId ? s.cache[prevLayerId] : undefined);
+    const outputContext = usePreviewStore(s => selectedLayer ? s.cache[selectedLayer.instanceId] : undefined);
 
     useEffect(() => {
-        if (selectedLayerIndex !== undefined && selectedLayerIndex > 0 && sourceTables) {
-            const previousLayerId = pipeline[selectedLayerIndex - 1]?.instanceId;
-            if (previousLayerId && !cache[previousLayerId]) {
+        if (selectedLayerIndex !== undefined && selectedLayerIndex > 0 && sourceTables && !isExecuting) {
+            if (prevLayerId && !inputContextFromCache) {
                 runUpToLayer(prevLayerId, pipeline, sourceTables);
             }
         }
-    }, [selectedLayerIndex, pipeline, sourceTables, cache, runUpToLayer])
+    }, [selectedLayerIndex, prevLayerId, inputContextFromCache, isExecuting]);
 
     const inputContext = useMemo(() => {
         if (!sourceTables) return undefined;
         if (!selectedLayerIndex || selectedLayerIndex === 0) {
             return createInitialContext(sourceTables);
         }
-        const previousLayerId = pipeline[selectedLayerIndex - 1]?.instanceId;
-        if (!previousLayerId) return undefined;
-        return cache[previousLayerId];
-    }, [sourceTables, selectedLayerIndex, pipeline, cache]);
-
-    const selectedLayer = selectedLayerIndex !== undefined ? pipeline[selectedLayerIndex] : undefined;
-
-    const outputContext = selectedLayer ? cache[selectedLayer.instanceId] : undefined;
+        return inputContextFromCache;
+    }, [sourceTables, selectedLayerIndex, inputContextFromCache]);
 
     return {
         selectedLayerIndex,
