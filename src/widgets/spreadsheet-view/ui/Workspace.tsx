@@ -11,12 +11,7 @@ import { PatternSidebarPipeline } from "@/widgets/pattern-editor/ui/PatternSideb
 export const Workspace = () => {
     return (
         <Group orientation="horizontal" className="gap-0.5">
-            <Panel
-                collapsible
-                maxSize={400}
-                minSize={400}
-                defaultSize={400}
-            >
+            <Panel defaultSize={400}>
                 <Group orientation="vertical" className="gap-0.5">
                     <Panel minSize={32}>
                         <Card radius="sm" shadow="none" className="h-full border border-slate-200">
