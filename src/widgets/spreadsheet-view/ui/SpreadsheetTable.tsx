@@ -6,7 +6,7 @@ import { getCellMergeInfo } from "../lib/merge-utils";
 import { PipelineContext, PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 import { createHeadersFromTables } from "@/features/run-extraction/lib/pipeline/utils";
 
 interface SpreadsheetTableContainerProps {
@@ -17,7 +17,7 @@ interface SpreadsheetTableContainerProps {
     showGroupSeparator?: boolean;
 }
 
-export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps) => {
+export const SpreadsheetTableContainer = memo((props: SpreadsheetTableContainerProps) => {
     const {
         context,
         isLoading = false,
@@ -61,7 +61,7 @@ export const SpreadsheetTableContainer = (props: SpreadsheetTableContainerProps)
             showMerges={!context.isColumnStructureModified}
         />
     );
-};
+});
 
 interface SpreadsheetTableProps {
     tables: PipelineTable[];
@@ -70,7 +70,7 @@ interface SpreadsheetTableProps {
     showMerges?: boolean;
 }
 
-export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
+export const SpreadsheetTable = memo((props: SpreadsheetTableProps) => {
     const tables = props.tables;
 
     const headers = props.headers?.length
@@ -149,4 +149,4 @@ export const SpreadsheetTable = (props: SpreadsheetTableProps) => {
             </Table>
         </div>
     );
-};
+});
