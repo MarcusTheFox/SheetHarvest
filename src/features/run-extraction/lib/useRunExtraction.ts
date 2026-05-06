@@ -6,14 +6,13 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 
 export const useRunExtraction = () => {
-    const sourceTables = useSpreadsheetStore(s => s.sourceTables);
-
-    const pipeline = usePatternStore(s => s.pipeline);
-
     const setResults = useExtractionStore(s => s.setResults);
-    const cache = usePreviewStore(s => s.cache);
-
+    
     const runExtraction = useCallback(() => {
+        const cache = usePreviewStore.getState().cache;
+        const pipeline = usePatternStore.getState().pipeline;
+        const sourceTables = useSpreadsheetStore.getState().sourceTables;
+        
         if (!sourceTables.length) {
             console.error('No sheets data');
             return;
@@ -22,7 +21,7 @@ export const useRunExtraction = () => {
         const results = extractData(sourceTables, pipeline, cache);
 
         setResults(results);
-    }, [sourceTables, cache, setResults]);
+    }, [setResults]);
 
     return { runExtraction };
 };
