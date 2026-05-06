@@ -16,14 +16,15 @@ export const PatternSidebarTemplates = () => {
         }))
     );
 
-    const pipeline = usePatternStore(s => s.pipeline);
     const loadPattern = usePatternStore(s => s.loadPattern);
-    
+
     const [newTemplateName, setNewTemplateName] = useState("");
 
     const handleSave = () => {
         if (!newTemplateName) return;
-        
+
+        const pipeline = usePatternStore.getState().pipeline;
+
         addTemplate({
             name: newTemplateName,
             config: { pipeline }
@@ -35,16 +36,16 @@ export const PatternSidebarTemplates = () => {
         <div className="flex flex-col gap-4">
             {/* Форма сохранения */}
             <div className="flex flex-col gap-2 p-3 bg-default-50 rounded-2xl border border-default-200">
-                <Input 
-                    size="sm" 
+                <Input
+                    size="sm"
                     label="Название шаблона"
                     value={newTemplateName}
                     onValueChange={setNewTemplateName}
                 />
-                <Button 
-                    size="sm" 
-                    color="primary" 
-                    variant="solid" 
+                <Button
+                    size="sm"
+                    color="primary"
+                    variant="solid"
                     isDisabled={!newTemplateName}
                     startContent={<Save size={16} />}
                     onPress={handleSave}
@@ -61,8 +62,8 @@ export const PatternSidebarTemplates = () => {
                     <Card key={t.id} shadow="none" className="border border-default-100 hover:border-primary-200 transition-all group">
                         <CardBody className="p-3">
                             <div className="flex justify-between items-start gap-2">
-                                <div 
-                                    className="flex-1 cursor-pointer min-w-0" 
+                                <div
+                                    className="flex-1 cursor-pointer min-w-0"
                                     onClick={() => loadPattern(t.config)}
                                 >
                                     <h4 className="text-xs font-bold truncate group-hover:text-primary transition-colors">{t.name}</h4>
@@ -71,7 +72,7 @@ export const PatternSidebarTemplates = () => {
                                         {new Date(t.createdAt).toLocaleDateString()}
                                     </div>
                                 </div>
-                                <Button 
+                                <Button
                                     isIconOnly size="sm" variant="light" color="danger"
                                     className="opacity-0 group-hover:opacity-100 transition-opacity"
                                     onPress={() => removeTemplate(t.id)}
@@ -82,7 +83,7 @@ export const PatternSidebarTemplates = () => {
                         </CardBody>
                     </Card>
                 ))}
-                
+
                 {templates.length === 0 && (
                     <div className="text-center py-8 text-default-400 text-xs italic">
                         У вас пока нет сохраненных шаблонов
