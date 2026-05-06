@@ -2,11 +2,11 @@ import { useCallback } from "react";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { extractData } from "./extract-data";
-import { useExtractionSource } from "./useExtractionParams";
 import { usePatternStore } from "@/entities/pattern/model/store";
+import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 
 export const useRunExtraction = () => {
-    const sourceTables = useExtractionSource();
+    const sourceTables = useSpreadsheetStore(s => s.sourceTables);
 
     const pipeline = usePatternStore(s => s.pipeline);
 
