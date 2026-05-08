@@ -62,6 +62,8 @@ export function anchorLayer(context: PipelineContext, settings: AnchorLayerSetti
 
         if (anchor.mergeResults) {
             createSubTable(true);
+        } else if (currentSubTableRows.length > 0) {
+            createSubTable(false);
         }
 
         return subTables;
