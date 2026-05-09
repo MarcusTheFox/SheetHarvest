@@ -14,7 +14,8 @@ interface ExportPanelProps {
 }
 
 export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }: ExportPanelProps ) => {
-    const { results, headers } = useExtractionStore();
+    const results = useExtractionStore(s => s.results);
+    const headers = useExtractionStore(s => s.headers);
 
     const selectedTable = results.find(( t ) => t.id === selectedTableId );
     const currentName = selectedTable ? ( customNames[selectedTable.id] ?? selectedTable.name ) : "";

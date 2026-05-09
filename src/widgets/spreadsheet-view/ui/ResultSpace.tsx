@@ -11,7 +11,8 @@ import { ResultTableCard } from "./ResultTableCard";
 import { TemplateSaveForm } from "./TemplateSaveForm";
 
 export const ResultSpace = () => {
-    const { results, headers } = useExtractionStore();
+    const results = useExtractionStore(s => s.results);
+    const headers = useExtractionStore(s => s.headers);
 
     const [ customNames, setCustomNames ] = useState<Record<string, string>>({});
     const [ selectedTableId, setSelectedTableId ] = useState( results[0]?.id );
