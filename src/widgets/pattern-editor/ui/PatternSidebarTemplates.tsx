@@ -2,7 +2,7 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useTemplateStore } from "@/entities/template/model/store";
-import { TemplateSaveForm } from "@/widgets/spreadsheet-view/ui/TemplateSaveForm";
+import { TemplateSaveForm } from "@/features/template-save/ui";
 import { Button, Card, CardBody, Divider } from "@heroui/react";
 import { Trash2, Clock } from "lucide-react";
 import { useShallow } from "zustand/shallow";

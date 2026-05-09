@@ -5,10 +5,10 @@ import { Group, Panel } from "react-resizable-panels";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { Separator } from "@/shared/ui/Separator";
 import { useState } from "react";
-import { ExportPanel } from "./ExportPanel";
+import { ExportPanel } from "@/features/export-result/ui";
 import { SpacePanel } from "./SpacePanel";
 import { ResultTableCard } from "./ResultTableCard";
-import { TemplateSaveForm } from "./TemplateSaveForm";
+import { TemplateSaveForm } from "@/features/template-save/ui";
 
 export const ResultSpace = () => {
     const results = useExtractionStore(( s ) => s.results );

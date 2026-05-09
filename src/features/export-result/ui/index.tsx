@@ -3,11 +3,11 @@
 import { Button, Divider, Input } from "@heroui/react";
 import { RotateCcw, Archive } from "lucide-react";
 import { useExtractionStore } from "@/entities/extraction/model/store";
-import { exportToExcel, exportToJSON, exportToCSV } from "@/shared/lib/export-utils";
-import clsx from "clsx";
+import { ExportSingle } from "./ExportSingle";
+import { useExport } from "../model/useExport";
 
 interface ExportPanelProps {
-    selectedTableId: string | number;
+    selectedTableId: string;
     customNames: Record<string, string>;
     onRename: ( id: string, name: string ) => void;
     onReset: ( id: string ) => void;
@@ -17,33 +17,10 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
     const results = useExtractionStore(( s ) => s.results );
     const headers = useExtractionStore(( s ) => s.headers );
 
+    const { exportTable, exportAll } = useExport();
+
     const selectedTable = results.find(( t ) => t.id === selectedTableId );
     const currentName = selectedTable ? ( customNames[selectedTable.id] ?? selectedTable.name ) : "";
-
-    const exportSingle = ( format: "xlsx" | "json" | "csv" ) => {
-        if ( !selectedTable ) return;
-        const name = currentName;
-        const rows = selectedTable.rows.map(( r ) => r.cells );
-
-        if ( format === "xlsx" ) {
-            exportToExcel([ { name, rows: [ headers, ...rows ] } ], name );
-        }
-        else if ( format === "csv" ) {
-            exportToCSV( rows, headers, name );
-        }
-        else if ( format === "json" ) {
-            const json = rows.map(( row ) => Object.fromEntries( headers.map(( h, i ) => [ h || `col_${ i }`, row[i] ])));
-            exportToJSON( json, name );
-        }
-    };
-
-    const exportAll = () => {
-        const sheets = results.map(( t ) => ({
-            name: customNames[t.id] ?? t.name,
-            rows: [ headers, ...t.rows.map(( r ) => r.cells ) ],
-        }));
-        exportToExcel( sheets, "All_Results_Extractions" );
-    };
 
     if ( !selectedTable ) return null;
 
@@ -87,9 +64,9 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
                     </label>
 
                     <div className="flex gap-1">
-                        <ActionButton label="XLSX" onClick={ () => exportSingle( "xlsx" ) } />
-                        <ActionButton label="CSV" onClick={ () => exportSingle( "csv" ) } />
-                        <ActionButton label="JSON" onClick={ () => exportSingle( "json" ) } />
+                        <ExportSingle label="XLSX" onClick={ () => exportTable( selectedTable, headers, currentName, "xlsx" ) } />
+                        <ExportSingle label="CSV" onClick={ () => exportTable( selectedTable, headers, currentName, "csv" ) } />
+                        <ExportSingle label="JSON" onClick={ () => exportTable( selectedTable, headers, currentName, "json" ) } />
                     </div>
                 </div>
             </div>
@@ -103,7 +80,7 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
                     color="primary"
                     radius="sm"
                     size="lg"
-                    onPress={ exportAll }
+                    onPress={ () => exportAll( results, headers, customNames ) }
                 >
                     <Archive size={ 16 } />
                     Экспортировать всё (XLSX)
@@ -112,19 +89,3 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
         </div>
     );
 };
-
-const ActionButton = ({ label, onClick }: { label: string, onClick: () => void }) => (
-    <Button
-        className={ clsx(
-            "flex-1",
-            "bg-white border border-slate-200",
-            "hover:border-blue-500 hover:text-blue-600",
-            "transition-all py-2.5",
-            "text-xs font-bold uppercase tracking-tighter text-slate-600",
-        ) }
-        radius="sm"
-        onPress={ onClick }
-    >
-        { label }
-    </Button>
-);
