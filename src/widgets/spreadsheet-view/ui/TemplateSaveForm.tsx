@@ -23,11 +23,18 @@ export const TemplateSaveForm = () => {
     };
 
     return (
-        <div className="flex flex-col gap-2 p-3 bg-default-50 rounded-2xl border border-default-200">
+        <div className="flex flex-row gap-2">
             <Input
                 size="sm"
-                label="Название шаблона"
+                radius="sm"
+                variant="bordered"
                 value={newTemplateName}
+                placeholder="Название шаблона"
+                isClearable
+                classNames={{
+                    input: "font-bold text-slate-700! text-xs placeholder:text-slate-500",
+                    inputWrapper: "px-3 border-1 border-slate-300 hover:border-slate-400!",
+                }}
                 onValueChange={setNewTemplateName}
             />
             <Button
@@ -37,9 +44,8 @@ export const TemplateSaveForm = () => {
                 isDisabled={!newTemplateName}
                 startContent={<Save size={16} />}
                 onPress={handleSave}
-            >
-                Сохранить текущий
-            </Button>
+                isIconOnly
+            />
         </div>
     )
 }

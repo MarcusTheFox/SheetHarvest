@@ -88,7 +88,7 @@ export const ResultSpace = () => {
                         />
                     </SpacePanel>
                     <Separator className="h-1" />
-                    <SpacePanel defaultSize="25" title="Экспорт">
+                    <SpacePanel defaultSize="15" title="Сохранение шаблона">
                         <TemplateSaveForm />
                     </SpacePanel>
                 </Group>
