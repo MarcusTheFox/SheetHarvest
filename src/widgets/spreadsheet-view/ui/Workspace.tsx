@@ -33,7 +33,7 @@ export const Workspace = () => {
 
             <Panel defaultSize="20">
                 <Group orientation="vertical">
-                    <SpacePanel minSize={ 32 } title="Настройки">
+                    <SpacePanel hideWrapper minSize={ 32 } title="Настройки">
                         <LayerSettingsPanel />
                     </SpacePanel>
                 </Group>

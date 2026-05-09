@@ -1,15 +1,17 @@
 import { Layers } from "lucide-react";
 
 export const EmptyLayerState = () => (
-    <div className="flex-1 flex flex-col items-center justify-center text-default-300 p-12 text-center">
-        <div className="bg-default-50 p-8 rounded-full mb-6">
-            <Layers className="opacity-20" size={ 64 } />
+    <div className="h-full flex flex-col items-center justify-center p-12 text-center bg-default-50/30">
+        <div className="w-16 h-16 bg-white border-2 border-dashed border-default-200 rounded-full flex items-center justify-center mb-4">
+            <Layers className="text-default-200" size={ 32 } />
         </div>
 
-        <h3 className="text-xl font-bold text-default-400 mb-2">Слой не выбран</h3>
+        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">
+            Слой не выбран
+        </h3>
 
-        <p className="max-w-xs text-sm text-default-400">
-            Выберите слой из списка слева, чтобы просмотреть его детали или изменить параметры
+        <p className="max-w-60 text-xs text-slate-400 leading-relaxed">
+            Выберите шаг из списка пайплайна слева, чтобы изменить его параметры
         </p>
     </div>
 );
