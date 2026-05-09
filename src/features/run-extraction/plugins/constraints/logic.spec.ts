@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { constraintsLayer } from "./logic";
-import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
+import { createMockTable, getRowValues } from "@/shared/lib/test-utils";
 import { ConstraintsLayerSettings } from "./types";
 import { PipelineContext } from "@/shared/types/pipeline";
 

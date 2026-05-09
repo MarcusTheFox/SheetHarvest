@@ -2,7 +2,7 @@ import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { LAYER_REGISTRY } from "./pipeline/registry";
 import { createInitialContext } from "./context-builder";
 import { PipelineLayer } from "@/entities/pattern/model/types";
-import { createHeadersFromTables } from "./pipeline/utils";
+import { createHeadersFromTables } from "@/shared/lib/utils";
 
 export const extractData = (
     sourceTables: PipelineTable[],

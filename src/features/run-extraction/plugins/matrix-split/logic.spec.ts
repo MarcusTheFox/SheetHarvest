@@ -1,5 +1,5 @@
 import { matrixSplitLayer } from "./logic";
-import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
+import { createMockTable, getRowValues } from "@/shared/lib/test-utils";
 import { PipelineContext } from "@/shared/types/pipeline";
 import { MatrixSplitLayerSettings } from "./types";
 

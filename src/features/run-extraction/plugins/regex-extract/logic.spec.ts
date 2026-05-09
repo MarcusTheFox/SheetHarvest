@@ -1,6 +1,6 @@
 import { regexExtractLayer } from "./logic";
 import { PipelineContext } from "@/shared/types/pipeline";
-import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
+import { createMockTable, getRowValues } from "@/shared/lib/test-utils";
 import { RegexExtractionLayerSettings } from "./types";
 
 const MOCK_CONTEXT: PipelineContext = {

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { topologyLayer } from "./logic";
 import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { TopologyLayerSettings } from "./types";
-import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
+import { createMockTable, getRowValues } from "@/shared/lib/test-utils";
 
 const MOCK_CONTEXT: PipelineContext = {
     isColumnStructureModified: false,

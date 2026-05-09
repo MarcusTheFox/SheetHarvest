@@ -7,7 +7,7 @@ import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
 import { Fragment, memo } from "react";
-import { createHeadersFromTables } from "@/features/run-extraction/lib/pipeline/utils";
+import { createHeadersFromTables } from "@/shared/lib/utils";
 
 interface SpreadsheetTableContainerProps {
     context?: PipelineContext;
