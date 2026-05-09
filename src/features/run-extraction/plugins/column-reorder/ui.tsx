@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Button, Card } from "@heroui/react";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { ColumnReorderLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnReorderConfigProps = LayerConfigProps<ColumnReorderLayerSettings>;
 

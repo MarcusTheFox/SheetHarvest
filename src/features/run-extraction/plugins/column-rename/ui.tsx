@@ -2,7 +2,7 @@
 
 import { Input, Card } from "@heroui/react";
 import { ColumnRenameLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnRenameConfigProps = LayerConfigProps<ColumnRenameLayerSettings>;
 

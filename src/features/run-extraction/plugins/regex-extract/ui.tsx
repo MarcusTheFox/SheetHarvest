@@ -3,7 +3,7 @@
 import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
 import { Search } from "lucide-react";
 import { RegexExtractionLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type RegexExtractConfigProps = LayerConfigProps<RegexExtractionLayerSettings>;
 

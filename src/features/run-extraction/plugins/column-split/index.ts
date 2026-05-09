@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { columnSplitLayer } from "./logic";
 import { ColumnSplitLayerSettings } from "./types";
 import { ColumnSplitConfig } from "./ui";

@@ -2,7 +2,7 @@
 
 import { Input, Card } from "@heroui/react";
 import { RowSkipLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type RowSkipConfigProps = LayerConfigProps<RowSkipLayerSettings>;
 

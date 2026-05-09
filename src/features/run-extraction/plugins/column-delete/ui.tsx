@@ -2,7 +2,7 @@
 
 import { Checkbox, CheckboxGroup, Card } from "@heroui/react";
 import { ColumnDeleteLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnDeleteConfigProps = LayerConfigProps<ColumnDeleteLayerSettings>;
 
@@ -39,10 +39,9 @@ export const ColumnDeleteConfig = ({ settings, onUpdate, prevContext }: ColumnDe
                 { headers.map(( header, idx ) => (
                     <Card
                         key={ idx }
-                        className={ `border transition-colors ${
-                            selectedIndices.includes( String( idx ))
-                                ? "border-danger bg-danger-50/30"
-                                : "border-default-100 bg-default-50/50"
+                        className={ `border transition-colors ${ selectedIndices.includes( String( idx ))
+                            ? "border-danger bg-danger-50/30"
+                            : "border-default-100 bg-default-50/50"
                         }` }
                         shadow="none"
                     >

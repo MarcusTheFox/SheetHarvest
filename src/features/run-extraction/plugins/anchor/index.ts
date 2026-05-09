@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { anchorLayer } from "./logic";
 import { AnchorLayerSettings } from "./types";
 import { AnchorConfig } from "./ui";

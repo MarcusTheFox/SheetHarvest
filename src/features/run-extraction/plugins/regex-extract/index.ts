@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { regexExtractLayer } from "./logic";
 import { RegexExtractionLayerSettings } from "./types";
 import { RegexExtractConfig } from "./ui";

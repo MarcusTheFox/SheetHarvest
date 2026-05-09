@@ -1,4 +1,4 @@
-import { ExtractionLayer, PipelineContext } from "@/shared/types/pipeline";
+import { PipelineContext } from "@/shared/types/pipeline";
 
 export interface LayerConfigProps<T = unknown> {
     settings: T;
@@ -15,3 +15,5 @@ export interface LayerMetadata<T> {
     defaultSettings?: T;
     component?: React.FC<LayerConfigProps<T>>;
 }
+
+export type ExtractionLayer<T = never> = ( context: PipelineContext, settings: T ) => PipelineContext;

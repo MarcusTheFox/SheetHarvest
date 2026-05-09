@@ -1,5 +1,5 @@
 import { Chip } from "@heroui/react";
-import { LayerMetadata } from "@/features/run-extraction/lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 
 interface LayerSettingsHeaderProps {
     metadata: LayerMetadata<unknown>;

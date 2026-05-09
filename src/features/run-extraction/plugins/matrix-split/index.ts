@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { matrixSplitLayer } from "./logic";
 import { MatrixSplitLayerSettings } from "./types";
 import { MatrixSplitConfig } from "./ui";

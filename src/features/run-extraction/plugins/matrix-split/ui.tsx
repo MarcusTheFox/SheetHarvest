@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Input, Button, ScrollShadow, Divider, Chip, ButtonGroup, Tooltip } from "@heroui/react";
 import { MatrixSplitLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 import { Search, Lock, Grid3X3, Minus, Check, MinusSquare, Square } from "lucide-react";
 
 export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<MatrixSplitLayerSettings> ) => {
@@ -38,7 +38,7 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
             none: {
                 all: filteredIndices.every(( idx ) => !fixed.includes( idx ) && !grid.includes( idx )),
                 some: filteredIndices.some(( idx ) => !fixed.includes( idx ) && !grid.includes( idx ))
-                      && !filteredIndices.every(( idx ) => !fixed.includes( idx ) && !grid.includes( idx )),
+                    && !filteredIndices.every(( idx ) => !fixed.includes( idx ) && !grid.includes( idx )),
             },
         };
     }, [ filteredIndices, fixed, grid ]);
@@ -56,8 +56,8 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
             nextFixed = nextFixed.filter(( i ) => !filteredIndices.includes( i ));
             nextGrid = nextGrid.filter(( i ) => !filteredIndices.includes( i ));
             // Добавляем в нужный
-            if ( role === "fixed" ) nextFixed = [ ...nextFixed, ...filteredIndices ].sort(( a, b ) => a-b );
-            if ( role === "grid" ) nextGrid = [ ...nextGrid, ...filteredIndices ].sort(( a, b ) => a-b );
+            if ( role === "fixed" ) nextFixed = [ ...nextFixed, ...filteredIndices ].sort(( a, b ) => a - b );
+            if ( role === "grid" ) nextGrid = [ ...nextGrid, ...filteredIndices ].sort(( a, b ) => a - b );
         }
 
         onUpdate?.({ fixedColIndices: nextFixed, gridColIndices: nextGrid });
@@ -66,8 +66,8 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
     const setRole = ( idx: number, role: "none" | "fixed" | "grid" ) => {
         let nextFixed = fixed.filter(( i ) => i !== idx );
         let nextGrid = grid.filter(( i ) => i !== idx );
-        if ( role === "fixed" ) nextFixed = [ ...nextFixed, idx ].sort(( a, b ) => a-b );
-        if ( role === "grid" ) nextGrid = [ ...nextGrid, idx ].sort(( a, b ) => a-b );
+        if ( role === "fixed" ) nextFixed = [ ...nextFixed, idx ].sort(( a, b ) => a - b );
+        if ( role === "grid" ) nextGrid = [ ...nextGrid, idx ].sort(( a, b ) => a - b );
         onUpdate?.({ fixedColIndices: nextFixed, gridColIndices: nextGrid });
     };
 

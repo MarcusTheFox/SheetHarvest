@@ -7,7 +7,7 @@ import {
 import { X, Check, Save, Database, AlertCircle } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { ValueMappingLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 import { useMappingStore } from "@/entities/value-mapping/model/store";
 import { useShallow } from "zustand/shallow";
 

@@ -2,7 +2,7 @@
 
 import { Input } from "@heroui/react";
 import { ColumnAddLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnAddConfigProps = LayerConfigProps<ColumnAddLayerSettings>;
 

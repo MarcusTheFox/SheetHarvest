@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { columnDeleteLayer } from "./logic";
 import { ColumnDeleteLayerSettings } from "./types";
 import { ColumnDeleteConfig } from "./ui";

@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { columnReorderLayer } from "./logic";
 import { ColumnReorderLayerSettings } from "./types";
 import { ColumnReorderConfig } from "./ui";

@@ -2,7 +2,7 @@
 
 import { Checkbox, Input, Card, Tabs, Tab, ScrollShadow, Divider } from "@heroui/react";
 import { ProjectionLayerSettings, ProjectionColumn } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 export const ProjectionConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<ProjectionLayerSettings> ) => {
     const inputHeaders = prevContext?.headers ?? [];

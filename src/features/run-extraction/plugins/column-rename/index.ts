@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { columnRenameLayer } from "./logic";
 import { ColumnRenameLayerSettings } from "./types";
 import { ColumnRenameConfig } from "./ui";

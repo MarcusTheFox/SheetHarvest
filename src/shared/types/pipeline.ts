@@ -21,5 +21,3 @@ export interface PipelineContext {
     headers: string[];
     isColumnStructureModified: boolean;
 }
-
-export type ExtractionLayer<T = never> = ( context: PipelineContext, settings: T ) => PipelineContext;

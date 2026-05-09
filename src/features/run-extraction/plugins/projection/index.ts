@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { projectionLayer } from "./logic";
 import { ProjectionLayerSettings } from "./types";
 import { ProjectionConfig } from "./ui";

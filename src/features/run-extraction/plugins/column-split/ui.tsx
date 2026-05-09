@@ -3,7 +3,7 @@
 import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
 import { Plus, Trash2 } from "lucide-react";
 import { ColumnSplitLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
 type SplitMode = ColumnSplitLayerSettings["mode"];
@@ -135,7 +135,7 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
                 <Button
                     color="primary"
                     size="sm"
-                    startContent={ <Plus size={ 16 }/> }
+                    startContent={ <Plus size={ 16 } /> }
                     variant="flat"
                     onPress={ () => {
                         onUpdate?.({ newNames: [ ...names, "" ] });

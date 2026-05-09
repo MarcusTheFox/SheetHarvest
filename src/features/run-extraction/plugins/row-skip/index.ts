@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { rowSkipLayer } from "./logic";
 import { RowSkipLayerSettings } from "./types";
 import { RowSkipConfig } from "./ui";

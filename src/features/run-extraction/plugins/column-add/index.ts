@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { columnAddLayer } from "./logic";
 import { ColumnAddLayerSettings } from "./types";
 import { ColumnAddConfig } from "./ui";

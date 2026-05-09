@@ -3,7 +3,7 @@
 import { Select, SelectItem, Button, Input, Card } from "@heroui/react";
 import { Trash2, Plus } from "lucide-react";
 import { ColumnConstraint, ConstraintsLayerSettings, ConstraintType } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type ConstraintsConfigProps = LayerConfigProps<ConstraintsLayerSettings>;
 

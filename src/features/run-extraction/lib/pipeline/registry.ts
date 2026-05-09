@@ -10,7 +10,7 @@ import { columnDeleteLayerMetadata } from "../../plugins/column-delete";
 import { columnAddLayerMetadata } from "../../plugins/column-add";
 import { columnRenameLayerMetadata } from "../../plugins/column-rename";
 import { columnReorderLayerMetadata } from "../../plugins/column-reorder";
-import { LayerMetadata } from "./types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { matrixSplitLayerMetadata } from "../../plugins/matrix-split";
 
 const allLayers = [

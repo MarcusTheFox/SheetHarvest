@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { topologyLayer } from "./logic";
 import { TopologyLayerSettings } from "./types";
 import { TopologyConfig } from "./ui";

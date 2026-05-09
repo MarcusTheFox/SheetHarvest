@@ -1,4 +1,4 @@
-import { LayerMetadata } from "../../lib/pipeline/types";
+import { LayerMetadata } from "@/shared/types/layer";
 import { valueMappingLayer } from "./logic";
 import { ValueMappingLayerSettings } from "./types";
 import { ValueMappingConfig } from "./ui";

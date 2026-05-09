@@ -2,7 +2,7 @@
 
 import { Select, SelectItem, Chip } from "@heroui/react";
 import { TopologyLayerSettings } from "./types";
-import { LayerConfigProps } from "../../lib/pipeline/types";
+import { LayerConfigProps } from "@/shared/types/layer";
 
 type TopologyConfigProps = LayerConfigProps<TopologyLayerSettings>;
 type TopologyMode = "any" | "filled" | "empty";
