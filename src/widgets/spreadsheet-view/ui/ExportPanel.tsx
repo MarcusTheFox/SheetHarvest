@@ -46,7 +46,7 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
 
     return (
         <div className="flex flex-col h-full bg-white">
-            <div className="p-4 space-y-4">
+            <div className="space-y-4">
                 <div>
                     <div className="flex justify-between items-center mb-1">
                         <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">

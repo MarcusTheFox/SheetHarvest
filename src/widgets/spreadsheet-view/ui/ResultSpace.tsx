@@ -1,14 +1,14 @@
 "use client";
 
 import { useExtractionStore } from "@/entities/extraction/model/store";
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Card, CardBody } from "@heroui/card";
 import clsx from "clsx";
-import { ChevronRight } from "lucide-react";
 import { Group, Panel } from "react-resizable-panels";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { Separator } from "@/shared/ui/Separator";
 import { useState } from "react";
 import { ExportPanel } from "./ExportPanel";
+import { SpacePanel } from "./SpacePanel";
 
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
@@ -86,72 +86,40 @@ export const ResultSpace = () => {
 
     return (
         <Group orientation="horizontal" className="gap-0.5">
-            <Panel collapsible minSize="10" defaultSize="20">
+            <Panel defaultSize="20">
                 <Group orientation="vertical">
-                    <Panel minSize={32}>
-                        <Card radius="sm" shadow="none" className="h-full border border-slate-200">
-                            <CardHeader className={clsx(
-                                "rounded-none bg-slate-200",
-                                "text-[10px] font-extrabold text-slate-500 uppercase",
-                                "py-2 flex items-center",
-                            )}>
-                                <ChevronRight size={16} className="text-slate-500" />
-                                Таблицы
-                            </CardHeader>
-                            <CardBody className="overflow-auto gap-2">
-                                {resultTables}
-                            </CardBody>
-                        </Card>
-                    </Panel>
+                    <SpacePanel title="Таблицы" classNames={{ wrapper: "gap-1" }}>
+                        {resultTables}
+                    </SpacePanel>
                 </Group>
             </Panel>
             <Separator className="w-1" />
             <Panel>
                 <Group orientation="vertical">
-                    <Panel>
-                        <Card radius="sm" shadow="none" className="h-full border border-slate-200">
-                            <CardHeader className={clsx(
-                                "rounded-none bg-slate-200",
-                                "text-[10px] font-extrabold text-slate-500 uppercase",
-                                "py-2 flex items-center",
-                            )}>
-                                <ChevronRight size={16} className="text-slate-500" />
-                                {isEmpty
-                                    ? "Результат"
-                                    : `Просмотр: ${customNames[selectedTable.id] ?? selectedTable.name}`
-                                }
-                            </CardHeader>
-                            {!isEmpty && (
-                                <SpreadsheetTable
-                                    tables={[selectedTable]}
-                                    headers={headers}
-                                />
-                            )}
-                        </Card>
-                    </Panel>
+                    <SpacePanel hideWrapper title={isEmpty
+                        ? "Результат"
+                        : `Просмотр: ${customNames[selectedTable.id] ?? selectedTable.name}`
+                    }>
+                        {!isEmpty && (
+                            <SpreadsheetTable
+                                tables={[selectedTable]}
+                                headers={headers}
+                            />
+                        )}
+                    </SpacePanel>
                 </Group>
             </Panel>
             <Separator className="w-1" />
-            <Panel minSize="20" defaultSize="20">
+            <Panel defaultSize="20">
                 <Group orientation="vertical">
-                    <Panel>
-                        <Card radius="sm" shadow="none" className="h-full border border-slate-200">
-                            <CardHeader className={clsx(
-                                "rounded-none bg-slate-200",
-                                "text-[10px] font-extrabold text-slate-500 uppercase",
-                                "py-2 flex items-center",
-                            )}>
-                                <ChevronRight size={16} className="text-slate-500" />
-                                Экспорт
-                            </CardHeader>
-                            <ExportPanel
-                                selectedTableId={selectedTableId}
-                                customNames={customNames}
-                                onRename={handleRename}
-                                onReset={handleResetName}
-                            />
-                        </Card>
-                    </Panel>
+                    <SpacePanel title="Экспорт">
+                        <ExportPanel
+                            selectedTableId={selectedTableId}
+                            customNames={customNames}
+                            onRename={handleRename}
+                            onReset={handleResetName}
+                        />
+                    </SpacePanel>
                 </Group>
             </Panel>
         </Group>
