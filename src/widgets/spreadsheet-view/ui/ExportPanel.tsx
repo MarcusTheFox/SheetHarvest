@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Divider } from "@heroui/react";
+import { Button, Divider, Input } from "@heroui/react";
 import { RotateCcw, Archive } from "lucide-react";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { exportToExcel, exportToJSON, exportToCSV } from "@/shared/lib/export-utils";
@@ -52,7 +52,7 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
                         <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
                             Имя при экспорте
                         </label>
-                        {customNames[selectedTable.id] && (
+                        {customNames[selectedTable.id] !== undefined && (
                             <button
                                 onClick={() => onReset(selectedTable.id)}
                                 className="text-[10px] text-blue-500 hover:text-blue-700 flex items-center gap-1 font-bold"
@@ -61,11 +61,16 @@ export const ExportPanel = ({ selectedTableId, customNames, onRename, onReset }:
                             </button>
                         )}
                     </div>
-                    <input
-                        type="text"
+                    <Input
+                        size="sm"
+                        radius="sm"
+                        variant="bordered"
                         value={currentName}
-                        onChange={(e) => onRename(selectedTable.id, e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        onValueChange={(value) => onRename(selectedTable.id, value)}
+                        classNames={{
+                            input: "font-bold text-slate-700! text-xs",
+                            inputWrapper: "px-3 border-1 border-slate-200",
+                        }}
                     />
                 </div>
 
@@ -109,7 +114,7 @@ const ActionButton = ({ label, onClick }: { label: string, onClick: () => void }
             "bg-white border border-slate-200",
             "hover:border-blue-500 hover:text-blue-600",
             "transition-all py-2.5",
-            "text-[10px] font-bold uppercase tracking-tighter text-slate-600")}
+            "text-xs font-bold uppercase tracking-tighter text-slate-600")}
     >
         {label}
     </Button>
