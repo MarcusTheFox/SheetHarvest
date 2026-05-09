@@ -9,10 +9,12 @@ import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 export const UploadButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const setSheets = useSpreadsheetStore((state) => state.setSheets);
+  const setFile = useSpreadsheetStore((state) => state.setFile);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setFile(file);
       const parsedData = await parseSpreadsheet(file);
       setSheets(parsedData);
     }
