@@ -3,12 +3,12 @@ import { PatternState } from "./types";
 import { getInitialState } from "./initial-state";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/plugins/registry";
+import { createInstID } from "@/shared/lib/utils";
 
 export const usePatternStore = create<PatternState>(( set, get ) => ({
     pipeline: DEFAULT_PIPELINE.map(( id ) => ({
         id,
-        instanceId: `${ id }-${ Math.random().toString( 36 )
-            .substr( 2, 9 ) }`,
+        instanceId: createInstID( id ),
         settings: {},
     })),
 
@@ -22,8 +22,7 @@ export const usePatternStore = create<PatternState>(( set, get ) => ({
             pipeline: [ ...state.pipeline,
                 {
                     id: layerId,
-                    instanceId: `${ layerId }-${ Math.random().toString( 36 )
-                        .substr( 2, 9 ) }`,
+                    instanceId: createInstID( layerId ),
                     settings: metadata?.defaultSettings ? { ...metadata.defaultSettings } : {},
                 } ],
         };
@@ -61,8 +60,7 @@ export const usePatternStore = create<PatternState>(( set, get ) => ({
             // Перегенерируем instanceId для слоев пайплайна, чтобы React не путался
             pipeline: config.pipeline.map(( layer ) => ({
                 ...layer,
-                instanceId: `${ layer.id }-${ Math.random().toString( 36 )
-                    .substr( 2, 9 ) }`,
+                instanceId: createInstID( layer.id ),
             })),
         };
     }),

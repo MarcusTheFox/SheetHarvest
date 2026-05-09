@@ -1,4 +1,5 @@
 import { PipelineTable } from "@/shared/types/pipeline";
+import { nanoid } from "nanoid";
 
 export function createHeadersFromTables( tables: PipelineTable[]): string[] {
     const rows = tables.map(( table ) => table.rows ).flat();
@@ -6,4 +7,8 @@ export function createHeadersFromTables( tables: PipelineTable[]): string[] {
     const headers = Array.from({ length: maxCols }, ( _, i ) => `${ ( i + 1 ) }` );
 
     return headers;
+}
+
+export function createInstID( prefix: string ): string {
+    return `${ prefix }-${ nanoid( 8 ) }`;
 }
