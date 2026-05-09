@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineTable, PipelineRow } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineTable, PipelineRow } from "@/shared/types/pipeline";
 import { MatrixSplitLayerSettings } from "./types";
 
 export function matrixSplitLayer( context: PipelineContext, settings: MatrixSplitLayerSettings ): PipelineContext {

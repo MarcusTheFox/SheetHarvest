@@ -1,6 +1,6 @@
 import { matrixSplitLayer } from "./logic";
 import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { MatrixSplitLayerSettings } from "./types";
 
 const MOCK_CONTEXT: PipelineContext = {

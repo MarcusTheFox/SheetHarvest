@@ -1,5 +1,5 @@
 import { regexExtractLayer } from "./logic";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
 import { RegexExtractionLayerSettings } from "./types";
 

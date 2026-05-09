@@ -1,4 +1,4 @@
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { ColumnRenameLayerSettings } from "./types";
 
 export function columnRenameLayer( context: PipelineContext, settings: ColumnRenameLayerSettings ): PipelineContext {

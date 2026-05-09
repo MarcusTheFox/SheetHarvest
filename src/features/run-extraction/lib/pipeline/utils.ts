@@ -1,4 +1,4 @@
-import { PipelineTable } from "./core";
+import { PipelineTable } from "@/shared/types/pipeline";
 
 export function createHeadersFromTables( tables: PipelineTable[]): string[] {
     const rows = tables.map(( table ) => table.rows ).flat();

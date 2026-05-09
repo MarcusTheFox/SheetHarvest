@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Sheet } from "@/shared/types/spreadsheet";
-import { PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineTable } from "@/shared/types/pipeline";
 
 export interface SpreadsheetState {
     file: File | undefined;

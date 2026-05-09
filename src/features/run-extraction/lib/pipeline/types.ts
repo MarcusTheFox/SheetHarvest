@@ -1,4 +1,4 @@
-import { ExtractionLayer, PipelineContext } from "./core";
+import { ExtractionLayer, PipelineContext } from "@/shared/types/pipeline";
 
 export interface LayerConfigProps<T = unknown> {
     settings: T;

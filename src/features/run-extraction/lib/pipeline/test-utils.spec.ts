@@ -1,5 +1,5 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineRow, PipelineTable } from "./core";
+import { PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 import { createMockTable, getRowValues } from "./test-utils";
 
 describe( "test-utils", () => {

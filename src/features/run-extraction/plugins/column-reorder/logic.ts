@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 import { ColumnReorderLayerSettings } from "./types";
 
 export function columnReorderLayer( context: PipelineContext, settings: ColumnReorderLayerSettings ): PipelineContext {

@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineTable } from "./pipeline/core";
+import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { createHeadersFromTables } from "./pipeline/utils";
 
 export const createInitialContext = ( tables: PipelineTable[]): PipelineContext => {

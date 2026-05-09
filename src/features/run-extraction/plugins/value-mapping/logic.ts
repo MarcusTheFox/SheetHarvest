@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 import { ValueMappingLayerSettings } from "./types";
 import { useMappingStore } from "@/entities/value-mapping/model/store";
 

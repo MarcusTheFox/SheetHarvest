@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineTable } from "./pipeline/core";
+import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { LAYER_REGISTRY } from "./pipeline/registry";
 import { createInitialContext } from "./context-builder";
 import { PipelineLayer } from "@/entities/pattern/model/types";

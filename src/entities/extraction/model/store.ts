@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineTable } from "@/shared/types/pipeline";
 
 interface ExtractionState {
     results: PipelineTable[];

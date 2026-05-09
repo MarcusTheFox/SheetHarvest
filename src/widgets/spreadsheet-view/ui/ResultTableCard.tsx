@@ -1,4 +1,4 @@
-import { PipelineTable } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineTable } from "@/shared/types/pipeline";
 import { Card, CardBody } from "@heroui/card";
 import clsx from "clsx";
 

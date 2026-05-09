@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { columnReorderLayer } from "./logic";
 import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { ColumnReorderLayerSettings } from "./types";
 
 const MOCK_CONTEXT: PipelineContext = {

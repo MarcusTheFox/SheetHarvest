@@ -1,5 +1,5 @@
 import { MergeRange, RowValue } from "@/shared/types/spreadsheet";
-import { PipelineRow, PipelineTable } from "./core";
+import { PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 
 export function createMockTable(
     id: string,

@@ -3,7 +3,7 @@ import { PipelineLayer } from "@/entities/pattern/model/types";
 import { NoSettingsState } from "./NoSettingsState";
 import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
 import { usePatternStore } from "@/entities/pattern/model/store";
-import { PipelineContext } from "@/features/run-extraction/lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 
 interface LayerConfigRendererProps {
     entry: PipelineLayer;

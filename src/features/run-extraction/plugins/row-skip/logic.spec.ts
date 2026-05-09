@@ -1,5 +1,5 @@
 import { rowSkipLayer } from "./logic";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
 
 const MOCK_CONTEXT: PipelineContext = {

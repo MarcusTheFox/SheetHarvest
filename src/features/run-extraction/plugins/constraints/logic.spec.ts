@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { constraintsLayer } from "./logic";
 import { createMockTable, getRowValues } from "../../lib/pipeline/test-utils";
 import { ConstraintsLayerSettings } from "./types";
-import { PipelineContext } from "../../lib/pipeline/core";
+import { PipelineContext } from "@/shared/types/pipeline";
 
 const MOCK_CONTEXT: PipelineContext = {
     isColumnStructureModified: false,

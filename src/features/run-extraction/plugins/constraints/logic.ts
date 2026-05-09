@@ -1,5 +1,5 @@
 import { RowValue } from "@/shared/types/spreadsheet";
-import { PipelineContext, PipelineTable } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { validators } from "@/shared/lib/validators";
 import { ColumnConstraint, ConstraintsLayerSettings } from "./types";
 

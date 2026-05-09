@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 import { AnchorLayerSettings } from "./types";
 
 export function anchorLayer( context: PipelineContext, settings: AnchorLayerSettings ): PipelineContext {

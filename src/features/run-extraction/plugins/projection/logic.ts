@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
+import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
 import { ProjectionLayerSettings, ProjectionColumn } from "./types";
 
 export function projectionLayer( context: PipelineContext, settings: ProjectionLayerSettings ): PipelineContext {
