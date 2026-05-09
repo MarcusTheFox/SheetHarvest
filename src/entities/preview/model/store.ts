@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
-import { LAYER_REGISTRY } from "@/features/plugins/registry";
+import { LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { PipelineLayer } from "@/entities/pattern/model/types";
-import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
+import { createInitialContext } from "@/entities/pattern/lib/context-builder";
 
 interface PreviewState {
     cache: Record<string, PipelineContext>;

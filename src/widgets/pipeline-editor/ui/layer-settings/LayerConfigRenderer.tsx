@@ -1,7 +1,7 @@
 import { Settings2 } from "lucide-react";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { NoSettingsState } from "./NoSettingsState";
-import { LAYER_REGISTRY } from "@/features/plugins/registry";
+import { LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { PipelineContext } from "@/shared/types/pipeline";
 

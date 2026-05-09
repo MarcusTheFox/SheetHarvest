@@ -1,6 +1,6 @@
 import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
-import { LAYER_REGISTRY } from "@/features/plugins/registry";
-import { createInitialContext } from "./context-builder";
+import { LAYER_REGISTRY } from "@/entities/plugins/registry";
+import { createInitialContext } from "@/entities/pattern/lib/context-builder";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { createHeadersFromTables } from "@/shared/lib/utils";
 

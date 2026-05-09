@@ -3,7 +3,7 @@
 import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { AnchorLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
-import { AnchorPoint } from "@/features/plugins/anchor/types";
+import { AnchorPoint } from "@/entities/plugins/anchor/types";
 import { useMemo } from "react";
 
 type AnchorConfigProps = LayerConfigProps<AnchorLayerSettings>;

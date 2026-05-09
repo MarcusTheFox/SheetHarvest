@@ -2,7 +2,7 @@ import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSelectedLayerStore } from "../model/useSelectedLayerStore";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useShallow } from "zustand/shallow";
-import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
+import { createInitialContext } from "@/entities/pattern/lib/context-builder";
 import { useEffect, useMemo } from "react";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { PatternState } from "./types";
 import { getInitialState } from "./initial-state";
 import { usePreviewStore } from "@/entities/preview/model/store";
-import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/plugins/registry";
+import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { createInstID } from "@/shared/lib/utils";
 
 export const usePatternStore = create<PatternState>(( set, get ) => ({

@@ -1,7 +1,7 @@
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { usePreviewStore } from "@/entities/preview/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { LAYER_REGISTRY } from "@/features/plugins/registry";
+import { LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
