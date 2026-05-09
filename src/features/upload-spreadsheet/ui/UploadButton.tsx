@@ -5,6 +5,8 @@ import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { parseSpreadsheet } from "@/shared/lib/file-parser";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
+import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
+import { usePatternStore } from "@/entities/pattern/model/store";
 
 export const UploadButton = () => {
     const fileInputRef = useRef<HTMLInputElement>( null );
@@ -17,6 +19,8 @@ export const UploadButton = () => {
             setFile( file );
             const parsedData = await parseSpreadsheet( file );
             setSheets( parsedData );
+            useSelectedLayerStore.getState().setSelectedLayerIndex();
+            usePatternStore.getState().resetPattern();
         }
     };
 
