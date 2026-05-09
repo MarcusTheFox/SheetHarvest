@@ -1,7 +1,7 @@
 "use client";
 
 import { usePatternStore } from "@/entities/pattern/model/store";
-import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { LAYER_REGISTRY } from "@/features/plugins/registry";
 import { Button, Card, CardBody, ScrollShadow, Chip } from "@heroui/react";
 import { Settings2, Trash2 } from "lucide-react";
 import { useMemo } from "react";

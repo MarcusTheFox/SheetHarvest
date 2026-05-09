@@ -1,4 +1,4 @@
-import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/plugins/registry";
 import { ExtractionPattern } from "./types";
 
 export const getInitialState = (): ExtractionPattern => ({

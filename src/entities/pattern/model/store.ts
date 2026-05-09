@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { PatternState } from "./types";
 import { getInitialState } from "./initial-state";
 import { usePreviewStore } from "@/entities/preview/model/store";
-import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/features/plugins/registry";
 
 export const usePatternStore = create<PatternState>(( set, get ) => ({
     pipeline: DEFAULT_PIPELINE.map(( id ) => ({
@@ -13,8 +13,8 @@ export const usePatternStore = create<PatternState>(( set, get ) => ({
     })),
 
     addLayer: ( layerId ) => set(( state ) => {
-    // При добавлении слоя в конец, кеш старых слоев не страдает
-    // Но очистим всё на всякий случай для простоты (или можно не чистить)
+        // При добавлении слоя в конец, кеш старых слоев не страдает
+        // Но очистим всё на всякий случай для простоты (или можно не чистить)
         usePreviewStore.getState().invalidateFromIndex( state.pipeline.length, state.pipeline );
 
         const metadata = LAYER_REGISTRY[layerId];
@@ -35,7 +35,7 @@ export const usePatternStore = create<PatternState>(( set, get ) => ({
     }),
 
     moveLayer: ( fromIndex, toIndex ) => set(( state ) => {
-    // Инвалидируем начиная с наименьшего затронутого индекса
+        // Инвалидируем начиная с наименьшего затронутого индекса
         const minIndex = Math.min( fromIndex, toIndex );
         usePreviewStore.getState().invalidateFromIndex( minIndex, state.pipeline );
 

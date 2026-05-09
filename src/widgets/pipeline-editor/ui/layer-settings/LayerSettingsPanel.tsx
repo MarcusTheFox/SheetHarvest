@@ -1,5 +1,5 @@
 import { ScrollShadow, Spinner } from "@heroui/react";
-import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { LAYER_REGISTRY } from "@/features/plugins/registry";
 import { EmptyLayerState } from "./EmptyLayerState";
 import { LayerSettingsHeader } from "./LayerSettingsHeader";
 import { LayerConfigRenderer } from "./LayerConfigRenderer";

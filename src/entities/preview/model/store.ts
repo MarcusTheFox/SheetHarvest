@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
-import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
+import { LAYER_REGISTRY } from "@/features/plugins/registry";
 import { PipelineLayer } from "@/entities/pattern/model/types";
 import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
 
