@@ -6,5 +6,5 @@ export default function About() {
             <h1>About</h1>
             <Link href="/">Home</Link>
         </>
-    )
+    );
 }

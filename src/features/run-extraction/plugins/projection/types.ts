@@ -4,9 +4,9 @@ export interface ProjectionColumn {
 }
 
 export interface ProjectionLayerSettings {
-    mode: 'auto' | 'manual';
+    mode: "auto" | "manual";
     // Используется в режиме 'manual'
-    columns: ProjectionColumn[]; 
+    columns: ProjectionColumn[];
     // Используется в режиме 'auto' (индекс строки в исходном файле)
     headerRowIndex: number;
 }

@@ -2,45 +2,45 @@ import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/
 import { ColumnDeleteLayerSettings } from "./types";
 import { RowValue } from "@/shared/types/spreadsheet";
 
-export function columnDeleteLayer(context: PipelineContext, settings: ColumnDeleteLayerSettings): PipelineContext {
+export function columnDeleteLayer( context: PipelineContext, settings: ColumnDeleteLayerSettings ): PipelineContext {
     const { tables, headers } = context;
-    const toDelete = new Set(settings?.columnIndices ?? []);
+    const toDelete = new Set( settings?.columnIndices ?? []);
 
-    if (toDelete.size === 0) return context;
+    if ( toDelete.size === 0 ) return context;
 
     // 1. Filter headers
-    const nextHeaders = headers.filter((_, i) => !toDelete.has(i));
+    const nextHeaders = headers.filter(( _, i ) => !toDelete.has( i ));
 
     // 2. Filter cells in rows
-    const processRow = (row: PipelineRow): PipelineRow => {
-        const cells = row.cells.reduce((result, cell, idx) => {
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const cells = row.cells.reduce(( result, cell, idx ) => {
             let newCellIndex = idx;
-            for (const deleteIndex of toDelete) {
-                if (idx === deleteIndex) {
+            for ( const deleteIndex of toDelete ) {
+                if ( idx === deleteIndex ) {
                     return result;
                 }
-                if (idx > deleteIndex) newCellIndex--;
+                if ( idx > deleteIndex ) newCellIndex--;
             }
 
             result[newCellIndex] = cell;
             return result;
-        }, [] as RowValue);
+        }, [] as RowValue );
 
         return {
             ...row,
             cells,
-        }
-    }
+        };
+    };
 
-    const processTable = (table: PipelineTable): PipelineTable => {
-        const rows = table.rows.map(row => processRow(row));
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
         return {
             ...table,
             rows,
-        }
-    }
+        };
+    };
 
-    const newTables = tables.map(table => processTable(table));
+    const newTables = tables.map(( table ) => processTable( table ));
 
     return {
         ...context,
@@ -48,4 +48,4 @@ export function columnDeleteLayer(context: PipelineContext, settings: ColumnDele
         tables: newTables,
         isColumnStructureModified: true,
     };
-};
+}

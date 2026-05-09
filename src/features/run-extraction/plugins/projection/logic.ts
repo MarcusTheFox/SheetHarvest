@@ -1,28 +1,29 @@
 import { PipelineContext, PipelineRow, PipelineTable } from "../../lib/pipeline/core";
 import { ProjectionLayerSettings, ProjectionColumn } from "./types";
 
-export function projectionLayer(context: PipelineContext, settings: ProjectionLayerSettings): PipelineContext {
+export function projectionLayer( context: PipelineContext, settings: ProjectionLayerSettings ): PipelineContext {
     const { tables, headers } = context;
 
     let targetColumns: ProjectionColumn[] = [];
 
-    if (settings.mode === 'manual') {
+    if ( settings.mode === "manual" ) {
         // В ручном режиме просто берем то, что настроил пользователь
         targetColumns = settings.columns || [];
-    } else {
+    }
+    else {
         // В автоматическом режиме ищем строку-заголовок в текущем наборе строк
         const hIdx = settings.headerRowIndex - 1;
         // Ищем строку по originalIndex, так как до проекции индексы строк еще "сырые"
-        const headerRow = tables[0].rows.find(r => r.originalIndex === hIdx);
+        const headerRow = tables[0].rows.find(( r ) => r.originalIndex === hIdx );
 
-        if (headerRow) {
-            headerRow.cells.forEach((cell, idx) => {
+        if ( headerRow ) {
+            headerRow.cells.forEach(( cell, idx ) => {
                 const val = cell?.toString().trim();
                 // Если ячейка в строке заголовка не пуста - фиксируем колонку
-                if (val) {
+                if ( val ) {
                     targetColumns.push({
                         index: idx,
-                        name: val
+                        name: val,
                     });
                 }
             });
@@ -30,31 +31,31 @@ export function projectionLayer(context: PipelineContext, settings: ProjectionLa
     }
 
     // Если ничего не выбрано, возвращаем контекст как есть, чтобы не "сломать" данные
-    if (targetColumns.length === 0) return context;
+    if ( targetColumns.length === 0 ) return context;
 
     // Формируем новые заголовки
-    const nextHeaders = targetColumns.map(col => {
-        return col.name || headers[col.index] || `Col ${col.index}`;
+    const nextHeaders = targetColumns.map(( col ) => {
+        return col.name || headers[col.index] || `Col ${ col.index }`;
     });
 
     // Трансформируем строки: оставляем только выбранные ячейки
-    const processRow = (row: PipelineRow): PipelineRow => {
-        const cells = targetColumns.map(col => row.cells[col.index])
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const cells = targetColumns.map(( col ) => row.cells[col.index]);
         return {
             ...row,
             cells,
-        }
-    }
+        };
+    };
 
-    const processTable = (table: PipelineTable): PipelineTable => {
-        const rows = table.rows.map(row => processRow(row));
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
         return {
             ...table,
             rows,
-        }
-    }
+        };
+    };
 
-    const newTables = tables.map(table => processTable(table));
+    const newTables = tables.map(( table ) => processTable( table ));
 
     return {
         ...context,

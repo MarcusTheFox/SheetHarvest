@@ -5,19 +5,21 @@ interface LayerSettingsHeaderProps {
     metadata: LayerMetadata<unknown>;
 }
 
-export const LayerSettingsHeader = ({ metadata }: LayerSettingsHeaderProps) => (
+export const LayerSettingsHeader = ({ metadata }: LayerSettingsHeaderProps ) => (
     <div className="p-8 border-b border-default-100">
         <div className="flex items-start justify-between mb-4 gap-4">
             <div className="flex flex-col gap-1 min-w-0">
-                <h3 className="text-2xl font-bold text-default-800 truncate">{metadata.name}</h3>
-                <p className="text-default-500 max-w-2xl text-sm leading-relaxed">{metadata.description}</p>
+                <h3 className="text-2xl font-bold text-default-800 truncate">{ metadata.name }</h3>
+                <p className="text-default-500 max-w-2xl text-sm leading-relaxed">{ metadata.description }</p>
             </div>
         </div>
+
         <div className="flex gap-2">
-            {metadata.isSystem && (
-                <Chip size="sm" color="primary" variant="flat" className="font-bold uppercase text-[9px]">Системный</Chip>
-            )}
-            <Chip size="sm" variant="flat" className="font-bold uppercase text-[9px] font-mono">ID: {metadata.id}</Chip>
+            { metadata.isSystem && (
+                <Chip className="font-bold uppercase text-[9px]" color="primary" size="sm" variant="flat">Системный</Chip>
+            ) }
+
+            <Chip className="font-bold uppercase text-[9px] font-mono" size="sm" variant="flat">ID: { metadata.id }</Chip>
         </div>
     </div>
 );

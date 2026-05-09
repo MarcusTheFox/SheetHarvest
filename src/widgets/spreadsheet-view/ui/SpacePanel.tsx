@@ -24,37 +24,48 @@ export const SpacePanel = ({
     hideWrapper = false,
     classNames,
     ...props
-}: SpacePanelProps) => {
+}: SpacePanelProps ) => {
 
     return (
-        <Panel {...props}>
-            <Card radius="sm" shadow="none" className={clsx(
+        <Panel { ...props }>
+            <Card className={ clsx(
                 "h-full border border-slate-200",
                 classNames?.base,
-            )}>
-                <CardHeader className={clsx(
+            ) }
+            radius="sm"
+            shadow="none"
+            >
+                <CardHeader className={ clsx(
                     "rounded-none bg-slate-200",
                     "text-[10px] font-extrabold text-slate-500 uppercase",
                     "py-2 flex items-center",
                     classNames?.header,
-                )}>
-                    <ChevronRight size={iconSize} className={clsx(
+                ) }
+                >
+                    <ChevronRight className={ clsx(
                         "text-slate-500",
                         classNames?.icon,
-                    )} />
-                    {title}
+                    ) }
+                    size={ iconSize }
+                    />
+
+                    { title }
                 </CardHeader>
-                {hideWrapper ? (
-                    children
-                ) : (
-                    <CardBody className={clsx(
-                        "overflow-auto",
-                        classNames?.wrapper,
-                    )}>
-                        {children}
-                    </CardBody>
-                )}
+
+                { hideWrapper
+                    ? (
+                        children
+                    )
+                    : (
+                        <CardBody className={ clsx(
+                            "overflow-auto",
+                            classNames?.wrapper,
+                        ) }
+                        >
+                            { children }
+                        </CardBody>
+                    ) }
             </Card>
         </Panel>
-    )
-}
+    );
+};

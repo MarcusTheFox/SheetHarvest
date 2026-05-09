@@ -14,7 +14,7 @@ export const LayerSettingsPanel = memo(() => {
         inputContext,
     } = useSelectedLayer();
 
-    if (selectedLayerIndex === undefined || !selectedLayer) {
+    if ( selectedLayerIndex === undefined || !selectedLayer ) {
         return <EmptyLayerState />;
     }
 
@@ -25,22 +25,24 @@ export const LayerSettingsPanel = memo(() => {
     return (
         <div className="flex flex-col h-full bg-white">
             <LayerSettingsHeader
-                metadata={metadata}
+                metadata={ metadata }
             />
 
             <ScrollShadow className="flex-1 p-8">
-                {isWaitingForContext ? (
-                    <div className="flex items-center justify-center h-48 text-default-400 gap-3">
-                        <Spinner size="sm" />
-                        <span className="text-sm">Вычисляем контекст...</span>
-                    </div>
-                ) : (
-                    <LayerConfigRenderer
-                        entry={selectedLayer}
-                        index={selectedLayerIndex}
-                        prevContext={inputContext}
-                    />
-                )}
+                { isWaitingForContext
+                    ? (
+                        <div className="flex items-center justify-center h-48 text-default-400 gap-3">
+                            <Spinner size="sm" />
+                            <span className="text-sm">Вычисляем контекст...</span>
+                        </div>
+                    )
+                    : (
+                        <LayerConfigRenderer
+                            entry={ selectedLayer }
+                            index={ selectedLayerIndex }
+                            prevContext={ inputContext }
+                        />
+                    ) }
             </ScrollShadow>
         </div>
     );

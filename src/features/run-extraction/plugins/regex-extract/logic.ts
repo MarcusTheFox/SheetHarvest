@@ -9,10 +9,10 @@ import { RegexExtractionLayerSettings } from "./types";
  *   keepOriginalIfNoMatch: boolean;
  * }
  */
-export function regexExtractLayer(context: PipelineContext, settings: RegexExtractionLayerSettings): PipelineContext {
+export function regexExtractLayer( context: PipelineContext, settings: RegexExtractionLayerSettings ): PipelineContext {
     const { tables } = context;
 
-    if (!settings.pattern || settings.sourceColIndex === undefined) {
+    if ( !settings.pattern || settings.sourceColIndex === undefined ) {
         return context;
     }
 
@@ -20,40 +20,42 @@ export function regexExtractLayer(context: PipelineContext, settings: RegexExtra
     let regex: RegExp;
 
     try {
-        regex = new RegExp(settings.pattern);
-    } catch (e) {
-        console.error("Invalid Regex in pipeline:", e);
+        regex = new RegExp( settings.pattern );
+    }
+    catch ( e ) {
+        console.error( "Invalid Regex in pipeline:", e );
         return context;
     }
 
-    const processRow = (row: PipelineRow): PipelineRow => {
-        const originalValue = String(row.cells[sourceIdx] || '').trim();
-        if (!originalValue) return row;
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const originalValue = String( row.cells[sourceIdx] || "" ).trim();
+        if ( !originalValue ) return row;
 
-        const match = originalValue.match(regex);
-        const newCells = [...row.cells];
+        const match = originalValue.match( regex );
+        const newCells = [ ...row.cells ];
 
-        if (match) {
+        if ( match ) {
             newCells[sourceIdx] = match[0];
-        } else if (!settings.keepOriginalIfNoMatch) {
+        }
+        else if ( !settings.keepOriginalIfNoMatch ) {
             newCells[sourceIdx] = "";
         }
 
         return {
             ...row,
-            cells: newCells
+            cells: newCells,
         };
-    }
+    };
 
-    const processTable = (table: PipelineTable): PipelineTable => {
-        const rows = table.rows.map(row => processRow(row));
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
         return {
             ...table,
             rows,
-        }
-    }
+        };
+    };
 
-    const newTables = tables.map(table => processTable(table));
+    const newTables = tables.map(( table ) => processTable( table ));
 
     return { ...context, tables: newTables };
-};
+}

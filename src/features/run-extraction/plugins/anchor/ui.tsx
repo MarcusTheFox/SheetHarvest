@@ -17,73 +17,76 @@ const AnchorPointEditor = ({
     label: string;
     point: AnchorPoint | null;
     columns: { label: string; value: string }[];
-    onChange: (point: AnchorPoint | null) => void;
+    onChange: ( point: AnchorPoint | null ) => void;
 }) => {
-    const handleColChange = (colIndex: number) => {
+    const handleColChange = ( colIndex: number ) => {
         onChange({ text: point?.text ?? "", colIndex });
     };
-    const handleTextChange = (text: string) => {
+    const handleTextChange = ( text: string ) => {
         onChange({
             colIndex: point?.colIndex ?? 0,
-            text
+            text,
         });
     };
 
 
     return (
         <div className="flex flex-col gap-3 p-4 bg-default-50 rounded-xl border border-default-100">
-            <span className="text-xs font-bold text-default-500 uppercase tracking-widest">{label}</span>
+            <span className="text-xs font-bold text-default-500 uppercase tracking-widest">{ label }</span>
+
             <Select
                 label="Колонка для поиска"
                 placeholder="Выберите колонку"
-                selectedKeys={point?.colIndex !== undefined ? [String(point.colIndex)] : []}
-                onSelectionChange={(keys) => {
-                    const val = Array.from(keys)[0];
-                    if (val !== undefined) handleColChange(Number(val));
-                }}
+                selectedKeys={ point?.colIndex !== undefined ? [ String( point.colIndex ) ] : [] }
+                onSelectionChange={ ( keys ) => {
+                    const val = Array.from( keys )[0];
+                    if ( val !== undefined ) handleColChange( Number( val ));
+                } }
             >
-                {columns.map((col) => (
-                    <SelectItem key={col.value}>{col.label}</SelectItem>
-                ))}
+                { columns.map(( col ) => (
+                    <SelectItem key={ col.value }>{ col.label }</SelectItem>
+                )) }
             </Select>
+
             <Input
+                description={ label === "Стартовый якорь" ? "Строка с этим текстом будет пропущена, следующие — захвачены" : "Обработка остановится на строке с этим текстом" }
                 label="Текст якоря"
                 placeholder="Значение, которое нужно найти"
-                value={point?.text ?? ""}
-                onValueChange={handleTextChange}
-                description={label === "Стартовый якорь" ? "Строка с этим текстом будет пропущена, следующие — захвачены" : "Обработка остановится на строке с этим текстом"}
+                value={ point?.text ?? "" }
+                onValueChange={ handleTextChange }
             />
         </div>
     );
 };
 
-export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigProps) => {
+export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigProps ) => {
     const headers = prevContext?.headers ?? [];
 
     const columns = useMemo(() => {
-        if (headers.length > 0) {
-            return headers.map((h, i) => ({
-                label: h || `Колонка ${i + 1}`,
-                value: String(i)
+        if ( headers.length > 0 ) {
+            return headers.map(( h, i ) => ({
+                label: h || `Колонка ${ i + 1 }`,
+                value: String( i ),
             }));
         }
 
         return [];
-    }, [headers, prevContext?.tables]);
+    }, [ headers, prevContext?.tables ]);
 
     return (
         <div className="flex flex-col gap-6">
             <AnchorPointEditor
+                columns={ columns }
                 label="Стартовый якорь"
-                point={settings?.start ?? null}
-                columns={columns}
-                onChange={(start) => onUpdate?.({ start })}
+                point={ settings?.start ?? null }
+                onChange={ ( start ) => onUpdate?.({ start }) }
             />
+
             <AnchorPointEditor
+                columns={ columns }
                 label="Конечный якорь"
-                point={settings?.end ?? null}
-                columns={columns}
-                onChange={(end) => onUpdate?.({ end })}
+                point={ settings?.end ?? null }
+                onChange={ ( end ) => onUpdate?.({ end }) }
             />
 
             <div className="flex flex-col gap-2 p-4 bg-default-50 rounded-xl border border-default-100">
@@ -92,9 +95,10 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                         <span className="text-sm font-medium">Объединять результаты</span>
                         <span className="text-xs text-default-400">Склеивать найденные таблицы в одну</span>
                     </div>
+
                     <Switch
-                        isSelected={settings?.mergeResults ?? false}
-                        onValueChange={(val) => onUpdate?.({ mergeResults: val })}
+                        isSelected={ settings?.mergeResults ?? false }
+                        onValueChange={ ( val ) => onUpdate?.({ mergeResults: val }) }
                     />
                 </div>
             </div>

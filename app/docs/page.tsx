@@ -6,5 +6,5 @@ export default function Docs() {
             <h1>Docs</h1>
             <Link href="/">Home</Link>
         </>
-    )
+    );
 }

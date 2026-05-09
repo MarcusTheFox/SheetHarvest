@@ -11,27 +11,29 @@ interface LayerConfigRendererProps {
     prevContext?: PipelineContext;
 }
 
-export const LayerConfigRenderer = ({ entry, index, prevContext }: LayerConfigRendererProps) => {
-    const updateLayerSettings = usePatternStore(s => s.updateLayerSettings);
+export const LayerConfigRenderer = ({ entry, index, prevContext }: LayerConfigRendererProps ) => {
+    const updateLayerSettings = usePatternStore(( s ) => s.updateLayerSettings );
 
     const ConfigComponent = LAYER_REGISTRY[entry.id]?.component;
 
     return (
         <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-8 text-default-400">
-                <Settings2 size={20} />
+                <Settings2 size={ 20 } />
                 <h4 className="font-bold uppercase tracking-widest text-xs">Конфигурация параметров</h4>
             </div>
-            
-            {ConfigComponent ? (
-                <ConfigComponent
-                    settings={entry.settings}
-                    prevContext={prevContext}
-                    onUpdate={(settings) => {updateLayerSettings(index, settings)}}
-                />
-            ) : (
-                <NoSettingsState />
-            )}
+
+            { ConfigComponent
+                ? (
+                    <ConfigComponent
+                        prevContext={ prevContext }
+                        settings={ entry.settings }
+                        onUpdate={ ( settings ) => { updateLayerSettings( index, settings ); } }
+                    />
+                )
+                : (
+                    <NoSettingsState />
+                ) }
         </div>
     );
 };

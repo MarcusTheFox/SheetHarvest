@@ -4,14 +4,14 @@ import { RegexExtractionLayerSettings } from "./types";
 import { RegexExtractConfig } from "./ui";
 
 export const regexExtractLayerMetadata: LayerMetadata<RegexExtractionLayerSettings> = {
-    id: 'regex-extract',
-    name: 'Regex извлечение',
-    description: 'Оставляет в ячейке только текст, подходящий под регулярное выражение',
+    id: "regex-extract",
+    name: "Regex извлечение",
+    description: "Оставляет в ячейке только текст, подходящий под регулярное выражение",
     layer: regexExtractLayer,
     defaultSettings: {
         keepOriginalIfNoMatch: true,
-        pattern: '',
-        sourceColIndex: undefined
+        pattern: "",
+        sourceColIndex: undefined,
     },
     component: RegexExtractConfig,
-}
+};

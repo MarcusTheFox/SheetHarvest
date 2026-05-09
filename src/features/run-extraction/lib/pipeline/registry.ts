@@ -30,9 +30,9 @@ const allLayers = [
 ] as LayerMetadata<unknown>[];
 
 
-export const LAYER_REGISTRY = allLayers.reduce((acc, layer) => {
+export const LAYER_REGISTRY = allLayers.reduce(( acc, layer ) => {
     acc[layer.id] = layer;
     return acc;
-}, {} as Record<string, LayerMetadata<unknown>>);
+}, {} as Record<string, LayerMetadata<unknown>> );
 
 export const DEFAULT_PIPELINE: string[] = [];
