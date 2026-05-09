@@ -39,7 +39,7 @@ export const ColumnAddConfig = ({ settings, onUpdate }: ColumnAddConfigProps ) =
                 <div className="text-primary-500 mt-0.5 font-bold text-sm">ℹ️</div>
 
                 <p className="text-[11px] text-primary-700 leading-relaxed">
-                    Новая колонка будет добавлена в конец таблицы. Вы можете изменить её положение, используя слой "Изменение порядка колонок".
+                    Новая колонка будет добавлена в конец таблицы. Вы можете изменить её положение, используя слой &quot;Изменение порядка колонок&quot;.
                 </p>
             </div>
         </div>

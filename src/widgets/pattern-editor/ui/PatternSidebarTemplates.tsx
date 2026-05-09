@@ -20,10 +20,7 @@ export const PatternSidebarTemplates = () => {
     return (
         <div className="flex flex-col gap-4">
             <TemplateSaveForm />
-
             <Divider />
-
-            { /* Список сохраненных */ }
 
             <div className="flex flex-col gap-2">
                 { templates.map(( t ) => (

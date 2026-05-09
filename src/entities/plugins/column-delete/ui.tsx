@@ -67,6 +67,7 @@ export const ColumnDeleteConfig = ({ settings, onUpdate, prevContext }: ColumnDe
 
                 <p className="text-[11px] text-danger-700 leading-relaxed">
                     <b>Внимание</b>
+                    { }
                     : Удаление колонки на этом этапе изменит индексы всех последующих колонок.
                     Все слои ниже по пайплайну будут видеть уже обновленный набор данных.
                 </p>

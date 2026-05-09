@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Button, Card } from "@heroui/react";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { ColumnReorderLayerSettings } from "./types";
@@ -9,7 +9,7 @@ import { LayerConfigProps } from "@/shared/types/layer";
 type ColumnReorderConfigProps = LayerConfigProps<ColumnReorderLayerSettings>;
 
 export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnReorderConfigProps ) => {
-    const headers = prevContext?.headers ?? [];
+    const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
     const order = settings?.order ?? [];
 
     // Инициализируем порядок, если он пустой
@@ -17,7 +17,7 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
         if ( headers.length > 0 && order.length === 0 ) {
             onUpdate?.({ order: headers.map(( _, idx ) => idx ) });
         }
-    }, [ headers.length, order.length ]);
+    }, [ onUpdate, headers, order.length ]);
 
     const move = ( index: number, direction: "up" | "down" ) => {
         const newOrder = [ ...order ];

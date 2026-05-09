@@ -1,10 +1,6 @@
 import clsx from "clsx";
 import React, { createContext, useContext } from "react";
 
-/* =========================
-   CONTEXT
-========================= */
-
 type TableContextValue = {
     stickyHeader?: boolean;
     stickyRowIndex?: boolean;
@@ -17,10 +13,6 @@ const useTable = () => {
     if ( !ctx ) throw new Error( "Table components must be used inside <Table>" );
     return ctx;
 };
-
-/* =========================
-   TABLE ROOT
-========================= */
 
 type TableProps = React.HTMLAttributes<HTMLTableElement> & TableContextValue;
 
@@ -43,19 +35,15 @@ export const Table = ({
     );
 };
 
-/* =======================
-   HEADER
-======================= */
-
-Table.Header = ( props: React.HTMLAttributes<HTMLTableSectionElement> ) => {
+const TableHeader = ( props: React.HTMLAttributes<HTMLTableSectionElement> ) => {
     return <thead { ...props } />;
 };
 
-Table.HeaderRow = ( props: React.HTMLAttributes<HTMLTableRowElement> ) => {
+const TableHeaderRow = ( props: React.HTMLAttributes<HTMLTableRowElement> ) => {
     return <tr { ...props } />;
 };
 
-Table.HCell = ({
+const TableHCell = ({
     className,
     ...props
 }: React.ThHTMLAttributes<HTMLTableCellElement> ) => {
@@ -73,11 +61,7 @@ Table.HCell = ({
     );
 };
 
-/* =======================
-   TOP-LEFT CORNER CELL
-======================= */
-
-Table.CornerCell = ({
+const TableCornerCell = ({
     className,
     ...props
 }: React.ThHTMLAttributes<HTMLTableCellElement> ) => {
@@ -95,23 +79,15 @@ Table.CornerCell = ({
     );
 };
 
-/* =======================
-   BODY
-======================= */
-
-Table.Body = ( props: React.HTMLAttributes<HTMLTableSectionElement> ) => {
+const TableBody = ( props: React.HTMLAttributes<HTMLTableSectionElement> ) => {
     return <tbody { ...props } />;
 };
 
-Table.Row = ( props: React.HTMLAttributes<HTMLTableRowElement> ) => {
+const TableRow = ( props: React.HTMLAttributes<HTMLTableRowElement> ) => {
     return <tr { ...props } className={ `${ props.className ?? "" } hover:bg-slate-100` } />;
 };
 
-/* =======================
-   ROW INDEX (LEFT STICKY)
-======================= */
-
-Table.RowIndexCell = ({
+const TableRowIndexCell = ({
     className,
     ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement> ) => {
@@ -129,11 +105,7 @@ Table.RowIndexCell = ({
     );
 };
 
-/* =======================
-   NORMAL CELL
-======================= */
-
-Table.Cell = ({
+const TableCell = ({
     className,
     ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement> ) => {
@@ -147,3 +119,22 @@ Table.Cell = ({
         />
     );
 };
+
+Table.displayName = "Table";
+TableHeader.displayName = "Table.Header";
+TableHeaderRow.displayName = "Table.HeaderRow";
+TableHCell.displayName = "Table.HCell";
+TableCornerCell.displayName = "Table.CornerCell";
+TableBody.displayName = "Table.Body";
+TableRow.displayName = "Table.Row";
+TableRowIndexCell.displayName = "Table.RowIndexCell";
+TableCell.displayName = "Table.Cell";
+
+Table.Header = TableHeader;
+Table.HeaderRow = TableHeaderRow;
+Table.HCell = TableHCell;
+Table.CornerCell = TableCornerCell;
+Table.Body = TableBody;
+Table.Row = TableRow;
+Table.RowIndexCell = TableRowIndexCell;
+Table.Cell = TableCell;

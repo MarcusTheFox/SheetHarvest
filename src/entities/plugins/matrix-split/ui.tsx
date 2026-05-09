@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, ElementType } from "react";
 import { Input, Button, ScrollShadow, Divider, Chip, ButtonGroup, Tooltip } from "@heroui/react";
 import { MatrixSplitLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
-import { Search, Lock, Grid3X3, Minus, Check, MinusSquare, Square } from "lucide-react";
+import { Search, Lock, Grid3X3, Minus, Check } from "lucide-react";
 
 export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<MatrixSplitLayerSettings> ) => {
-    const headers = prevContext?.headers ?? [];
+    const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
     const [ search, setSearch ] = useState( "" );
 
-    const fixed = settings?.fixedColIndices ?? [];
-    const grid = settings?.gridColIndices ?? [];
+    const fixed = useMemo(() => settings?.fixedColIndices ?? [], [ settings ]);
+    const grid = useMemo(() => settings?.gridColIndices ?? [], [ settings ]);
 
     const filteredColumns = useMemo(() => {
         return headers
@@ -72,7 +72,7 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
     };
 
     // Вспомогательная функция для иконки массовой кнопки
-    const getBulkIcon = ( state: { all: boolean, some: boolean }, Icon: any ) => {
+    const getBulkIcon = ( state: { all: boolean, some: boolean }, Icon: ElementType ) => {
         if ( state.all ) return <Check size={ 14 } strokeWidth={ 3 } />;
         if ( state.some ) return <Minus size={ 14 } strokeWidth={ 3 } />;
         return <Icon size={ 14 } />;
@@ -99,8 +99,6 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
             </div>
 
             <Divider />
-
-            { /* ГЛОБАЛЬНЫЕ ПЕРЕКЛЮЧАТЕЛИ */ }
 
             <div className="flex items-center justify-between px-1">
                 <span className="text-[10px] font-bold text-default-400 uppercase">

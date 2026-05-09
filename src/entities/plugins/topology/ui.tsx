@@ -1,6 +1,6 @@
 "use client";
 
-import { Select, SelectItem, Chip } from "@heroui/react";
+import { Chip } from "@heroui/react";
 import { TopologyLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
 

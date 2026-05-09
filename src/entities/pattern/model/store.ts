@@ -5,7 +5,7 @@ import { usePreviewStore } from "@/entities/preview/model/store";
 import { DEFAULT_PIPELINE, LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { createInstID } from "@/shared/lib/utils";
 
-export const usePatternStore = create<PatternState>(( set, get ) => ({
+export const usePatternStore = create<PatternState>(( set ) => ({
     pipeline: DEFAULT_PIPELINE.map(( id ) => ({
         id,
         instanceId: createInstID( id ),

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { topologyLayer } from "./logic";
-import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
+import { PipelineContext } from "@/shared/types/pipeline";
 import { TopologyLayerSettings } from "./types";
 import { createMockTable, getRowValues } from "@/shared/lib/test-utils";
 

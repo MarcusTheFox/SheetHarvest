@@ -8,10 +8,8 @@ export const HomePage = () => {
     return (
         <div className="h-screen flex flex-col">
             <PageHeader />
-
-      <PageMain />
-
-      <PageFooter />
+            <PageMain />
+            <PageFooter />
         </div>
     );
 };

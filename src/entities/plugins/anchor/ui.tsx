@@ -60,7 +60,7 @@ const AnchorPointEditor = ({
 };
 
 export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigProps ) => {
-    const headers = prevContext?.headers ?? [];
+    const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
 
     const columns = useMemo(() => {
         if ( headers.length > 0 ) {
@@ -71,7 +71,7 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
         }
 
         return [];
-    }, [ headers, prevContext?.tables ]);
+    }, [ headers ]);
 
     return (
         <div className="flex flex-col gap-6">

@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
 import { CellValue } from "exceljs";
+import { RowValue } from "../types/spreadsheet";
 
 export interface ExcelSheet {
     name: string;
@@ -26,7 +27,7 @@ export const exportToExcel = ( sheets: ExcelSheet[], fileName: string = "export"
 /**
  * Экспорт в CSV (одна таблица)
  */
-export const exportToCSV = ( data: any[][], headers: string[], fileName: string = "export" ) => {
+export const exportToCSV = ( data: RowValue[], headers: string[], fileName: string = "export" ) => {
     const csv = Papa.unparse({
         fields: headers,
         data: data,
@@ -39,7 +40,7 @@ export const exportToCSV = ( data: any[][], headers: string[], fileName: string 
 /**
  * Экспорт в JSON
  */
-export const exportToJSON = ( data: any, fileName: string = "export" ) => {
+export const exportToJSON = ( data: Record<string, CellValue>[], fileName: string = "export" ) => {
     const blob = new Blob([ JSON.stringify( data, null, 2 ) ], { type: "application/json" });
     downloadFile( blob, `${ fileName }.json` );
 };

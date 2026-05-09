@@ -113,10 +113,8 @@ export const PatternSidebarPipeline = () => {
                                 instanceId={ entry.instanceId }
                                 isFirst={ index === 0 }
                                 isLast={ index === pipelineIds.length - 1 }
-
                                 layerId={ entry.id }
                                 name={ metadata.name }
-
                                 onMoveDown={ () => moveLayer( index, index + 1 ) }
                                 onMoveUp={ () => moveLayer( index, index - 1 ) }
                                 onRemove={ () => removeLayer( index ) }

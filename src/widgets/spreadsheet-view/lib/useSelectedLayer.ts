@@ -32,7 +32,7 @@ export const useSelectedLayer = () => {
                 runUpToLayer( prevLayerId, pipeline, sourceTables );
             }
         }
-    }, [ selectedLayerIndex, prevLayerId, inputContextFromCache, isExecuting ]);
+    }, [ runUpToLayer, sourceTables, selectedLayerIndex, prevLayerId, inputContextFromCache, pipeline, isExecuting ]);
 
     const inputContext = useMemo(() => {
         if ( !sourceTables ) return undefined;

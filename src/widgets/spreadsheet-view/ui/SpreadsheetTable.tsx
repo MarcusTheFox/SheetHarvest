@@ -155,3 +155,6 @@ export const SpreadsheetTable = memo(( props: SpreadsheetTableProps ) => {
         </div>
     );
 });
+
+SpreadsheetTableContainer.displayName = "SpreadsheetTableContainer";
+SpreadsheetTable.displayName = "SpreadsheetTable";

@@ -53,8 +53,6 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
 
             <Divider className="my-2" />
 
-            { /* 2. Настройка логики */ }
-
             <div className="flex flex-col gap-4">
                 <span className="text-sm font-bold text-default-700">2. Метод разделения</span>
 
@@ -95,8 +93,6 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
             </div>
 
             <Divider className="my-2" />
-
-            { /* 3. Имена новых колонок */ }
 
             <div className="flex flex-col gap-3">
                 <span className="text-sm font-bold text-default-700">3. Результирующие колонки</span>

@@ -11,7 +11,7 @@ export interface SpreadsheetState {
     reset: () => void;
 }
 
-export const useSpreadsheetStore = create<SpreadsheetState>(( set, get ) => ({
+export const useSpreadsheetStore = create<SpreadsheetState>(( set ) => ({
     file: undefined,
     sheets: [],
     sourceTables: [],

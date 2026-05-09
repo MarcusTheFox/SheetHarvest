@@ -2,8 +2,8 @@ import { useExtractionStore } from "@/entities/extraction/model/store";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
 import { UploadButton } from "@/features/upload-spreadsheet/ui/UploadButton";
-import { Button, ButtonGroup } from "@heroui/button";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
+import { Button } from "@heroui/button";
+// import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { TableProperties, X } from "lucide-react";
 
 const Logo = () => (

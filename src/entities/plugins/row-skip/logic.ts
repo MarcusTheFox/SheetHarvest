@@ -1,4 +1,4 @@
-import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
+import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { RowSkipLayerSettings } from "./types";
 
 export function rowSkipLayer( context: PipelineContext, settings: RowSkipLayerSettings ): PipelineContext {
