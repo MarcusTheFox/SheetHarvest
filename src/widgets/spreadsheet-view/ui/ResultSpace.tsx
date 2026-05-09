@@ -1,14 +1,13 @@
 "use client";
 
 import { useExtractionStore } from "@/entities/extraction/model/store";
-import { Card, CardBody } from "@heroui/card";
-import clsx from "clsx";
 import { Group, Panel } from "react-resizable-panels";
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { Separator } from "@/shared/ui/Separator";
 import { useState } from "react";
 import { ExportPanel } from "./ExportPanel";
 import { SpacePanel } from "./SpacePanel";
+import { ResultTableCard } from "./ResultTableCard";
 
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
@@ -41,46 +40,13 @@ export const ResultSpace = () => {
         const displayName = customNames[t.id] ?? t.name;
 
         return (
-            <Card
+            <ResultTableCard
                 key={t.id}
-                shadow="none"
-                radius="sm"
-                className={
-                    clsx(
-                        "border",
-                        isSelected
-                            ? "bg-slate-500 text-white"
-                            : "border-slate-200 hover:bg-slate-200",
-                        "transition-all group shrink-0",
-                    )
-                }
-            >
-                <CardBody className="p-0">
-                    <div className="flex justify-between items-start gap-2">
-                        <div
-                            className={
-                                clsx(
-                                    "flex-1 flex flex-row items-center justify-between cursor-pointer min-w-0 p-3",
-                                    "text-xs font-bold truncate transition-colors",
-                                )
-                            }
-                            onClick={() => handleTableClick(t.id)}
-                        >
-                            <h4>
-                                {displayName}
-                            </h4>
-                            <p className={clsx(
-                                "font-mono",
-                                isSelected
-                                    ? "text-slate-100"
-                                    : "text-slate-400",
-                            )}>
-                                {t.rows.length}
-                            </p>
-                        </div>
-                    </div>
-                </CardBody>
-            </Card>
+                table={t}
+                isSelected={isSelected}
+                displayName={displayName}
+                onSelect={handleTableClick}
+            />
         )
     })
 
