@@ -4,9 +4,9 @@ import { ColumnDeleteLayerSettings } from "./types";
 import { ColumnDeleteConfig } from "./ui";
 
 export const columnDeleteLayerMetadata: LayerMetadata<ColumnDeleteLayerSettings> = {
-    id: 'column-delete',
-    name: 'Удаление колонок',
-    description: 'Исключает выбранные колонки из дальнейшей обработки',
+    id: "column-delete",
+    name: "Удаление колонок",
+    description: "Исключает выбранные колонки из дальнейшей обработки",
     layer: columnDeleteLayer,
     defaultSettings: {
         columnIndices: [],

@@ -1,5 +1,5 @@
-import { Sheet } from '../../types/spreadsheet';
+import { Sheet } from "../../types/spreadsheet";
 
 export interface ISpreadsheetParser {
-  parse(file: File): Promise<Sheet[]>;
+    parse( file: File ): Promise<Sheet[]>;
 }

@@ -7,18 +7,18 @@ import { createHeadersFromTables } from "./pipeline/utils";
 export const extractData = (
     sourceTables: PipelineTable[],
     pipeline: PipelineLayer[],
-    cache?: Record<string, PipelineContext> // <-- Добавляем опциональный кеш
+    cache?: Record<string, PipelineContext>, // <-- Добавляем опциональный кеш
 ): { tables: PipelineTable[]; headers: string[] } => {
-    
-    let currentContext = createInitialContext(sourceTables);
+
+    let currentContext = createInitialContext( sourceTables );
     let startIndex = 0;
 
     // 1. Ищем самый "глубокий" слой, который уже есть в кеше
-    if (cache) {
+    if ( cache ) {
         // Идем с конца пайплайна к началу
-        for (let i = pipeline.length - 1; i >= 0; i--) {
+        for ( let i = pipeline.length - 1; i >= 0; i-- ) {
             const layer = pipeline[i];
-            if (cache[layer.instanceId]) {
+            if ( cache[layer.instanceId]) {
                 // Нашли кеш! Берем его как стартовую точку
                 currentContext = cache[layer.instanceId];
                 // Начинаем выполнение со СЛЕДУЮЩЕГО слоя
@@ -29,23 +29,23 @@ export const extractData = (
     }
 
     // 2. Прогоняем данные только через оставшиеся (некешированные) слои
-    for (let i = startIndex; i < pipeline.length; i++) {
+    for ( let i = startIndex; i < pipeline.length; i++ ) {
         const entry = pipeline[i];
         const metadata = LAYER_REGISTRY[entry.id];
-        
-        if (metadata) {
+
+        if ( metadata ) {
             // Передаем текущий контекст в слой и обновляем его
             currentContext = metadata.layer({ ...currentContext }, entry.settings );
         }
     }
 
-    if (currentContext.headers.length === 0 && currentContext.tables.length > 0) {
-        currentContext.headers = createHeadersFromTables(currentContext.tables);
+    if ( currentContext.headers.length === 0 && currentContext.tables.length > 0 ) {
+        currentContext.headers = createHeadersFromTables( currentContext.tables );
     }
 
     // 4. Возвращаем результат
     return {
         tables: currentContext.tables,
-        headers: currentContext.headers
+        headers: currentContext.headers,
     };
 };

@@ -1,18 +1,80 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import stylistic from "@stylistic/eslint-plugin";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
+    ...nextVitals,
+    ...nextTs,
+    // Override default ignores of eslint-config-next.
+    globalIgnores([
     // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
+        ".next/**",
+        "out/**",
+        "build/**",
+        "next-env.d.ts",
+    ]),
+    {
+        plugins: {
+            "@stylistic": stylistic,
+        },
+        rules: {
+            "@stylistic/array-bracket-newline": [ "error", "consistent" ],
+            "@stylistic/array-bracket-spacing": [ "error", "always" ],
+            "@stylistic/array-element-newline": [ "error", { "consistent": true, "multiline": true } ],
+            "@stylistic/arrow-parens": [ "error", "always" ],
+            "@stylistic/arrow-spacing": "error",
+            "@stylistic/block-spacing": "error",
+            "@stylistic/brace-style": "error",
+            "@stylistic/brace-style": [ "error", "stroustrup", { "allowSingleLine": true } ],
+            "@stylistic/comma-dangle": [ "error", "always-multiline" ],
+            "@stylistic/comma-spacing": "error",
+            "@stylistic/comma-style": [ "error", "last" ],
+            "@stylistic/computed-property-spacing": "error",
+            "@stylistic/curly-newline": [ "error", { "consistent": true } ],
+            "@stylistic/dot-location": [ "error", "property" ],
+            "@stylistic/eol-last": [ "error", "always" ],
+            "@stylistic/function-call-spacing": "error",
+            "@stylistic/function-paren-newline": [ "error", "multiline-arguments" ],
+            "@stylistic/indent": [ "error", 4 ],
+            "@stylistic/jsx-child-element-spacing": "error",
+            "@stylistic/jsx-closing-bracket-location": [ "error", "line-aligned" ],
+            "@stylistic/jsx-closing-tag-location": [ "error", "line-aligned" ],
+            "@stylistic/jsx-curly-brace-presence": [ "error", { "props": "never", "children": "never", "propElementValues": "always" } ],
+            "@stylistic/jsx-curly-newline": [ "error", "consistent" ],
+            "@stylistic/jsx-curly-spacing": [ "error", { "when": "always", "children": true, "spacing": { "objectLiterals": "never" } } ],
+            "@stylistic/jsx-equals-spacing": [ "error", "never" ],
+            "@stylistic/jsx-max-props-per-line": [ "error", { "maximum": { "single": 4, "multi": 1 } } ],
+            "@stylistic/jsx-newline": [ "error", { "prevent": true, "allowMultilines": true } ],
+            "@stylistic/jsx-one-expression-per-line": [ "error", { "allow": "non-jsx" } ],
+            "@stylistic/jsx-props-no-multi-spaces": "error",
+            "@stylistic/jsx-quotes": [ "error", "prefer-double" ],
+            "@stylistic/jsx-self-closing-comp": [ "error", { "component": true, "html": true } ],
+            "@stylistic/jsx-sort-props": [ "error", { "reservedFirst": true, "shorthandFirst": true, "callbacksLast": true } ],
+            "@stylistic/jsx-wrap-multilines": "error",
+            "@stylistic/key-spacing": [ "error", { "beforeColon": false, "afterColon": true, "mode": "strict" } ],
+            "@stylistic/keyword-spacing": "error",
+            "@stylistic/multiline-ternary": [ "error", "always-multiline" ],
+            "@stylistic/newline-per-chained-call": [ "error", { "ignoreChainWithDepth": 2 } ],
+            "@stylistic/no-confusing-arrow": "error",
+            "@stylistic/no-extra-semi": "error",
+            "@stylistic/no-floating-decimal": "error",
+            "@stylistic/no-mixed-operators": "error",
+            "@stylistic/no-multi-spaces": "error",
+            "@stylistic/no-multiple-empty-lines": [ "error", { "max": 2, "maxBOF": 0, "maxEOF": 0 } ],
+            "@stylistic/no-tabs": "error",
+            "@stylistic/no-trailing-spaces": "error",
+            "@stylistic/no-whitespace-before-property": "error",
+            "@stylistic/object-curly-newline": "error",
+            "@stylistic/object-curly-spacing": [ "error", "always" ],
+            "@stylistic/operator-linebreak": [ "error", "before", { "overrides": { "=": "after" } } ],
+            "@stylistic/quotes": [ "error", "double" ],
+            "@stylistic/rest-spread-spacing": "error",
+            "@stylistic/semi": "error",
+            "@stylistic/space-in-parens": [ "error", "always", { "exceptions": [ "()", "{}", "[]", "empty" ] } ],
+            "@stylistic/template-curly-spacing": [ "error", "always" ],
+        },
+    },
 ]);
 
 export default eslintConfig;

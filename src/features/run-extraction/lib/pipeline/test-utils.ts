@@ -5,19 +5,19 @@ export function createMockTable(
     id: string,
     name: string,
     rows: RowValue[],
-    merges?: MergeRange[]
+    merges?: MergeRange[],
 ): PipelineTable {
     return {
         id,
         name,
-        rows: rows.map((row, idx): PipelineRow => ({
+        rows: rows.map(( row, idx ): PipelineRow => ({
             originalIndex: idx,
-            cells: [...row],
+            cells: [ ...row ],
         })),
         merges,
-    }
+    };
 }
 
-export function getRowValues(rows: PipelineRow[]): RowValue[] {
-    return rows.map(row => row.cells);
+export function getRowValues( rows: PipelineRow[]): RowValue[] {
+    return rows.map(( row ) => row.cells );
 }

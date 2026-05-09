@@ -8,30 +8,36 @@ import { SpacePanel } from "./SpacePanel";
 
 export const Workspace = () => {
     return (
-        <Group orientation="horizontal" className="gap-0.5">
-            <Panel defaultSize={400}>
-                <Group orientation="vertical" className="gap-0.5">
-                    <SpacePanel minSize={32} defaultSize="50" title="Шаблон">
+        <Group className="gap-0.5" orientation="horizontal">
+            <Panel defaultSize={ 400 }>
+                <Group className="gap-0.5" orientation="vertical">
+                    <SpacePanel defaultSize="50" minSize={ 32 } title="Шаблон">
                         <PatternSidebarPipeline />
                     </SpacePanel>
+
                     <Separator className="h-1" />
-                    <SpacePanel minSize={32} title="Сохраненные шаблоны">
+
+                    <SpacePanel minSize={ 32 } title="Сохраненные шаблоны">
                         <PatternSidebarTemplates />
                     </SpacePanel>
                 </Group>
             </Panel>
+
             <Separator className="w-1" />
+
             <Panel>
                 <WorkspaceTableArea />
             </Panel>
+
             <Separator className="w-1" />
+
             <Panel defaultSize="20">
                 <Group orientation="vertical">
-                    <SpacePanel minSize={32} title="Настройки">
+                    <SpacePanel minSize={ 32 } title="Настройки">
                         <LayerSettingsPanel />
                     </SpacePanel>
                 </Group>
             </Panel>
         </Group>
-    )
-}
+    );
+};

@@ -17,7 +17,7 @@ interface SpreadsheetTableContainerProps {
     showGroupSeparator?: boolean;
 }
 
-export const SpreadsheetTableContainer = memo((props: SpreadsheetTableContainerProps) => {
+export const SpreadsheetTableContainer = memo(( props: SpreadsheetTableContainerProps ) => {
     const {
         context,
         isLoading = false,
@@ -26,7 +26,7 @@ export const SpreadsheetTableContainer = memo((props: SpreadsheetTableContainerP
         showGroupSeparator,
     } = props;
 
-    if (isLoading) {
+    if ( isLoading ) {
         return (
             <div className="flex items-center justify-center h-full gap-3 text-default-400">
                 <Spinner size="sm" />
@@ -35,30 +35,32 @@ export const SpreadsheetTableContainer = memo((props: SpreadsheetTableContainerP
         );
     }
 
-    if (!context) {
+    if ( !context ) {
         return (
             <div className="flex flex-col items-center justify-center h-full gap-2 text-slate-400">
-                {isExecuting ? (
-                    <>
-                        <Spinner size="sm" />
-                        <p className="text-xs">Выполнение...</p>
-                    </>
-                ) : (
-                    <>
-                        <MousePointerClick size={24} className="opacity-30" />
-                        <p className="text-xs font-medium">{emptyMessage}</p>
-                    </>
-                )}
+                { isExecuting
+                    ? (
+                        <>
+                            <Spinner size="sm" />
+                            <p className="text-xs">Выполнение...</p>
+                        </>
+                    )
+                    : (
+                        <>
+                            <MousePointerClick className="opacity-30" size={ 24 } />
+                            <p className="text-xs font-medium">{ emptyMessage }</p>
+                        </>
+                    ) }
             </div>
         );
     }
 
     return (
         <SpreadsheetTable
-            tables={context.tables}
-            headers={context.headers}
-            showGroupSeparator={showGroupSeparator}
-            showMerges={!context.isColumnStructureModified}
+            headers={ context.headers }
+            showGroupSeparator={ showGroupSeparator }
+            showMerges={ !context.isColumnStructureModified }
+            tables={ context.tables }
         />
     );
 });
@@ -70,12 +72,12 @@ interface SpreadsheetTableProps {
     showMerges?: boolean;
 }
 
-export const SpreadsheetTable = memo((props: SpreadsheetTableProps) => {
+export const SpreadsheetTable = memo(( props: SpreadsheetTableProps ) => {
     const tables = props.tables;
 
     const headers = props.headers?.length
         ? props.headers
-        : createHeadersFromTables(tables);
+        : createHeadersFromTables( tables );
 
     return (
         <div className="overflow-auto border-none bg-white">
@@ -83,68 +85,71 @@ export const SpreadsheetTable = memo((props: SpreadsheetTableProps) => {
                 <Table.Header>
                     <Table.HeaderRow>
                         <Table.CornerCell />
-                        {headers.map((header, idx) => (
-                            <Table.HCell key={`${header}-${idx}`}>
-                                {header}
+
+                        { headers.map(( header, idx ) => (
+                            <Table.HCell key={ `${ header }-${ idx }` }>
+                                { header }
                             </Table.HCell>
-                        ))}
+                        )) }
                     </Table.HeaderRow>
                 </Table.Header>
+
                 <Table.Body>
-                    {tables.map((table) => {
+                    { tables.map(( table ) => {
                         const tableMerges = props.showMerges ? table.merges ?? [] : [];
 
                         return (
-                            <Fragment key={table.id}>
-                                {props.showGroupSeparator && (
+                            <Fragment key={ table.id }>
+                                { props.showGroupSeparator && (
                                     <Table.Row>
                                         <Table.Cell
-                                            colSpan={headers.length + 1}
                                             className="py-1! bg-slate-200 border-y border-slate-300 font-bold text-slate-500"
+                                            colSpan={ headers.length + 1 }
                                         >
                                             <div className="flex flex-row justify-between">
                                                 <p>
-                                                    Таблица: {table.name}
+                                                    Таблица: { table.name }
                                                 </p>
+
                                                 <p>
-                                                    Строк: {table.rows.length}
+                                                    Строк: { table.rows.length }
                                                 </p>
                                             </div>
                                         </Table.Cell>
                                     </Table.Row>
-                                )}
+                                ) }
 
-                                {table.rows.map(row =>
-                                    <Table.Row
-                                        key={row.originalIndex}
-                                        className={clsx(
+                                { table.rows.map(( row ) =>
+                                    ( <Table.Row
+                                        key={ row.originalIndex }
+                                        className={ clsx(
                                             "group transition-all",
-                                        )}
+                                        ) }
                                     >
                                         <Table.RowIndexCell>
-                                            {row.originalIndex + 1}
+                                            { row.originalIndex + 1 }
                                         </Table.RowIndexCell>
-                                        {headers.map((_, idx) => {
-                                            const cellValue = row.cells[idx]?.toString() || "";
-                                            const { isHidden, rowSpan, colSpan } = getCellMergeInfo(row.originalIndex, idx, tableMerges);
 
-                                            if (isHidden) return null;
+                                        { headers.map(( _, idx ) => {
+                                            const cellValue = row.cells[idx]?.toString() || "";
+                                            const { isHidden, rowSpan, colSpan } = getCellMergeInfo( row.originalIndex, idx, tableMerges );
+
+                                            if ( isHidden ) return null;
 
                                             return (
                                                 <Table.Cell
-                                                    key={`${row.originalIndex}-${idx}`}
-                                                    rowSpan={rowSpan}
-                                                    colSpan={colSpan}
+                                                    key={ `${ row.originalIndex }-${ idx }` }
+                                                    colSpan={ colSpan }
+                                                    rowSpan={ rowSpan }
                                                 >
-                                                    {cellValue}
+                                                    { cellValue }
                                                 </Table.Cell>
                                             );
-                                        })}
-                                    </Table.Row>
-                                )}
+                                        }) }
+                                    </Table.Row> )) }
                             </Fragment>
-                        )
-                    })}
+                        );
+                    }) }
                 </Table.Body>
             </Table>
         </div>

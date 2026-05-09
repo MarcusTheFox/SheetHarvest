@@ -1,24 +1,25 @@
-import { ISpreadsheetParser } from './types';
-import { CSVParser } from './csv-parser';
-import { XLSLegacyParser } from './xls-legacy-parser';
-import { Sheet } from '@/shared/types/spreadsheet';
+import { ISpreadsheetParser } from "./types";
+import { CSVParser } from "./csv-parser";
+import { XLSLegacyParser } from "./xls-legacy-parser";
+import { Sheet } from "@/shared/types/spreadsheet";
 
-export const getParserForFile = (file: File): ISpreadsheetParser => {
-  const extension = file.name.split('.').pop()?.toLowerCase();
+export const getParserForFile = ( file: File ): ISpreadsheetParser => {
+    const extension = file.name.split( "." ).pop()
+        ?.toLowerCase();
 
-  switch (extension) {
-    case 'xlsx':
-    case 'xls':
-    case 'xlsm':
-      return new XLSLegacyParser();
-    case 'csv':
-      return new CSVParser();
-    default:
-      return new XLSLegacyParser();
-  }
+    switch ( extension ) {
+        case "xlsx":
+        case "xls":
+        case "xlsm":
+            return new XLSLegacyParser();
+        case "csv":
+            return new CSVParser();
+        default:
+            return new XLSLegacyParser();
+    }
 };
 
-export const parseSpreadsheet = async (file: File): Promise<Sheet[]> => {
-  const parser = getParserForFile(file);
-  return await parser.parse(file);
+export const parseSpreadsheet = async ( file: File ): Promise<Sheet[]> => {
+    const parser = getParserForFile( file );
+    return await parser.parse( file );
 };

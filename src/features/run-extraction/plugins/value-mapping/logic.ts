@@ -8,56 +8,55 @@ import { useMappingStore } from "@/entities/value-mapping/model/store";
  *   sourceColIndex: number; // Индекс колонки в исходных данных (до проекции)
  * }
  */
-export function valueMappingLayer(context: PipelineContext, settings: ValueMappingLayerSettings): PipelineContext {
+export function valueMappingLayer( context: PipelineContext, settings: ValueMappingLayerSettings ): PipelineContext {
     const { tables } = context;
 
-    if (!settings || settings.sourceColIndex === undefined) {
+    if ( !settings || settings.sourceColIndex === undefined ) {
         return context;
     }
 
     const sourceIdx = settings.sourceColIndex;
     const mapping = useMappingStore.getState().mappings;
-    const keys = Object.keys(mapping);
+    const keys = Object.keys( mapping );
 
-    if (keys.length === 0) {
+    if ( keys.length === 0 ) {
         return context;
     }
 
-    const processRow = (row: PipelineRow): PipelineRow => {
-        const originalValue = String(row.cells[sourceIdx] || '').trim();
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const originalValue = String( row.cells[sourceIdx] || "" ).trim();
 
-        if (!originalValue) return row;
+        if ( !originalValue ) return row;
 
         // Ищем прямое совпадение (без fuzzy)
         // Приводим к нижнему регистру для базовой нормализации
-        const matchedKey = keys.find(key =>
-            key.toLowerCase() === originalValue.toLowerCase()
-        );
+        const matchedKey = keys.find(( key ) =>
+            key.toLowerCase() === originalValue.toLowerCase());
 
-        if (matchedKey) {
-            const newCells = [...row.cells];
+        if ( matchedKey ) {
+            const newCells = [ ...row.cells ];
             newCells[sourceIdx] = mapping[matchedKey];
             return {
                 ...row,
-                cells: newCells
+                cells: newCells,
             };
         }
 
         return row;
-    }
+    };
 
-    const processTable = (table: PipelineTable): PipelineTable => {
-        const rows = table.rows.map(row => processRow(row));
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
         return {
             ...table,
             rows,
-        }
-    }
+        };
+    };
 
-    const newTables = tables.map(table => processTable(table));
+    const newTables = tables.map(( table ) => processTable( table ));
 
     return {
         ...context,
         tables: newTables,
     };
-};
+}

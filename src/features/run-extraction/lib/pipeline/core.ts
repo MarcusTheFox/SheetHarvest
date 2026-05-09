@@ -22,4 +22,4 @@ export interface PipelineContext {
     isColumnStructureModified: boolean;
 }
 
-export type ExtractionLayer<T = never> = (context: PipelineContext, settings: T) => PipelineContext;
+export type ExtractionLayer<T = never> = ( context: PipelineContext, settings: T ) => PipelineContext;

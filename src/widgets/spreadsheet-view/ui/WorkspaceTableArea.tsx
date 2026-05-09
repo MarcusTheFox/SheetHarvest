@@ -7,25 +7,27 @@ import { SpacePanel } from "./SpacePanel";
 export const WorkspaceTableArea = () => {
     const { selectedLayerIndex, inputContext, outputContext } = useSelectedLayer();
 
-    if (selectedLayerIndex === undefined) {
+    if ( selectedLayerIndex === undefined ) {
         return (
-            <Group orientation="vertical" className="gap-0.5">
-                <SpacePanel minSize={32} hideWrapper title="Исходные данные">
-                    <SpreadsheetTableContainer context={inputContext} showGroupSeparator />
+            <Group className="gap-0.5" orientation="vertical">
+                <SpacePanel hideWrapper minSize={ 32 } title="Исходные данные">
+                    <SpreadsheetTableContainer showGroupSeparator context={ inputContext } />
                 </SpacePanel>
             </Group>
-        )
+        );
     }
 
     return (
-        <Group orientation="vertical" className="gap-0.5">
-            <SpacePanel minSize={32} defaultSize="50" hideWrapper title="Данные на входе">
-                <SpreadsheetTableContainer context={inputContext} showGroupSeparator />
+        <Group className="gap-0.5" orientation="vertical">
+            <SpacePanel hideWrapper defaultSize="50" minSize={ 32 } title="Данные на входе">
+                <SpreadsheetTableContainer showGroupSeparator context={ inputContext } />
             </SpacePanel>
+
             <Separator className="h-1" />
-            <SpacePanel minSize={32} hideWrapper title="Данные на выходе">
-                <SpreadsheetTableContainer context={outputContext} showGroupSeparator />
+
+            <SpacePanel hideWrapper minSize={ 32 } title="Данные на выходе">
+                <SpreadsheetTableContainer showGroupSeparator context={ outputContext } />
             </SpacePanel>
         </Group>
-    )
-}
+    );
+};

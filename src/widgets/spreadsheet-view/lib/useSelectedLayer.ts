@@ -7,40 +7,40 @@ import { useEffect, useMemo } from "react";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 
 export const useSelectedLayer = () => {
-    const selectedLayerIndex = useSelectedLayerStore((s) => s.selectedLayerIndex);
-    const pipeline = usePatternStore((s) => s.pipeline);
-    const sourceTables = useSpreadsheetStore(s => s.sourceTables);
+    const selectedLayerIndex = useSelectedLayerStore(( s ) => s.selectedLayerIndex );
+    const pipeline = usePatternStore(( s ) => s.pipeline );
+    const sourceTables = useSpreadsheetStore(( s ) => s.sourceTables );
 
     const { isExecuting, runUpToLayer } = usePreviewStore(
-        useShallow(s => ({
+        useShallow(( s ) => ({
             isExecuting: s.isExecuting,
             runUpToLayer: s.runUpToLayer,
-        }))
+        })),
     );
 
     const selectedLayer = selectedLayerIndex !== undefined ? pipeline[selectedLayerIndex] : undefined;
-    const prevLayerId = (selectedLayerIndex !== undefined && selectedLayerIndex > 0)
+    const prevLayerId = ( selectedLayerIndex !== undefined && selectedLayerIndex > 0 )
         ? pipeline[selectedLayerIndex - 1]?.instanceId
         : undefined;
 
-    const inputContextFromCache = usePreviewStore(s => prevLayerId ? s.cache[prevLayerId] : undefined);
-    const outputContext = usePreviewStore(s => selectedLayer ? s.cache[selectedLayer.instanceId] : undefined);
+    const inputContextFromCache = usePreviewStore(( s ) => ( prevLayerId ? s.cache[prevLayerId] : undefined ));
+    const outputContext = usePreviewStore(( s ) => ( selectedLayer ? s.cache[selectedLayer.instanceId] : undefined ));
 
     useEffect(() => {
-        if (selectedLayerIndex !== undefined && selectedLayerIndex > 0 && sourceTables && !isExecuting) {
-            if (prevLayerId && !inputContextFromCache) {
-                runUpToLayer(prevLayerId, pipeline, sourceTables);
+        if ( selectedLayerIndex !== undefined && selectedLayerIndex > 0 && sourceTables && !isExecuting ) {
+            if ( prevLayerId && !inputContextFromCache ) {
+                runUpToLayer( prevLayerId, pipeline, sourceTables );
             }
         }
-    }, [selectedLayerIndex, prevLayerId, inputContextFromCache, isExecuting]);
+    }, [ selectedLayerIndex, prevLayerId, inputContextFromCache, isExecuting ]);
 
     const inputContext = useMemo(() => {
-        if (!sourceTables) return undefined;
-        if (!selectedLayerIndex || selectedLayerIndex === 0) {
-            return createInitialContext(sourceTables);
+        if ( !sourceTables ) return undefined;
+        if ( !selectedLayerIndex || selectedLayerIndex === 0 ) {
+            return createInitialContext( sourceTables );
         }
         return inputContextFromCache;
-    }, [sourceTables, selectedLayerIndex, inputContextFromCache]);
+    }, [ sourceTables, selectedLayerIndex, inputContextFromCache ]);
 
     return {
         selectedLayerIndex,
@@ -49,4 +49,4 @@ export const useSelectedLayer = () => {
         inputContext,
         outputContext,
     };
-}
+};

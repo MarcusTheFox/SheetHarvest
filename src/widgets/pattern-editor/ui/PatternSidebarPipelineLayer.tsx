@@ -21,7 +21,7 @@ interface PatternSidebarPipelineLayerProps {
     onRemove?: () => void;
 }
 
-export const PatternSidebarPipelineLayer = (props: PatternSidebarPipelineLayerProps) => {
+export const PatternSidebarPipelineLayer = ( props: PatternSidebarPipelineLayerProps ) => {
     const {
         index,
         layerId,
@@ -33,36 +33,35 @@ export const PatternSidebarPipelineLayer = (props: PatternSidebarPipelineLayerPr
         onRemove,
     } = props;
 
-    const isCached = usePreviewStore(s => !!s.cache[instanceId]);
-    const isActive = usePreviewStore(s => s.activePreviewId === instanceId);
-    const isExecuting = usePreviewStore(s => s.executingLayerId === instanceId);
+    const isCached = usePreviewStore(( s ) => !!s.cache[instanceId]);
+    const isActive = usePreviewStore(( s ) => s.activePreviewId === instanceId );
+    const isExecuting = usePreviewStore(( s ) => s.executingLayerId === instanceId );
 
-    const isLoading = usePreviewStore(s =>
-        s.isExecuting &&
-        s.executingIndex <= index &&
-        s.targetIndex >= index
-    );
+    const isLoading = usePreviewStore(( s ) =>
+        s.isExecuting
+        && s.executingIndex <= index
+        && s.targetIndex >= index );
 
     const metadata = LAYER_REGISTRY[layerId];
 
-    const runUpToLayer = usePreviewStore(s => s.runUpToLayer);
-    const setActivePreview = usePreviewStore(s => s.setActivePreview);
-    const setSelectedLayerIndex = useSelectedLayerStore(s => s.setSelectedLayerIndex);
+    const runUpToLayer = usePreviewStore(( s ) => s.runUpToLayer );
+    const setActivePreview = usePreviewStore(( s ) => s.setActivePreview );
+    const setSelectedLayerIndex = useSelectedLayerStore(( s ) => s.setSelectedLayerIndex );
 
     const handleRun = () => {
         const pipeline = usePatternStore.getState().pipeline;
         const sourceTables = useSpreadsheetStore.getState().sourceTables;
-        runUpToLayer(instanceId, pipeline, sourceTables);
-    }
+        runUpToLayer( instanceId, pipeline, sourceTables );
+    };
 
     const handleSelect = () => {
-        setActivePreview(instanceId);
-        setSelectedLayerIndex(index)
-    }
+        setActivePreview( instanceId );
+        setSelectedLayerIndex( index );
+    };
 
     const color = isExecuting
-        ? "primary" :
-        isCached
+        ? "primary"
+        : isCached
             ? "success"
             : "default";
 
@@ -71,80 +70,84 @@ export const PatternSidebarPipelineLayer = (props: PatternSidebarPipelineLayerPr
         : "solid";
 
     const Icon = isCached
-        ? <CheckCircle2 size={16} />
-        : <Play size={14} className="ml-0.5" />;
+        ? <CheckCircle2 size={ 16 } />
+        : <Play className="ml-0.5" size={ 14 } />;
 
     return (
-        <Card shadow="none" className={clsx(
+        <Card className={ clsx(
             "border bg-default-50/50 overflow-hidden shrink-0",
             isActive ? "border-primary" : "border-default-100",
-        )}>
+        ) }
+        shadow="none"
+        >
             <CardBody className="p-3">
                 <div className="flex items-start justify-between gap-2">
                     <div className="shrink-0">
                         <Button
                             isIconOnly
-                            size="sm"
+                            color={ color }
+                            isLoading={ isLoading }
                             radius="full"
-                            variant={variant}
-                            color={color}
-                            isLoading={isLoading}
-                            onPress={handleRun}
+                            size="sm"
+                            variant={ variant }
+                            onPress={ handleRun }
                         >
-                            {Icon}
+                            { Icon }
                         </Button>
                     </div>
 
                     <div
                         className="flex flex-col gap-0.5 min-w-0 flex-1 cursor-pointer group"
-                        onClick={handleSelect}
+                        onClick={ handleSelect }
                     >
                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-default-400 font-mono">#{index + 1}</span>
-                            <span className="text-[12px] font-semibold truncate leading-tight group-hover:text-primary transition-colors">{metadata.name}</span>
+                            <span className="text-[10px] font-bold text-default-400 font-mono">#{ index + 1 }</span>
+                            <span className="text-[12px] font-semibold truncate leading-tight group-hover:text-primary transition-colors">{ metadata.name }</span>
                         </div>
-                        <span className="text-[10px] text-default-500 line-clamp-1 italic">{metadata.description}</span>
+
+                        <span className="text-[10px] text-default-500 line-clamp-1 italic">{ metadata.description }</span>
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0">
                         <div className="flex flex-col">
                             <Button
                                 isIconOnly
+                                className="h-5 w-5 min-w-0"
+                                isDisabled={ isFirst }
                                 size="sm"
                                 variant="light"
-                                className="h-5 w-5 min-w-0"
-                                isDisabled={isFirst}
-                                onPress={onMoveUp}
+                                onPress={ onMoveUp }
                             >
-                                <ArrowUp size={12} />
+                                <ArrowUp size={ 12 } />
                             </Button>
+
                             <Button
                                 isIconOnly
+                                className="h-5 w-5 min-w-0"
+                                isDisabled={ isLast }
                                 size="sm"
                                 variant="light"
-                                className="h-5 w-5 min-w-0"
-                                isDisabled={isLast}
-                                onPress={onMoveDown}
+                                onPress={ onMoveDown }
                             >
-                                <ArrowDown size={12} />
+                                <ArrowDown size={ 12 } />
                             </Button>
                         </div>
 
-                        {!metadata.isSystem && (
+                        { !metadata.isSystem && (
                             <Button
                                 isIconOnly
+                                className="h-7 w-7 min-w-0"
+                                color="danger"
                                 size="sm"
                                 variant="light"
-                                color="danger"
-                                className="h-7 w-7 min-w-0"
-                                onPress={onRemove}
+                                onPress={ onRemove }
                             >
-                                <Trash2 size={14} />
+                                <Trash2 size={ 14 } />
                             </Button>
-                        )}
+                        ) }
                     </div>
                 </div>
             </CardBody>
         </Card>
     );
-}
+};

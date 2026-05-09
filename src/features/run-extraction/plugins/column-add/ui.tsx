@@ -6,8 +6,8 @@ import { LayerConfigProps } from "../../lib/pipeline/types";
 
 type ColumnAddConfigProps = LayerConfigProps<ColumnAddLayerSettings>;
 
-export const ColumnAddConfig = ({ settings, onUpdate }: ColumnAddConfigProps) => {
-    const handleChange = (field: keyof ColumnAddLayerSettings, val: string) => {
+export const ColumnAddConfig = ({ settings, onUpdate }: ColumnAddConfigProps ) => {
+    const handleChange = ( field: keyof ColumnAddLayerSettings, val: string ) => {
         onUpdate?.({ ...settings, [field]: val });
     };
 
@@ -21,22 +21,23 @@ export const ColumnAddConfig = ({ settings, onUpdate }: ColumnAddConfigProps) =>
                 <Input
                     label="Название колонки"
                     placeholder="Например: Источник"
-                    value={settings.columnName}
-                    onValueChange={(v) => handleChange('columnName', v)}
+                    value={ settings.columnName }
                     variant="bordered"
+                    onValueChange={ ( v ) => handleChange( "columnName", v ) }
                 />
-                
+
                 <Input
                     label="Значение"
                     placeholder="Введите значение для всех строк"
-                    value={settings.value}
-                    onValueChange={(v) => handleChange('value', v)}
+                    value={ settings.value }
                     variant="bordered"
+                    onValueChange={ ( v ) => handleChange( "value", v ) }
                 />
             </div>
 
             <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 flex items-start gap-3">
                 <div className="text-primary-500 mt-0.5 font-bold text-sm">ℹ️</div>
+
                 <p className="text-[11px] text-primary-700 leading-relaxed">
                     Новая колонка будет добавлена в конец таблицы. Вы можете изменить её положение, используя слой "Изменение порядка колонок".
                 </p>

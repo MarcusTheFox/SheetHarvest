@@ -1,6 +1,6 @@
 export interface AnchorPoint {
-  text: string;
-  colIndex: number;
+    text: string;
+    colIndex: number;
 }
 
 export interface AnchorLayerSettings {

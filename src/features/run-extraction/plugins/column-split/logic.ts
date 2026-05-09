@@ -11,61 +11,63 @@ import { ColumnSplitLayerSettings } from "./types";
  *   newNames: string[];     // Имена для новых колонок
  * }
  */
-export function columnSplitLayer(context: PipelineContext, settings: ColumnSplitLayerSettings): PipelineContext {
+export function columnSplitLayer( context: PipelineContext, settings: ColumnSplitLayerSettings ): PipelineContext {
     const { tables, headers } = context;
 
-    if (settings?.sourceColIndex === undefined || headers.length === 0) {
+    if ( settings?.sourceColIndex === undefined || headers.length === 0 ) {
         return context;
     }
 
     const sourceIdx = settings.sourceColIndex;
-    const mode = settings.mode || 'delimiter';
-    const newNames = settings.newNames || ['Часть 1', 'Часть 2'];
+    const mode = settings.mode || "delimiter";
+    const newNames = settings.newNames || [ "Часть 1", "Часть 2" ];
 
-    const newHeaders = [...headers];
-    newHeaders.splice(sourceIdx, 1, ...newNames);
+    const newHeaders = [ ...headers ];
+    newHeaders.splice( sourceIdx, 1, ...newNames );
 
-    const processRow = (row: PipelineRow): PipelineRow => {
-        const originalValue = String(row.cells[sourceIdx] || '').trim();
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const originalValue = String( row.cells[sourceIdx] || "" ).trim();
         let parts: string[] = [];
 
-        if (mode === 'delimiter') {
-            const delim = settings.delimiter || ',';
-            parts = originalValue.split(delim).map(p => p.trim());
-        } else if (mode === 'regex') {
+        if ( mode === "delimiter" ) {
+            const delim = settings.delimiter || ",";
+            parts = originalValue.split( delim ).map(( p ) => p.trim());
+        }
+        else if ( mode === "regex" ) {
             try {
-                const regex = new RegExp(settings.pattern || '', "s");
-                const match = originalValue.match(regex);
-                if (match) {
+                const regex = new RegExp( settings.pattern || "", "s" );
+                const match = originalValue.match( regex );
+                if ( match ) {
                     // match[0] - это вся строка, match[1...N] - это группы ()
-                    parts = match.slice(1);
+                    parts = match.slice( 1 );
                 }
-            } catch (e) {
-                console.error("Split Regex error:", e);
+            }
+            catch ( e ) {
+                console.error( "Split Regex error:", e );
             }
         }
 
         // Подгоняем количество частей под количество новых имен
-        const splitCells = newNames.map((_, i) => parts[i] || "");
+        const splitCells = newNames.map(( _, i ) => parts[i] || "" );
 
-        const newCells = [...row.cells];
-        newCells.splice(sourceIdx, 1, ...splitCells);
+        const newCells = [ ...row.cells ];
+        newCells.splice( sourceIdx, 1, ...splitCells );
 
         return {
             ...row,
-            cells: newCells
+            cells: newCells,
         };
-    }
+    };
 
-    const processTable = (table: PipelineTable): PipelineTable => {
-        const rows = table.rows.map(row => processRow(row));
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
         return {
             ...table,
             rows,
-        }
-    }
+        };
+    };
 
-    const newTables = tables.map(table => processTable(table));
+    const newTables = tables.map(( table ) => processTable( table ));
 
     return {
         ...context,
@@ -73,4 +75,4 @@ export function columnSplitLayer(context: PipelineContext, settings: ColumnSplit
         tables: newTables,
         isColumnStructureModified: true,
     };
-};
+}

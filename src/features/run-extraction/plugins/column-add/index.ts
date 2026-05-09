@@ -4,13 +4,13 @@ import { ColumnAddLayerSettings } from "./types";
 import { ColumnAddConfig } from "./ui";
 
 export const columnAddLayerMetadata: LayerMetadata<ColumnAddLayerSettings> = {
-    id: 'column-add',
-    name: 'Добавить колонку',
-    description: 'Добавляет новую колонку с заданным значением',
+    id: "column-add",
+    name: "Добавить колонку",
+    description: "Добавляет новую колонку с заданным значением",
     layer: columnAddLayer,
     defaultSettings: {
-        columnName: '',
-        value: '',
+        columnName: "",
+        value: "",
     },
     component: ColumnAddConfig,
 };
