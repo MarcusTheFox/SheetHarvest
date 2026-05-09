@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Table } from "@/shared/ui/Table";
-import { getCellMergeInfo } from "../lib/merge-utils";
+import { getCellMergeInfo } from "@/shared/lib/merge-utils";
 import { PipelineContext, PipelineTable } from "@/shared/types/pipeline";
 import { Spinner } from "@heroui/react";
 import { MousePointerClick } from "lucide-react";
