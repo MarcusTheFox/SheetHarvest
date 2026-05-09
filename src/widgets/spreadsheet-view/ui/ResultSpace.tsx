@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ExportPanel } from "./ExportPanel";
 import { SpacePanel } from "./SpacePanel";
 import { ResultTableCard } from "./ResultTableCard";
+import { TemplateSaveForm } from "./TemplateSaveForm";
 
 export const ResultSpace = () => {
     const { results, headers } = useExtractionStore();
@@ -77,7 +78,7 @@ export const ResultSpace = () => {
             </Panel>
             <Separator className="w-1" />
             <Panel defaultSize="20">
-                <Group orientation="vertical">
+                <Group orientation="vertical" className="gap-0.5">
                     <SpacePanel title="Экспорт">
                         <ExportPanel
                             selectedTableId={selectedTableId}
@@ -85,6 +86,10 @@ export const ResultSpace = () => {
                             onRename={handleRename}
                             onReset={handleResetName}
                         />
+                    </SpacePanel>
+                    <Separator className="h-1" />
+                    <SpacePanel defaultSize="25" title="Экспорт">
+                        <TemplateSaveForm />
                     </SpacePanel>
                 </Group>
             </Panel>

@@ -2,57 +2,24 @@
 
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useTemplateStore } from "@/entities/template/model/store";
-import { Button, Input, Card, CardBody, ScrollShadow, Divider } from "@heroui/react";
-import { Save, Trash2, Clock } from "lucide-react";
-import { useState } from "react";
+import { TemplateSaveForm } from "@/widgets/spreadsheet-view/ui/TemplateSaveForm";
+import { Button, Card, CardBody, Divider } from "@heroui/react";
+import { Trash2, Clock } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 
 export const PatternSidebarTemplates = () => {
-    const { templates, addTemplate, removeTemplate } = useTemplateStore(
+    const { templates, removeTemplate } = useTemplateStore(
         useShallow(s => ({
             templates: s.templates,
-            addTemplate: s.addTemplate,
             removeTemplate: s.removeTemplate,
         }))
     );
 
     const loadPattern = usePatternStore(s => s.loadPattern);
 
-    const [newTemplateName, setNewTemplateName] = useState("");
-
-    const handleSave = () => {
-        if (!newTemplateName) return;
-
-        const pipeline = usePatternStore.getState().pipeline;
-
-        addTemplate({
-            name: newTemplateName,
-            config: { pipeline }
-        });
-        setNewTemplateName("");
-    };
-
     return (
         <div className="flex flex-col gap-4">
-            {/* Форма сохранения */}
-            <div className="flex flex-col gap-2 p-3 bg-default-50 rounded-2xl border border-default-200">
-                <Input
-                    size="sm"
-                    label="Название шаблона"
-                    value={newTemplateName}
-                    onValueChange={setNewTemplateName}
-                />
-                <Button
-                    size="sm"
-                    color="primary"
-                    variant="solid"
-                    isDisabled={!newTemplateName}
-                    startContent={<Save size={16} />}
-                    onPress={handleSave}
-                >
-                    Сохранить текущий
-                </Button>
-            </div>
+            <TemplateSaveForm />
 
             <Divider />
 
