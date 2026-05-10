@@ -1,11 +1,10 @@
+// entities/step/constraints/ui.tsx
 "use client";
 
-import { Select, SelectItem, Button, Input, Card } from "@heroui/react";
-import { Trash2, Plus } from "lucide-react";
+import { Select, SelectItem, Button, Input, Tooltip } from "@heroui/react";
+import { Trash2, Plus, AlertCircle, ShieldCheck } from "lucide-react";
 import { ColumnConstraint, ConstraintsLayerSettings, ConstraintType } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
-
-type ConstraintsConfigProps = LayerConfigProps<ConstraintsLayerSettings>;
 
 const CONSTRAINT_TYPES: { key: ConstraintType; label: string }[] = [
     { key: "not_empty", label: "Не пустое" },
@@ -15,23 +14,26 @@ const CONSTRAINT_TYPES: { key: ConstraintType; label: string }[] = [
     { key: "any", label: "Любое" },
 ];
 
-export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: ConstraintsConfigProps ) => {
+export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<ConstraintsLayerSettings> ) => {
     const headers = prevContext?.headers ?? [];
     const constraints = settings?.constraints ?? [];
 
-    if ( headers.length === 0 ) {
-        return (
-            <div className="p-4 bg-warning-50 border border-warning-200 rounded-xl text-[12px] text-warning-700">
-                Для настройки ограничений необходимо сначала определить колонки (запустить предыдущие слои).
-            </div>
-        );
-    }
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase block tracking-widest",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-8 min-h-8 border-slate-200 bg-white shadow-none",
+        selectTrigger: "h-8 min-h-8 border-slate-200 bg-white shadow-none",
+        selectValue: "text-[11px] font-bold text-slate-700",
+    };
 
     const handleAdd = () => {
-        const usedIndices = new Set( constraints.map(( c ) => c.colIndex ));
-        const freeIdx = headers.findIndex(( _, i ) => !usedIndices.has( i ));
-        const colIndex = freeIdx >= 0 ? freeIdx : 0;
-        const next: ColumnConstraint[] = [ ...constraints, { colIndex, type: "not_empty" } ];
+        const next: ColumnConstraint[] = [ ...constraints, { colIndex: 0, type: "not_empty" } ];
+        onUpdate?.({ constraints: next });
+    };
+
+    const updateConstraint = ( idx: number, patch: Partial<ColumnConstraint> ) => {
+        const next = [ ...constraints ];
+        next[idx] = { ...next[idx], ...patch };
         onUpdate?.({ constraints: next });
     };
 
@@ -39,116 +41,110 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: Constrain
         onUpdate?.({ constraints: constraints.filter(( _, i ) => i !== idx ) });
     };
 
-    const handleColChange = ( idx: number, colIndex: number ) => {
-        const next = [ ...constraints ];
-        next[idx] = { ...next[idx], colIndex };
-        onUpdate?.({ constraints: next });
-    };
-
-    const handleTypeChange = ( idx: number, type: ConstraintType ) => {
-        const next = [ ...constraints ];
-        next[idx] = { ...next[idx], type };
-        onUpdate?.({ constraints: next });
-    };
-
-    const handlePatternChange = ( idx: number, pattern: string ) => {
-        const next = [ ...constraints ];
-        next[idx] = { ...next[idx], pattern };
-        onUpdate?.({ constraints: next });
-    };
-
-    const columns = headers.map(( h, i ) => ({ label: h || `Колонка ${ i + 1 }`, value: String( i ) }));
+    if ( headers.length === 0 ) {
+        return (
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-500 italic">
+                Сначала определите колонки в предыдущих слоях.
+            </div>
+        );
+    }
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1">
-                <span className="text-sm font-bold text-default-700">Правила валидации</span>
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <label className={ controlClassNames.label }>Правила валидации</label>
+                    <Button
+                        isIconOnly
+                        className="w-5 h-5 min-w-0 bg-primary text-white shadow-sm"
+                        radius="full"
+                        size="sm"
+                        onPress={ handleAdd }
+                    >
+                        <Plus size={ 12 } />
+                    </Button>
+                </div>
 
-                <p className="text-[11px] text-default-500 leading-relaxed">
-                    Настройте требования к данным. Строки, не прошедшие проверку, будут удалены из результата.
+                <div className="border border-slate-200 rounded overflow-hidden">
+                    { /* Header */ }
+                    <div className="grid grid-cols-[1fr_1fr_32px] items-center gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
+                        <span className="text-[9px] font-bold text-slate-500 uppercase">Колонка</span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase">Тип проверки</span>
+                        <span className="sr-only">Удалить</span>
+                    </div>
+
+                    { /* List */ }
+                    <div className="flex flex-col bg-white">
+                        { constraints.map(( c, idx ) => (
+                            <div key={ idx } className="border-b border-slate-100 last:border-0 p-3 space-y-2">
+                                <div className="grid grid-cols-[1fr_1fr_32px] items-start gap-2">
+                                    <Select
+                                        size="sm"
+                                        variant="bordered"
+                                        radius="sm"
+                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
+                                        selectedKeys={ [ String( c.colIndex ) ] }
+                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { colIndex: Number( Array.from( keys )[0] ) } ) }
+                                    >
+                                        { headers.map(( h, i ) => (
+                                            <SelectItem key={ i } className="text-xs">{ h || `Колонка ${ i }` }</SelectItem>
+                                        )) }
+                                    </Select>
+
+                                    <Select
+                                        size="sm"
+                                        variant="bordered"
+                                        radius="sm"
+                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
+                                        selectedKeys={ [ c.type ] }
+                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { type: Array.from( keys )[0] as ConstraintType } ) }
+                                    >
+                                        { CONSTRAINT_TYPES.map(( t ) => (
+                                            <SelectItem key={ t.key } className="text-xs">{ t.label }</SelectItem>
+                                        )) }
+                                    </Select>
+
+                                    <Button
+                                        isIconOnly
+                                        className="h-8 w-8 min-w-0 text-slate-300 hover:text-danger transition-colors"
+                                        variant="light"
+                                        onPress={ () => handleRemove( idx ) }
+                                    >
+                                        <Trash2 size={ 14 } />
+                                    </Button>
+                                </div>
+
+                                { c.type === "regex" && (
+                                    <div className="animate-in slide-in-from-top-1 duration-200">
+                                        <Input
+                                            placeholder="Паттерн: ^\d{3}-\d{2}$"
+                                            size="sm"
+                                            variant="bordered"
+                                            radius="sm"
+                                            classNames={ controlClassNames }
+                                            value={ c.pattern || "" }
+                                            onValueChange={ ( val ) => updateConstraint( idx, { pattern: val } ) }
+                                        />
+                                    </div>
+                                ) }
+                            </div>
+                        )) }
+
+                        { constraints.length === 0 && (
+                            <div className="p-6 text-center">
+                                <p className="text-[11px] text-slate-400 italic">Нет активных правил проверки</p>
+                            </div>
+                        ) }
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <ShieldCheck className="text-slate-400 shrink-0" size={ 14 } />
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Строки, не соответствующие правилам, будут удалены из финального результата.
                 </p>
             </div>
-
-            <div className="flex flex-col gap-4">
-                { constraints.map(( c, idx ) => (
-                    <Card key={ idx } className="border border-default-100 bg-default-50/30 overflow-visible" shadow="none">
-                        <div className="p-4 flex flex-col gap-4">
-                            <div className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-2 text-default-400">
-                                    <span className="text-[10px] font-black font-mono">#{ idx + 1 }</span>
-                                </div>
-
-                                <Button
-                                    isIconOnly
-                                    color="danger"
-                                    size="sm"
-                                    variant="light"
-                                    onPress={ () => handleRemove( idx ) }
-                                >
-                                    <Trash2 size={ 14 } />
-                                </Button>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <Select
-                                    label="Колонка"
-                                    selectedKeys={ [ String( c.colIndex ) ] }
-                                    size="sm"
-                                    variant="bordered"
-                                    onSelectionChange={ ( keys ) => {
-                                        const val = Array.from( keys )[0];
-                                        if ( val !== undefined ) handleColChange( idx, Number( val ));
-                                    } }
-                                >
-                                    { columns.map(( col ) => (
-                                        <SelectItem key={ col.value }>{ col.label }</SelectItem>
-                                    )) }
-                                </Select>
-
-                                <Select
-                                    label="Тип данных"
-                                    selectedKeys={ [ c.type ] }
-                                    size="sm"
-                                    variant="bordered"
-                                    onSelectionChange={ ( keys ) => {
-                                        const val = Array.from( keys )[0];
-                                        if ( val ) handleTypeChange( idx, val as ConstraintType );
-                                    } }
-                                >
-                                    { CONSTRAINT_TYPES.map(( t ) => (
-                                        <SelectItem key={ t.key }>{ t.label }</SelectItem>
-                                    )) }
-                                </Select>
-                            </div>
-
-                            { c.type === "regex" && (
-                                <div className="pt-1">
-                                    <Input
-                                        description="Проверка значения ячейки по шаблону"
-                                        label="Регулярное выражение (Pattern)"
-                                        placeholder="Например: ^[A-Z]{3}-\d+$"
-                                        size="sm"
-                                        value={ c.pattern || "" }
-                                        variant="bordered"
-                                        onValueChange={ ( val ) => handlePatternChange( idx, val ) }
-                                    />
-                                </div>
-                            ) }
-                        </div>
-                    </Card>
-                )) }
-            </div>
-
-            <Button
-                className="w-full sm:w-auto"
-                color="primary"
-                size="sm"
-                startContent={ <Plus size={ 16 } /> }
-                variant="flat"
-                onPress={ handleAdd }
-            >
-                Добавить правило
-            </Button>
         </div>
     );
 };
