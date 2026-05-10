@@ -27,7 +27,7 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
 
     // Общие стили для контроллов
     const controlClassNames = {
-        label: "text-[10px] font-bold text-slate-500 uppercase mb-1",
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest",
         input: "text-xs font-bold text-slate-700",
         inputWrapper: "h-8 min-h-8 border-slate-200 bg-white",
     };
@@ -109,13 +109,13 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
 
             { /* 3. НОВЫЕ КОЛОНКИ */ }
 
-            <div className="space-y-3">
+            <div className="space-y-1">
                 <div className="flex items-center justify-between">
                     <label className={ controlClassNames.label }>3. Результирующие колонки</label>
 
                     <Button
                         isIconOnly
-                        className="w-5 h-5 min-w-0 bg-slate-100 text-slate-600 hover:bg-primary hover:text-white"
+                        className="w-5 h-5 mb-2 min-w-0 bg-slate-100 text-slate-600 hover:bg-primary hover:text-white"
                         radius="full"
                         size="sm"
                         onPress={ () => onUpdate?.({ newNames: [ ...names, "" ] }) }
