@@ -1,18 +1,14 @@
 "use client";
 
-import { Button, Select, SelectItem, Input, Autocomplete, AutocompleteItem } from "@heroui/react";
-import { X, Check, Save, Database, AlertCircle } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { Button, Select, SelectItem, Input, Autocomplete, AutocompleteItem, ScrollShadow } from "@heroui/react";
+import { Database, Save, X, Search, Check, AlertCircle, ArrowRight } from "lucide-react";
 import { ValueMappingLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
 import { useMappingStore } from "@/entities/value-mapping/model/store";
 import { useShallow } from "zustand/shallow";
 
-type ValueMappingConfigProps = LayerConfigProps<ValueMappingLayerSettings>;
-
-export const ValueMappingConfig = ({ settings, onUpdate, prevContext }: ValueMappingConfigProps ) => {
-    const headers = prevContext?.headers ?? [];
-
+export const ValueMappingConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<ValueMappingLayerSettings> ) => {
     const { mappings, isLoaded, loadMappings, addMapping, removeMapping } = useMappingStore(
         useShallow(( s ) => ({
             mappings: s.mappings,
@@ -22,162 +18,128 @@ export const ValueMappingConfig = ({ settings, onUpdate, prevContext }: ValueMap
             removeMapping: s.removeMapping,
         })),
     );
+
     const [ isDbOpen, setIsDbOpen ] = useState( false );
-
-    useEffect(() => {
-        loadMappings();
-    }, [ loadMappings ]);
-
     const [ inputValues, setInputValues ] = useState<Record<string, string>>({});
     const [ filterText, setFilterText ] = useState( "" );
 
-    // Доступные колонки
-    const availableCols = headers.map(( h, i ) => ({
-        label: h || `Колонка ${ i + 1 }`,
-        value: String( i ),
-    }));
+    useEffect(() => { loadMappings(); }, [ loadMappings ]);
 
-    // Все уникальные значения в выбранной колонке
+    const headers = prevContext?.headers ?? [];
+    const tables = prevContext?.tables;
+
+    // Стили для инспектора
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-7 min-h-7 border-slate-200 bg-white shadow-none",
+    };
+
     const uniqueValuesInCol = useMemo(() => {
-        if ( settings.sourceColIndex === undefined || !prevContext?.tables ) return [];
+        if ( settings.sourceColIndex === undefined || !tables ) return [];
         const vals = new Set<string>();
-        prevContext.tables.forEach(( table ) => {
-            table.rows.forEach(( row ) => {
-                const val = String( row.cells[settings.sourceColIndex] || "" ).trim();
-                if ( val ) vals.add( val );
-            });
-        });
+        tables.forEach(( t ) => t.rows.forEach(( r ) => {
+            const val = String( r.cells[settings.sourceColIndex!] || "" ).trim();
+            if ( val ) vals.add( val );
+        }));
         return Array.from( vals );
-    }, [ prevContext, settings.sourceColIndex ]);
+    }, [ tables, settings.sourceColIndex ]);
 
-    // Несопоставленные значения (те, которых нет в store)
     const unmappedValues = useMemo(() => {
         const lowerMappings = Object.keys( mappings ).map(( k ) => k.toLowerCase());
         return uniqueValuesInCol.filter(( v ) => !lowerMappings.includes( v.toLowerCase()));
     }, [ uniqueValuesInCol, mappings ]);
 
-    // Существующие уникальные варианты замен для автокомплита
-    const existingReplacements = useMemo(() => {
-        return Array.from( new Set( Object.values( mappings ))).sort();
-    }, [ mappings ]);
-
-    // Сохраненные сопоставления
-    const savedMappingsList = useMemo(() => {
-        let list = Object.entries( mappings );
-        if ( filterText ) {
-            const f = filterText.toLowerCase();
-            list = list.filter(([ k, v ]) => k.toLowerCase().includes( f ) || v.toLowerCase().includes( f ));
-        }
-        return list;
-    }, [ mappings, filterText ]);
-
     const handleSaveMapping = async ( original: string ) => {
         const replacement = inputValues[original]?.trim();
         if ( replacement ) {
             await addMapping( original, replacement );
-            setInputValues(( prev ) => {
-                const next = { ...prev };
-                delete next[original];
-                return next;
-            });
+            setInputValues(( prev ) => { const next = { ...prev }; delete next[original]; return next; });
         }
     };
 
     return (
-        <div className="flex flex-col gap-8">
-            { /* ШАГ 1: ВЫБОР КОЛОНКИ */ }
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            { /* 1. ВЫБОР КОЛОНКИ */ }
 
-            <div className="flex flex-col gap-4">
-                <h4 className="text-sm font-bold text-default-700">1. Выберите целевую колонку</h4>
+            <div className="space-y-1">
+                <label className={ controlClassNames.label }>1. Целевая колонка</label>
 
                 <Select
-                    label="Целевая колонка"
-                    placeholder="Выберите колонку со значениями"
+                    classNames={{ trigger: "h-8 min-h-8 border-slate-200 bg-white", value: "text-xs font-bold text-slate-700" }}
+                    placeholder="Выберите колонку"
+                    radius="sm"
                     selectedKeys={ settings.sourceColIndex !== undefined ? [ String( settings.sourceColIndex ) ] : [] }
-                    onSelectionChange={ ( keys ) => {
-                        const val = Array.from( keys )[0];
-                        onUpdate?.({ sourceColIndex: Number( val ) });
-                    } }
+                    size="sm"
+                    variant="bordered"
+                    onSelectionChange={ ( keys ) => onUpdate?.({ sourceColIndex: Number( Array.from( keys )[0]) }) }
                 >
-                    { availableCols.map(( col ) => (
-                        <SelectItem key={ col.value }>
-                            { col.label }
-                        </SelectItem>
+                    { headers.map(( h, i ) => (
+                        <SelectItem key={ i } className="text-xs">{ h || `Колонка ${ i + 1 }` }</SelectItem>
                     )) }
                 </Select>
             </div>
 
             { settings.sourceColIndex !== undefined && isLoaded && (
-                <div className="flex flex-col gap-8">
-                    { /* VIEW 1: ОСНОВНЫЕ НАСТРОЙКИ (КОЛОНКА И НОВЫЕ) */ }
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <label className={ controlClassNames.label + " mb-0!" }>
+                            { isDbOpen ? "База сопоставлений" : "Новые значения" }
+                        </label>
+
+                        <Button
+                            className="h-6 text-[10px] font-bold uppercase text-blue-500"
+                            size="sm"
+                            startContent={ isDbOpen ? <Check size={ 12 }/> : <Database size={ 12 }/> }
+                            variant="light"
+                            onPress={ () => setIsDbOpen( !isDbOpen ) }
+                        >
+                            { isDbOpen ? "К сопоставлению" : `База (${ Object.keys( mappings ).length })` }
+                        </Button>
+                    </div>
 
                     { !isDbOpen
                         ? (
-                            <div className="flex flex-col gap-4">
-                                <div className="flex justify-between items-center bg-default-50 p-3 rounded-xl border border-default-200">
-                                    <div className="flex items-center gap-3">
-                                        <h4 className="text-sm font-bold text-default-700">Требуют сопоставления</h4>
-
-                                        { unmappedValues.length > 0 && (
-                                            <span className="text-xs bg-warning-100 text-warning-700 font-bold px-2 py-0.5 rounded-full">
-                                                { unmappedValues.length } новых
-                                            </span>
-                                        ) }
-                                    </div>
-
-                                    <Button color="primary"
-                                        size="sm"
-                                        startContent={ <Database size={ 14 } /> }
-                                        variant="flat"
-                                        onPress={ () => setIsDbOpen( true ) }
-                                    >
-                                        База замен
-                                    </Button>
-                                </div>
-
+                            <div className="space-y-2">
                                 { unmappedValues.length === 0
                                     ? (
-                                        <div className="flex items-center gap-3 p-4 bg-success-50 rounded-xl border border-success-100 text-success-700 text-sm">
-                                            <Check size={ 18 } />
-                                            <span>Все значения в текущей колонке сопоставлены!</span>
+                                        <div className="py-10 text-center bg-slate-50 rounded border border-dashed border-slate-200">
+                                            <Check className="mx-auto text-green-500 mb-2" size={ 20 } />
+                                            <p className="text-[11px] text-slate-400 font-bold uppercase">Все значения сопоставлены</p>
                                         </div>
                                     )
                                     : (
-                                        <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-2 pb-2">
+                                        <div className="flex flex-col gap-2">
                                             { unmappedValues.map(( val ) => (
-                                                <div key={ val } className="flex gap-2 items-center bg-default-50 p-2 rounded-lg border border-default-200 shadow-sm transition-all hover:bg-default-100">
-                                                    <div className="flex-1 w-1/2 overflow-hidden text-ellipsis whitespace-nowrap text-sm text-default-700 font-medium px-2" title={ val }>
-                                                        { val }
+                                                <div key={ val } className="flex flex-col gap-1.5 p-2 bg-slate-50 rounded border border-slate-200 transition-all hover:border-slate-300">
+                                                    <span className="text-[11px] font-bold text-slate-700 truncate px-1" title={ val }>{ val }</span>
+
+                                                    <div className="flex gap-1">
+                                                        <Autocomplete
+                                                            allowsCustomValue
+                                                            className="flex-1"
+                                                            inputProps={{ classNames: { input: "text-[11px] font-bold", inputWrapper: "h-7 min-h-7 bg-white border-slate-200 shadow-none" } }}
+                                                            placeholder="Эталонное значение..."
+                                                            radius="sm"
+                                                            size="sm"
+                                                            variant="bordered"
+                                                            onInputChange={ ( v ) => setInputValues({ ...inputValues, [val]: v }) }
+                                                        >
+                                                            { Array.from( new Set( Object.values( mappings ))).map(( rep ) => (
+                                                                <AutocompleteItem key={ rep } className="text-xs">{ rep }</AutocompleteItem>
+                                                            )) }
+                                                        </Autocomplete>
+
+                                                        <Button
+                                                            isIconOnly
+                                                            className="h-7 w-7 min-w-0 bg-primary text-white"
+                                                            isDisabled={ !inputValues[val]?.trim() }
+                                                            size="sm"
+                                                            onPress={ () => handleSaveMapping( val ) }
+                                                        >
+                                                            <Save size={ 14 } />
+                                                        </Button>
                                                     </div>
-
-                                                    <Autocomplete
-                                                        allowsCustomValue
-                                                        className="w-1/2"
-                                                        inputValue={ inputValues[val] || "" }
-                                                        listboxProps={{
-                                                            emptyContent: "Нет совпадений",
-                                                        }}
-                                                        placeholder="Выберите или введите..."
-                                                        size="sm"
-                                                        onInputChange={ ( valStr ) => setInputValues({ ...inputValues, [val]: valStr }) }
-                                                        onKeyDown={ ( e ) => {
-                                                            if ( e.key === "Enter" ) handleSaveMapping( val );
-                                                        } }
-                                                    >
-                                                        { existingReplacements.map(( rep ) => (
-                                                            <AutocompleteItem key={ rep }>{ rep }</AutocompleteItem>
-                                                        )) }
-                                                    </Autocomplete>
-
-                                                    <Button
-                                                        isIconOnly
-                                                        color="primary"
-                                                        isDisabled={ !inputValues[val]?.trim() }
-                                                        size="sm"
-                                                        onPress={ () => handleSaveMapping( val ) }
-                                                    >
-                                                        <Save size={ 16 } />
-                                                    </Button>
                                                 </div>
                                             )) }
                                         </div>
@@ -185,85 +147,54 @@ export const ValueMappingConfig = ({ settings, onUpdate, prevContext }: ValueMap
                             </div>
                         )
                         : (
-                            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-right-4 duration-200">
-                                { /* VIEW 2: БАЗА СОПОСТАВЛЕНИЙ */ }
-
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Button isIconOnly size="sm" variant="light" onPress={ () => setIsDbOpen( false ) }>
-                                        <span className="text-xl leading-none">&larr;</span>
-                                    </Button>
-
-                                    <div className="flex items-center gap-2">
-                                        <Database className="text-default-600" size={ 18 } />
-                                        <h4 className="text-sm font-bold text-default-700">Глобальная база сопоставлений</h4>
-
-                                        <span className="text-xs bg-default-100 text-default-600 font-bold px-2 py-0.5 rounded-full ml-2">
-                                            { Object.keys( mappings ).length }
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="bg-primary-50 p-3 rounded-lg flex items-start gap-2 mb-2">
-                                    <AlertCircle className="text-primary-500 mt-0.5 shrink-0" size={ 16 } />
-
-                                    <p className="text-[11px] text-primary-700 leading-relaxed">
-                                        Значения, добавленные сюда, автоматически подменяются при запусках пайплайна, если встречаются в выбранной колонке.
-                                    </p>
-                                </div>
-
+                            <div className="space-y-3">
                                 <Input
-                                    isClearable
-                                    className="mb-2"
-                                    placeholder="Поиск по оригиналу или замене..."
+                                    classNames={{ input: "text-xs font-bold", inputWrapper: "h-8 min-h-8 bg-white border-slate-200 shadow-none" }}
+                                    placeholder="Поиск по базе..."
+                                    radius="sm"
                                     size="sm"
+                                    startContent={ <Search className="text-slate-400" size={ 12 } /> }
                                     value={ filterText }
-                                    onChange={ ( e ) => setFilterText( e.target.value ) }
-                                    onClear={ () => setFilterText( "" ) }
+                                    variant="bordered"
+                                    onValueChange={ setFilterText }
                                 />
 
-                                { savedMappingsList.length === 0
-                                    ? (
-                                        <div className="p-8 text-center text-sm text-default-400 bg-default-50 rounded-xl border border-default-100">
-                                            Сопоставлений не найдено
-                                        </div>
-                                    )
-                                    : (
-                                        <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-2 pb-2">
-                                            { savedMappingsList.map(([ orig, rep ]) => (
-                                                <div key={ orig } className="flex items-center justify-between gap-3 bg-default-50 p-2 rounded-lg border border-default-200">
-                                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                        <div className="flex flex-col flex-1 min-w-0 max-w-[45%]">
-                                                            <span className="text-[10px] text-default-400 uppercase font-bold tracking-wider mb-0.5">Оригинал</span>
-                                                            <span className="text-xs font-semibold text-danger-600 bg-danger-50 border border-danger-100 px-2 py-1 rounded truncate w-full" title={ orig }>{ orig }</span>
-                                                        </div>
-
-                                                        <div className="text-default-300 mt-4">→</div>
-
-                                                        <div className="flex flex-col flex-1 min-w-0 max-w-[45%]">
-                                                            <span className="text-[10px] text-default-400 uppercase font-bold tracking-wider mb-0.5">Замена</span>
-                                                            <span className="text-xs font-semibold text-success-600 bg-success-50 border border-success-100 px-2 py-1 rounded truncate w-full" title={ rep }>{ rep }</span>
-                                                        </div>
-                                                    </div>
+                                <ScrollShadow className="max-h-[300px] pr-2" offset={ 1 }>
+                                    <div className="flex flex-col gap-1.5">
+                                        { Object.entries( mappings )
+                                            .filter(([ k, v ]) => k.toLowerCase().includes( filterText.toLowerCase()) || v.toLowerCase().includes( filterText.toLowerCase()))
+                                            .map(([ orig, rep ]) => (
+                                                <div key={ orig } className="grid grid-cols-[1fr_12px_1fr_24px] items-center gap-2 p-1.5 bg-white border border-slate-100 rounded group transition-all hover:border-slate-300">
+                                                    <span className="text-[10px] font-bold text-slate-500 truncate" title={ orig }>{ orig }</span>
+                                                    <ArrowRight className="text-slate-400" size={ 10 } />
+                                                    <span className="text-[10px] font-black text-primary truncate" title={ rep }>{ rep }</span>
 
                                                     <Button
                                                         isIconOnly
-                                                        className="mt-4"
+                                                        className="h-6 w-6 min-w-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         color="danger"
                                                         size="sm"
                                                         variant="light"
                                                         onPress={ () => removeMapping( orig ) }
                                                     >
-                                                        <X size={ 16 } />
+                                                        <X size={ 12 } />
                                                     </Button>
                                                 </div>
                                             )) }
-                                        </div>
-                                    ) }
+                                    </div>
+                                </ScrollShadow>
                             </div>
                         ) }
-
                 </div>
             ) }
+
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <AlertCircle className="text-slate-400 shrink-0" size={ 14 } />
+
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Сопоставления сохраняются глобально в браузере и будут применяться ко всем файлам автоматически.
+                </p>
+            </div>
         </div>
     );
 };
