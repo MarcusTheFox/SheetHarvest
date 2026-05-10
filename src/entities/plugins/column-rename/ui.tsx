@@ -1,8 +1,10 @@
 "use client";
 
-import { Input, Card } from "@heroui/react";
+import { Input, ScrollShadow, Button } from "@heroui/react";
 import { ColumnRenameLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
+import { Type, RotateCcw } from "lucide-react";
+import clsx from "clsx";
 
 type ColumnRenameConfigProps = LayerConfigProps<ColumnRenameLayerSettings>;
 
@@ -19,47 +21,90 @@ export const ColumnRenameConfig = ({ settings, onUpdate, prevContext }: ColumnRe
         });
     };
 
+    const handleReset = ( idx: number ) => {
+        const next = { ...renames };
+        delete next[idx];
+        onUpdate?.({ renames: next });
+    };
+
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-7 min-h-7 border-slate-200 bg-white shadow-none",
+    };
+
     if ( headers.length === 0 ) {
         return (
-            <div className="p-4 bg-warning-50 border border-warning-200 rounded-xl text-[12px] text-warning-700">
-                Для переименования колонок необходимо сначала определить их (запустить предыдущие слои).
+            <div className="p-4 bg-amber-50 border border-amber-100 rounded text-[11px] text-amber-700 italic">
+                Для переименования необходимо сначала определить структуру колонок в предыдущих слоях.
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-6">
-            <p className="text-xs text-default-500">
-                Введите новые названия для колонок. Оставьте поле пустым, чтобы сохранить текущее название.
-            </p>
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            <div className="space-y-3">
+                <label className={ controlClassNames.label }>Новые названия колонок</label>
+                
+                <div className="border border-slate-200 rounded overflow-hidden">
+                    { /* Header */ }
+                    <div className="grid grid-cols-[30px_1fr_30px] items-center gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
+                        <span className="text-[9px] font-black text-slate-500 font-mono">ID</span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase">Оригинал → Новое имя</span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase text-right"></span>
+                    </div>
 
-            <div className="flex flex-col gap-3">
-                { headers.map(( header, idx ) => (
-                    <Card key={ idx } className="border border-default-100 bg-default-50/30" shadow="none">
-                        <div className="p-3 flex flex-col gap-2">
-                            <div className="flex items-center justify-between px-1">
-                                <span className="text-[10px] text-default-400 font-mono uppercase tracking-wider">
-                                    COLUMN INDEX: { idx }
-                                </span>
+                    { /* List */ }
+                    <ScrollShadow className="max-h-[440px]">
+                        { headers.map(( header, idx ) => {
+                            const isRenamed = renames[idx] !== undefined && renames[idx].trim() !== "";
 
-                                <span className="text-[10px] text-default-400 italic">
-                                    Текущее: { header || "Без названия" }
-                                </span>
-                            </div>
+                            return (
+                                <div 
+                                    key={ idx } 
+                                    className={clsx(
+                                        "grid grid-cols-[30px_1fr_30px] items-center gap-2 px-3 py-2 border-b border-slate-100 last:border-0 transition-colors group",
+                                        isRenamed ? "bg-primary-50/10" : "bg-white"
+                                    )}
+                                >
+                                    <span className="text-[10px] font-mono font-bold text-slate-400">#{ idx }</span>
+                                    
+                                    <div className="flex-1 min-w-0">
+                                        <Input
+                                            placeholder={ header || `Колонка ${idx + 1}` }
+                                            size="sm"
+                                            variant="bordered"
+                                            radius="sm"
+                                            classNames={ controlClassNames }
+                                            value={ renames[idx] || "" }
+                                            onValueChange={ ( val ) => handleRename( idx, val ) }
+                                        />
+                                    </div>
 
-                            <Input
-                                classNames={{
-                                    input: "text-sm",
-                                }}
-                                placeholder={ header || `Колонка ${ idx + 1 }` }
-                                size="sm"
-                                value={ renames[idx] || "" }
-                                variant="flat"
-                                onValueChange={ ( val ) => handleRename( idx, val ) }
-                            />
-                        </div>
-                    </Card>
-                )) }
+                                    <div className="flex justify-end">
+                                        { isRenamed && (
+                                            <Button
+                                                isIconOnly
+                                                className="h-6 w-6 min-w-0 text-slate-400 hover:text-blue-500"
+                                                variant="light"
+                                                onPress={() => handleReset(idx)}
+                                            >
+                                                <RotateCcw size={ 12 } />
+                                            </Button>
+                                        ) }
+                                    </div>
+                                </div>
+                            );
+                        }) }
+                    </ScrollShadow>
+                </div>
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2 mt-2">
+                <Type className="text-slate-400 shrink-0" size={ 14 } />
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Оставьте поле пустым, чтобы сохранить оригинальное название. Переименование не меняет данные, только заголовки.
+                </p>
             </div>
         </div>
     );
