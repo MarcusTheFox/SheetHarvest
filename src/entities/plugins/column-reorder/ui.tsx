@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Button, Card } from "@heroui/react";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { Button, ScrollShadow } from "@heroui/react";
+import { ArrowUp, ArrowDown, ArrowDownUp } from "lucide-react";
 import { ColumnReorderLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
+import clsx from "clsx";
 
 type ColumnReorderConfigProps = LayerConfigProps<ColumnReorderLayerSettings>;
 
 export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnReorderConfigProps ) => {
-    const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
+    const headers = prevContext?.headers ?? [];
     const order = settings?.order ?? [];
 
-    // Инициализируем порядок, если он пустой
+    // Инициализация порядка, если пустой
     useEffect(() => {
         if ( headers.length > 0 && order.length === 0 ) {
             onUpdate?.({ order: headers.map(( _, idx ) => idx ) });
@@ -28,79 +29,93 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
             onUpdate?.({ order: newOrder });
         }
     };
+    
+    // Собираем актуальный список для отображения
+    const displayList = useMemo(() => {
+        const list = order.length === headers.length ? order : headers.map((_, i) => i);
+        return list.map((originalIdx) => ({
+            id: originalIdx,
+            name: headers[originalIdx] || originalIdx + 1
+        }));
+    }, [order, headers]);
+
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase block tracking-widest",
+    };
 
     if ( headers.length === 0 ) {
         return (
-            <div className="p-4 bg-warning-50 border border-warning-200 rounded-xl text-[12px] text-warning-700">
-                Для изменения порядка колонок необходимо сначала определить их.
+            <div className="p-4 bg-slate-50 border border-slate-100 rounded text-[11px] text-slate-400 italic">
+                Нет данных для сортировки. Сначала настройте колонки.
             </div>
         );
     }
 
-    // Если в контексте больше колонок, чем в текущем порядке (например, добавили в предыдущем слое)
-    const displayOrder = [ ...order ];
-    headers.forEach(( _, idx ) => {
-        if ( !displayOrder.includes( idx )) {
-            displayOrder.push( idx );
-        }
-    });
-
     return (
-        <div className="flex flex-col gap-6">
-            <p className="text-xs text-default-500">
-                Используйте стрелки, чтобы изменить порядок следования колонок в итоговой таблице.
-            </p>
+        <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+            <label className={ controlClassNames.label }>Порядок вывода</label>
 
-            <div className="flex flex-col gap-2">
-                { displayOrder.map(( originalIdx, currentIdx ) => (
-                    <Card
-                        key={ `${ originalIdx }-${ currentIdx }` }
-                        className="border border-default-100 bg-default-50/50"
-                        shadow="none"
-                    >
-                        <div className="px-3 py-2 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 rounded-full bg-default-200 flex items-center justify-center text-[10px] font-bold">
-                                    { currentIdx + 1 }
-                                </div>
+            <div className="border border-slate-200 rounded overflow-hidden">
+                <div className="grid grid-cols-[36px_1fr_60px] items-center gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
+                    <span className="text-[9px] font-black text-slate-400 font-mono">#</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Название</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase text-right">Сдвиг</span>
+                </div>
 
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-medium">
-                                        { headers[originalIdx] || `Колонка ${ originalIdx + 1 }` }
-                                    </span>
+                <ScrollShadow className="max-h-120">
+                    { displayList.map(( item, index ) => (
+                        <div 
+                            key={ item.id } 
+                            className={clsx(
+                                "grid grid-cols-[36px_1fr_60px] items-center gap-2 px-3 py-1 border-b border-slate-100 last:border-0",
+                                "bg-white hover:bg-slate-50 transition-colors group"
+                            )}
+                        >
+                            <span className="text-[10px] font-mono font-bold text-slate-300">
+                                #{ index + 1 }
+                            </span>
 
-                                    <span className="text-[10px] text-default-400 font-mono">
-                                        ORIGINAL INDEX: { originalIdx }
-                                    </span>
-                                </div>
-                            </div>
+                            <span className="text-xs font-bold text-slate-600 truncate">
+                                { item.name }
+                            </span>
 
-                            <div className="flex gap-1">
+                            <div className="flex justify-end gap-0.5">
                                 <Button
                                     isIconOnly
-                                    className={ currentIdx === 0 ? "opacity-30" : "" }
-                                    disabled={ currentIdx === 0 }
                                     size="sm"
-                                    variant="flat"
-                                    onPress={ () => move( currentIdx, "up" ) }
+                                    variant="light"
+                                    className={clsx(
+                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
+                                        index === 0 && "invisible"
+                                    )}
+                                    onPress={ () => move( index, "up" ) }
                                 >
                                     <ArrowUp size={ 14 } />
                                 </Button>
 
                                 <Button
                                     isIconOnly
-                                    className={ currentIdx === displayOrder.length - 1 ? "opacity-30" : "" }
-                                    disabled={ currentIdx === displayOrder.length - 1 }
                                     size="sm"
-                                    variant="flat"
-                                    onPress={ () => move( currentIdx, "down" ) }
+                                    variant="light"
+                                    className={clsx(
+                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
+                                        index === displayList.length - 1 && "invisible"
+                                    )}
+                                    onPress={ () => move( index, "down" ) }
                                 >
                                     <ArrowDown size={ 14 } />
                                 </Button>
                             </div>
                         </div>
-                    </Card>
-                )) }
+                    )) }
+                </ScrollShadow>
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <ArrowDownUp className="text-slate-400 shrink-0" size={ 14 } />
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Перемещайте колонки, чтобы изменить их положение в таблице.
+                </p>
             </div>
         </div>
     );
