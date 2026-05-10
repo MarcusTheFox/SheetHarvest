@@ -103,7 +103,7 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
 
                 <div
                     className="flex items-center justify-between p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors"
-                    onClick={() => onUpdate?.({ mergeResults: !settings.mergeResults })}
+                    onClick={ () => onUpdate?.({ mergeResults: !settings.mergeResults }) }
                 >
                     <div className="flex items-center gap-2">
                         <Combine className="text-slate-400" size={ 14 } />

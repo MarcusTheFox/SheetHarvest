@@ -10,7 +10,7 @@ type TopologyMode = "any" | "filled" | "empty";
 
 export const TopologyConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<TopologyLayerSettings> ) => {
     const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
-    const topology = settings.topology ?? {};
+    const topology = useMemo(() => settings.topology ?? {}, [ settings ]);
     const [ search, setSearch ] = useState( "" );
 
     const filteredColumns = useMemo(() => {
@@ -182,14 +182,16 @@ export const TopologyConfig = ({ settings, onUpdate, prevContext }: LayerConfigP
                     <Chip className="h-5 text-[9px] font-black uppercase bg-slate-200 text-slate-600" size="sm" variant="flat">
                         Колонок: { headers.length }
                     </Chip>
+
                     <Chip className="h-5 text-[9px] font-black uppercase bg-primary-100 text-primary-700" size="sm" variant="flat">
-                        Активных: { Object.keys(topology).length }
+                        Активных: { Object.keys( topology ).length }
                     </Chip>
                 </div>
             </div>
 
             <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
                 <Filter className="text-slate-400 shrink-0" size={ 14 } />
+
                 <p className="text-[10px] text-slate-500 leading-normal italic">
                     Строки, не соответствующие правилам заполнености, будут удалены из результата.
                 </p>
