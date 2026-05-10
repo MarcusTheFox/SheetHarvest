@@ -101,7 +101,10 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
             <div className="space-y-1">
                 <label className={ controlClassNames.label }>3. Параметры вывода</label>
 
-                <div className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg">
+                <div
+                    className="flex items-center justify-between p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors"
+                    onClick={() => onUpdate?.({ mergeResults: !settings.mergeResults })}
+                >
                     <div className="flex items-center gap-2">
                         <Combine className="text-slate-400" size={ 14 } />
                         <span className="text-xs font-bold text-slate-600">Склеить результаты</span>
