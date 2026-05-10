@@ -1,7 +1,7 @@
 "use client";
 
-import { Input, Select, SelectItem, Switch, Card } from "@heroui/react";
-import { Search } from "lucide-react";
+import { Input, Select, SelectItem, Switch } from "@heroui/react";
+import { Search, HelpCircle, Hash } from "lucide-react";
 import { RegexExtractionLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
 
@@ -15,78 +15,82 @@ export const RegexExtractConfig = ({ settings, onUpdate, prevContext }: RegexExt
         value: String( i ),
     }));
 
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-2 block tracking-widest",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-8 min-h-8 border-slate-200 bg-white",
+    };
+
     return (
-        <div className="flex flex-col gap-6">
-            <Select
-                label="Целевая колонка"
-                placeholder="Где искать текст?"
-                selectedKeys={ settings.sourceColIndex !== undefined ? [ String( settings.sourceColIndex ) ] : [] }
-                onSelectionChange={ ( keys ) => {
-                    const val = Array.from( keys )[0];
-                    onUpdate?.({ sourceColIndex: Number( val ) });
-                } }
-            >
-                { availableCols.map(( col ) => (
-                    <SelectItem key={ col.value }>{ col.label }</SelectItem>
-                )) }
-            </Select>
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            { /* 1. ВЫБОР КОЛОНКИ */ }
+            <div className="space-y-1">
+                <label className={ controlClassNames.label }>1. Целевая колонка</label>
+                <Select
+                    placeholder="Выберите колонку"
+                    size="sm"
+                    variant="bordered"
+                    radius="sm"
+                    classNames={{
+                        trigger: "h-8 min-h-8 border-slate-200 bg-white shadow-none",
+                        value: "text-xs font-bold text-slate-700",
+                    }}
+                    selectedKeys={ settings.sourceColIndex !== undefined ? [ String( settings.sourceColIndex ) ] : [] }
+                    onSelectionChange={ ( keys ) => {
+                        const val = Array.from( keys )[0];
+                        onUpdate?.({ sourceColIndex: Number( val ) });
+                    } }
+                >
+                    { availableCols.map(( col ) => (
+                        <SelectItem key={ col.value } startContent={<Hash size={12} className="text-slate-300"/>}>
+                            { col.label }
+                        </SelectItem>
+                    )) }
+                </Select>
+            </div>
 
-            <Input
-                description="Оставьте только ту часть текста, которая подходит под шаблон"
-                label="Регулярное выражение (Regex)"
-                placeholder="Например: [A-Z]{2}-\d{3}"
-                startContent={ <Search className="text-default-400" size={ 18 } /> }
-                value={ settings.pattern || "" }
-                onValueChange={ ( val ) => {
-                    onUpdate?.({ pattern: val });
-                } }
-            />
+            { /* 2. ПАТТЕРН */ }
+            <div className="space-y-1">
+                <label className={ controlClassNames.label }>2. Шаблон извлечения (Regex)</label>
+                <Input
+                    placeholder="Например: [A-Z]{2}-\d{3}"
+                    size="sm"
+                    variant="bordered"
+                    radius="sm"
+                    startContent={ <Search className="text-slate-400" size={ 14 } /> }
+                    classNames={ controlClassNames }
+                    value={ settings.pattern || "" }
+                    onValueChange={ ( val ) => onUpdate?.({ pattern: val }) }
+                />
+            </div>
 
-            <Card className="p-4 bg-default-50 shadow-none border-none">
-                <div className="flex items-center justify-between">
+            { /* 3. ОПЦИИ */ }
+            <div className="space-y-3">
+                <label className={ controlClassNames.label }>3. Дополнительно</label>
+                
+                <div 
+                    className="flex items-center justify-between p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors"
+                    onClick={() => onUpdate?.({ keepOriginalIfNoMatch: !settings.keepOriginalIfNoMatch })}
+                >
                     <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-bold">Оставлять оригинал</span>
-                        <span className="text-[10px] text-default-400">Если совпадение не найдено, не очищать ячейку</span>
+                        <span className="text-xs font-bold text-slate-700">Сохранять оригинал</span>
+                        <span className="text-[10px] text-slate-400 leading-tight">Если совпадение не найдено, ячейка не будет очищена</span>
                     </div>
 
                     <Switch
-                        isSelected={ settings.keepOriginalIfNoMatch }
                         size="sm"
-                        onValueChange={ ( val ) => {
-                            onUpdate?.({ keepOriginalIfNoMatch: val });
-                        } }
+                        isSelected={ settings.keepOriginalIfNoMatch }
+                        onValueChange={ ( val ) => onUpdate?.({ keepOriginalIfNoMatch: val }) }
                     />
                 </div>
-            </Card>
+            </div>
 
-            <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col gap-2">
-                <span className="text-[10px] font-bold text-blue-700 uppercase">Шпаргалка:</span>
-
-                <ul className="text-[11px] text-blue-600 list-disc ml-4 space-y-1">
-                    <li>
-                        <b>[A-Z]+</b>
-                        { " " }
-                        — только заглавные буквы
-                    </li>
-
-                    <li>
-                        <b>\d+</b>
-                        { " " }
-                        — только цифры
-                    </li>
-
-                    <li>
-                        <b>\d{ "{2,4}" }</b>
-                        { " " }
-                        — от 2 до 4 цифр
-                    </li>
-
-                    <li>
-                        <b>{ "[A-Z]{2}-" }\d{ "{3}" }</b>
-                        { " " }
-                        — ваш пример (AA-000)
-                    </li>
-                </ul>
+            { /* КРАТКОЕ ПОЯСНЕНИЕ */ }
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <HelpCircle className="text-slate-400 shrink-0" size={ 14 } />
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Слой просканирует выбранную колонку и оставит только ту часть текста, которая соответствует регулярному выражению.
+                </p>
             </div>
         </div>
     );
