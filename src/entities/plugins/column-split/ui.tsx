@@ -1,17 +1,13 @@
+// entities/step/column-split/ui.tsx
 "use client";
 
-import { Input, Select, SelectItem, Tabs, Tab, Button, Divider } from "@heroui/react";
-import { Plus, Trash2 } from "lucide-react";
+import { Input, Select, SelectItem, Tabs, Tab, Button } from "@heroui/react";
+import { Plus, Trash2, HelpCircle } from "lucide-react";
 import { ColumnSplitLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
 
 type ColumnSplitConfigProps = LayerConfigProps<ColumnSplitLayerSettings>;
 type SplitMode = ColumnSplitLayerSettings["mode"];
-
-const TABS: { key: SplitMode, title: string }[] = [
-    { key: "delimiter", title: "Символ" },
-    { key: "regex", title: "Regex (группы)" },
-];
 
 export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSplitConfigProps ) => {
     const headers = prevContext?.headers ?? [];
@@ -29,124 +25,146 @@ export const ColumnSplitConfig = ({ settings, onUpdate, prevContext }: ColumnSpl
         onUpdate?.({ newNames: next });
     };
 
-    return (
-        <div className="flex flex-col gap-6">
-            { /* 1. Выбор колонки */ }
+    // Общие стили для контроллов
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-1",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-8 min-h-8 border-slate-200 bg-white",
+    };
 
-            <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-default-700">1. Выберите колонку для разделения</span>
+    return (
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            { /* 1. ВЫБОР КОЛОНКИ */ }
+
+            <div className="space-y-1.5">
+                <label className={ controlClassNames.label }>1. Целевая колонка</label>
 
                 <Select
-                    label="Целевая колонка"
-                    placeholder="Какую колонку разбиваем?"
+                    classNames={{
+                        trigger: "h-8 min-h-8 border-slate-200 bg-white",
+                        value: "text-xs font-bold text-slate-700",
+                    }}
+                    placeholder="Выберите колонку"
+                    radius="sm"
                     selectedKeys={ settings.sourceColIndex !== undefined ? [ String( settings.sourceColIndex ) ] : [] }
+                    size="sm"
+                    variant="bordered"
                     onSelectionChange={ ( keys ) => {
                         const val = Array.from( keys )[0];
                         onUpdate?.({ sourceColIndex: Number( val ) });
                     } }
                 >
                     { availableCols.map(( col ) => (
-                        <SelectItem key={ col.value }>{ col.label }</SelectItem>
+                        <SelectItem key={ col.value } className="text-xs">{ col.label }</SelectItem>
                     )) }
                 </Select>
             </div>
 
-            <Divider className="my-2" />
+            { /* 2. ЛОГИКА РАЗДЕЛЕНИЯ */ }
 
-            <div className="flex flex-col gap-4">
-                <span className="text-sm font-bold text-default-700">2. Метод разделения</span>
+            <div className="space-y-3">
+                <label className={ controlClassNames.label }>2. Метод и правила</label>
 
                 <Tabs
                     fullWidth
+                    classNames={{
+                        tabList: "p-0 h-8 border-b border-slate-100",
+                        cursor: "bg-primary",
+                        tab: "h-8 px-2",
+                        tabContent: "text-[11px] font-bold uppercase tracking-tight group-data-[selected=true]:text-primary",
+                    }}
                     selectedKey={ settings.mode || "delimiter" }
-                    onSelectionChange={ ( key ) => {
-                        onUpdate?.({ mode: key as SplitMode });
-                    } }
+                    size="sm"
+                    variant="underlined"
+                    onSelectionChange={ ( key ) => onUpdate?.({ mode: key as SplitMode }) }
                 >
-                    { TABS.map(( tab ) => (
-                        <Tab key={ tab.key } title={ tab.title } />
-                    )) }
+                    <Tab key="delimiter" title="Символ" />
+                    <Tab key="regex" title="Regex" />
                 </Tabs>
 
                 { settings.mode === "regex"
                     ? (
                         <Input
-                            description="Используйте скобки ( ) для каждой новой колонки"
-                            label="Regex паттерн"
-                            placeholder="Пример: (.*?)\s*-\s*(.*)"
+                            classNames={ controlClassNames }
+                            placeholder="Паттерн: (.*?)\s*-\s*(.*)"
+                            radius="sm"
+                            size="sm"
                             value={ settings.pattern || "" }
-                            onValueChange={ ( val ) => {
-                                onUpdate?.({ pattern: val });
-                            } }
+                            variant="bordered"
+                            onValueChange={ ( val ) => onUpdate?.({ pattern: val }) }
                         />
                     )
                     : (
                         <Input
-                            label="Символ-разделитель"
-                            placeholder="Например: / или , или ;"
+                            classNames={ controlClassNames }
+                            placeholder="Например: / или ,"
+                            radius="sm"
+                            size="sm"
                             value={ settings.delimiter || "" }
-                            onValueChange={ ( val ) => {
-                                onUpdate?.({ delimiter: val });
-                            } }
+                            variant="bordered"
+                            onValueChange={ ( val ) => onUpdate?.({ delimiter: val }) }
                         />
                     ) }
             </div>
 
-            <Divider className="my-2" />
+            { /* 3. НОВЫЕ КОЛОНКИ */ }
 
-            <div className="flex flex-col gap-3">
-                <span className="text-sm font-bold text-default-700">3. Результирующие колонки</span>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <label className={ controlClassNames.label }>3. Результирующие колонки</label>
+
+                    <Button
+                        isIconOnly
+                        className="w-5 h-5 min-w-0 bg-slate-100 text-slate-600 hover:bg-primary hover:text-white"
+                        radius="full"
+                        size="sm"
+                        onPress={ () => onUpdate?.({ newNames: [ ...names, "" ] }) }
+                    >
+                        <Plus size={ 12 } />
+                    </Button>
+                </div>
 
                 <div className="flex flex-col gap-2">
                     { names.map(( name: string, i: number ) => (
-                        <div key={ i } className="flex gap-2 items-center">
-                            <div className="bg-default-100 px-2 py-2 rounded-lg text-[10px] font-mono font-bold text-default-400">
+                        <div key={ i } className="flex gap-1.5 items-center group">
+                            <div className="w-5 h-8 flex items-center justify-center text-[9px] font-mono font-black text-slate-500 bg-slate-50 border border-slate-100 rounded">
                                 #{ i + 1 }
                             </div>
 
                             <Input
-                                placeholder="Название колонки"
+                                className="flex-1"
+                                classNames={ controlClassNames }
+                                placeholder="Имя колонки"
+                                radius="sm"
                                 size="sm"
                                 value={ name }
-                                variant="flat"
+                                variant="bordered"
                                 onValueChange={ ( val ) => handleNameChange( i, val ) }
                             />
 
                             { names.length > 2 && (
-                                <Button isIconOnly
+                                <Button
+                                    isIconOnly
                                     color="danger"
                                     size="sm"
                                     variant="light"
-                                    onPress={ () => {
-                                        onUpdate?.({ newNames: names.filter(( _: string, idx: number ) => idx !== i ) });
-                                    } }
+                                    onPress={ () => onUpdate?.({ newNames: names.filter(( _, idx ) => idx !== i ) }) }
                                 >
-                                    <Trash2 size={ 14 } />
+                                    <Trash2 size={ 12 } />
                                 </Button>
                             ) }
                         </div>
                     )) }
                 </div>
-
-                <Button
-                    color="primary"
-                    size="sm"
-                    startContent={ <Plus size={ 16 } /> }
-                    variant="flat"
-                    onPress={ () => {
-                        onUpdate?.({ newNames: [ ...names, "" ] });
-                    } }
-                >
-                    Добавить колонку
-                </Button>
             </div>
 
-            <div className="bg-primary-50 p-4 rounded-xl flex items-start gap-3 mt-4">
-                <div className="text-primary-500 mt-0.5">💡</div>
+            { /* ПОДСКАЗКА */ }
 
-                <p className="text-[11px] text-primary-700 leading-relaxed">
-                    Этот слой заменит одну выбранную колонку на несколько новых.
-                    Оригинальные данные в этой колонке будут удалены из результата.
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <HelpCircle className="text-slate-400 shrink-0" size={ 14 } />
+
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Оригинальная колонка будет удалена, а на её место встанут новые данные.
                 </p>
             </div>
         </div>

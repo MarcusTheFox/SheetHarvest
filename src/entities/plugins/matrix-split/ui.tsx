@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo, ElementType } from "react";
-import { Input, Button, ScrollShadow, Divider, Chip, ButtonGroup, Tooltip } from "@heroui/react";
+import { Input, Button, ScrollShadow, Chip, ButtonGroup, Tooltip } from "@heroui/react";
 import { MatrixSplitLayerSettings } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
-import { Search, Lock, Grid3X3, Minus, Check } from "lucide-react";
+import { Search, Lock, Minus, Check, HelpCircle, Grid2X2 } from "lucide-react";
 
 export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConfigProps<MatrixSplitLayerSettings> ) => {
     const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
@@ -21,7 +21,12 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
 
     const filteredIndices = useMemo(() => filteredColumns.map(( c ) => c.index ), [ filteredColumns ]);
 
-    // Вычисляем состояния для массовых кнопок
+    const controlClassNames = {
+        label: "text-[10px] font-bold text-slate-500 uppercase mb-1",
+        input: "text-xs font-bold text-slate-700",
+        inputWrapper: "h-8 min-h-8 border-slate-200 bg-white",
+    };
+
     const bulkStates = useMemo(() => {
         const check = ( list: number[]) => {
             const intersection = filteredIndices.filter(( idx ) => list.includes( idx ));
@@ -43,23 +48,14 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
         };
     }, [ filteredIndices, fixed, grid ]);
 
+    // Логика массовых действий и ролей (оставляем прежней, меняем только UI)
     const bulkSetRole = ( role: "none" | "fixed" | "grid" ) => {
         let nextFixed = [ ...fixed ];
         let nextGrid = [ ...grid ];
-
-        if ( role === "none" ) {
-            nextFixed = nextFixed.filter(( i ) => !filteredIndices.includes( i ));
-            nextGrid = nextGrid.filter(( i ) => !filteredIndices.includes( i ));
-        }
-        else {
-            // Очищаем текущие отфильтрованные из обоих списков
-            nextFixed = nextFixed.filter(( i ) => !filteredIndices.includes( i ));
-            nextGrid = nextGrid.filter(( i ) => !filteredIndices.includes( i ));
-            // Добавляем в нужный
-            if ( role === "fixed" ) nextFixed = [ ...nextFixed, ...filteredIndices ].sort(( a, b ) => a - b );
-            if ( role === "grid" ) nextGrid = [ ...nextGrid, ...filteredIndices ].sort(( a, b ) => a - b );
-        }
-
+        nextFixed = nextFixed.filter(( i ) => !filteredIndices.includes( i ));
+        nextGrid = nextGrid.filter(( i ) => !filteredIndices.includes( i ));
+        if ( role === "fixed" ) nextFixed = [ ...nextFixed, ...filteredIndices ].sort(( a, b ) => a - b );
+        if ( role === "grid" ) nextGrid = [ ...nextGrid, ...filteredIndices ].sort(( a, b ) => a - b );
         onUpdate?.({ fixedColIndices: nextFixed, gridColIndices: nextGrid });
     };
 
@@ -71,121 +67,167 @@ export const MatrixSplitConfig = ({ settings, onUpdate, prevContext }: LayerConf
         onUpdate?.({ fixedColIndices: nextFixed, gridColIndices: nextGrid });
     };
 
-    // Вспомогательная функция для иконки массовой кнопки
     const getBulkIcon = ( state: { all: boolean, some: boolean }, Icon: ElementType ) => {
-        if ( state.all ) return <Check size={ 14 } strokeWidth={ 3 } />;
-        if ( state.some ) return <Minus size={ 14 } strokeWidth={ 3 } />;
-        return <Icon size={ 14 } />;
+        if ( state.all ) return <Check size={ 12 } strokeWidth={ 3 } />;
+        if ( state.some ) return <Minus size={ 12 } strokeWidth={ 3 } />;
+        return <Icon size={ 12 } />;
     };
 
     return (
-        <div className="flex flex-col gap-4 h-full">
-            <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+            { /* 1. ОСНОВНЫЕ НАСТРОЙКИ */ }
+
+            <div className="space-y-1.5">
+                <label className={ controlClassNames.label }>1. Имя колонки значений</label>
+
                 <Input
-                    label="Название колонки значений"
+                    classNames={ controlClassNames }
+                    placeholder="Напр: Количество или Цена"
+                    radius="sm"
                     size="sm"
                     value={ settings.valueColumnName }
+                    variant="bordered"
                     onValueChange={ ( val ) => onUpdate?.({ valueColumnName: val }) }
                 />
-
-                <Input
-                    isClearable
-                    placeholder="Поиск по колонкам..."
-                    size="sm"
-                    startContent={ <Search size={ 14 } /> }
-                    value={ search }
-                    onValueChange={ setSearch }
-                />
             </div>
 
-            <Divider />
+            { /* 2. ВЫБОР РОЛЕЙ */ }
 
-            <div className="flex items-center justify-between px-1">
-                <span className="text-[10px] font-bold text-default-400 uppercase">
-                    { search ? `Найдено: ${ filteredColumns.length }` : "Все колонки" }
-                </span>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <label className={ controlClassNames.label }>2. Распределение колонок</label>
 
-                <ButtonGroup size="sm" variant="flat">
-                    <Tooltip content="Сбросить все найденные" size="sm">
-                        <Button
-                            isIconOnly
-                            className={ bulkStates.none.all ? "bg-default-400 text-white" : "" }
-                            onPress={ () => bulkSetRole( "none" ) }
-                        >
-                            { getBulkIcon( bulkStates.none, Minus ) }
-                        </Button>
-                    </Tooltip>
+                    <ButtonGroup size="sm" variant="flat">
+                        <Tooltip content="Сбросить поиск" size="sm">
+                            <Button
+                                isIconOnly
+                                className={ `w-7 h-7 ${ bulkStates.none.all ? "bg-slate-400 text-white" : "" }` }
+                                variant={ bulkStates.none.all ? "solid" : "flat" }
+                                onPress={ () => bulkSetRole( "none" ) }
+                            >
+                                { getBulkIcon( bulkStates.none, Minus ) }
+                            </Button>
+                        </Tooltip>
 
-                    <Tooltip content="Все найденные в 'Фикс'" size="sm">
-                        <Button
-                            isIconOnly
-                            color={ bulkStates.fixed.all || bulkStates.fixed.some ? "primary" : "default" }
-                            variant={ bulkStates.fixed.all ? "solid" : "flat" }
-                            onPress={ () => bulkSetRole( "fixed" ) }
-                        >
-                            { getBulkIcon( bulkStates.fixed, Lock ) }
-                        </Button>
-                    </Tooltip>
+                        <Tooltip content="Все в 'Фикс'" size="sm">
+                            <Button
+                                isIconOnly
+                                className="w-7 h-7"
+                                color={ bulkStates.fixed.all || bulkStates.fixed.some ? "primary" : "default" }
+                                variant={ bulkStates.fixed.all ? "solid" : "flat" }
+                                onPress={ () => bulkSetRole( "fixed" ) }
+                            >
+                                { getBulkIcon( bulkStates.fixed, Lock ) }
+                            </Button>
+                        </Tooltip>
 
-                    <Tooltip content="Все найденные в 'Сетку'" size="sm">
-                        <Button
-                            isIconOnly
-                            color={ bulkStates.grid.all || bulkStates.grid.some ? "success" : "default" }
-                            variant={ bulkStates.grid.all ? "solid" : "flat" }
-                            onPress={ () => bulkSetRole( "grid" ) }
-                        >
-                            { getBulkIcon( bulkStates.grid, Grid3X3 ) }
-                        </Button>
-                    </Tooltip>
-                </ButtonGroup>
-            </div>
-
-            <div className="flex flex-col border border-default-100 rounded-xl overflow-hidden bg-default-50/30">
-                <div className="grid grid-cols-[40px_1fr_auto] gap-2 px-3 py-2 bg-default-100 text-[10px] font-bold uppercase text-default-500">
-                    <span>#</span>
-                    <span>Заголовок</span>
-                    <span className="text-right">Роль</span>
+                        <Tooltip content="Все в 'Сетку'" size="sm">
+                            <Button
+                                isIconOnly
+                                className={ `w-7 h-7 ${ bulkStates.grid.all ? "text-white" : "" }` }
+                                color={ bulkStates.grid.all || bulkStates.grid.some ? "success" : "default" }
+                                variant={ bulkStates.grid.all ? "solid" : "flat" }
+                                onPress={ () => bulkSetRole( "grid" ) }
+                            >
+                                { getBulkIcon( bulkStates.grid, Grid2X2 ) }
+                            </Button>
+                        </Tooltip>
+                    </ButtonGroup>
                 </div>
 
-                <ScrollShadow className="max-h-[400px]">
-                    { filteredColumns.map(({ name, index }) => {
-                        const isFixed = fixed.includes( index );
-                        const isGrid = grid.includes( index );
-                        const currentRole = isFixed ? "fixed" : isGrid ? "grid" : "none";
+                <Input
+                    classNames={ controlClassNames }
+                    placeholder="Поиск по заголовкам..."
+                    radius="sm"
+                    size="sm"
+                    startContent={ <Search className="text-slate-400" size={ 12 } /> }
+                    value={ search }
+                    variant="bordered"
+                    onValueChange={ setSearch }
+                />
 
-                        return (
-                            <div key={ index } className="grid grid-cols-[40px_1fr_auto] items-center gap-2 px-3 py-1.5 border-b border-default-100 last:border-0 hover:bg-default-100/50">
-                                <span className="text-[10px] font-mono text-default-400">#{ index }</span>
-                                <span className="text-xs font-medium truncate">{ name }</span>
+                <div className="border border-slate-200 rounded">
+                    <div className="grid grid-cols-[30px_1fr_auto] items-center gap-2 px-2 py-1.5 bg-slate-50 border-b border-slate-200">
+                        <span className="text-[10px] font-black text-slate-400 font-mono">#</span>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase">Заголовок</span>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase px-2">Роль</span>
+                    </div>
 
-                                <ButtonGroup className="h-7" size="sm" variant="flat">
-                                    <Button isIconOnly className={ currentRole === "none" ? "bg-default-300" : "" } onPress={ () => setRole( index, "none" ) }>
-                                        <Minus size={ 14 } />
-                                    </Button>
+                    <ScrollShadow className="max-h-75" offset={ 1 }>
+                        { filteredColumns.map(({ name, index }) => {
+                            const isFixed = fixed.includes( index );
+                            const isGrid = grid.includes( index );
+                            const currentRole = isFixed ? "fixed" : isGrid ? "grid" : "none";
 
-                                    <Button isIconOnly className={ isFixed ? "bg-primary text-white" : "" } onPress={ () => setRole( index, "fixed" ) }>
-                                        <Lock size={ 14 } />
-                                    </Button>
+                            return (
+                                <div key={ index } className="grid grid-cols-[30px_1fr_auto] items-center gap-2 px-2 py-1 border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                                    <span className="text-[10px] font-mono text-slate-400">#{ index }</span>
+                                    <span className="text-xs font-bold text-slate-600 truncate">{ name }</span>
 
-                                    <Button isIconOnly className={ isGrid ? "bg-success text-white" : "" } onPress={ () => setRole( index, "grid" ) }>
-                                        <Grid3X3 size={ 14 } />
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
-                        );
-                    }) }
-                </ScrollShadow>
+                                    <ButtonGroup>
+                                        <Button
+                                            isIconOnly
+                                            className={ `w-7 h-7 min-w-0 ${ currentRole === "none" ? "bg-slate-300 text-slate-800" : "bg-transparent text-slate-500" }` }
+                                            size="sm"
+                                            variant="flat"
+                                            onPress={ () => setRole( index, "none" ) }
+                                        >
+                                            <Minus size={ 12 } />
+                                        </Button>
+
+                                        <Button
+                                            isIconOnly
+                                            className={ `w-7 h-7 min-w-0 ${ isFixed ? "bg-primary text-white" : "bg-transparent text-slate-500" }` }
+                                            size="sm"
+                                            variant="flat"
+                                            onPress={ () => setRole( index, "fixed" ) }
+                                        >
+                                            <Lock size={ 12 } />
+                                        </Button>
+
+                                        <Button
+                                            isIconOnly
+                                            className={ `w-7 h-7 min-w-0 ${ isGrid ? "bg-success text-white" : "bg-transparent text-slate-500" }` }
+                                            size="sm"
+                                            variant="flat"
+                                            onPress={ () => setRole( index, "grid" ) }
+                                        >
+                                            <Grid2X2 size={ 12 } />
+                                        </Button>
+                                    </ButtonGroup>
+                                </div>
+                            );
+                        }) }
+                    </ScrollShadow>
+                </div>
             </div>
 
-            <div className="flex gap-2 flex-wrap items-center">
-                <Chip color="primary" size="sm" variant="dot">Фикс: { fixed.length }</Chip>
-                <Chip color="success" size="sm" variant="dot">Сетка: { grid.length }</Chip>
+            { /* 3. ИТОГИ */ }
+
+            <div className="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100">
+                <div className="flex gap-2">
+                    <Chip className="h-5 text-[9px] font-black uppercase bg-blue-100 text-blue-700" size="sm" variant="flat">
+                        Фикс: { fixed.length }
+                    </Chip>
+
+                    <Chip className="h-5 text-[9px] font-black uppercase bg-green-100 text-green-700" size="sm" variant="flat">
+                        Сетка: { grid.length }
+                    </Chip>
+                </div>
 
                 { grid.length > 0 && (
-                    <Chip className="ml-auto" color="warning" size="sm" variant="flat">
-                        Итого таблиц: { grid.length }
-                    </Chip>
+                    <span className="text-[10px] font-bold text-slate-400 italic">
+                        Будет создано { grid.length } таблиц
+                    </span>
                 ) }
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
+                <HelpCircle className="text-slate-400 shrink-0" size={ 14 } />
+
+                <p className="text-[10px] text-slate-500 leading-normal italic">
+                    Колонки «Сетки» станут отдельными таблицами, а «Фикс» колонки будут продублированы в каждой.
+                </p>
             </div>
         </div>
     );
