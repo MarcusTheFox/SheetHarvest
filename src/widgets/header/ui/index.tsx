@@ -13,6 +13,7 @@ import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelec
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
 import { Logo } from "@/widgets/logo/ui";
 import { useFileImport } from "@/features/upload-spreadsheet/lib/useFileImport";
+import Link from "next/link";
 
 export const PageHeader = () => {
     const fileInputRef = useRef<HTMLInputElement>( null );
@@ -92,6 +93,17 @@ export const PageHeader = () => {
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
+                    <Button
+                        className={ menuBtnClass }
+                        size="sm"
+                        variant="light"
+                        as={Link}
+                        href="/docs"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Справка
+                    </Button>
                 </div>
             </div>
 
