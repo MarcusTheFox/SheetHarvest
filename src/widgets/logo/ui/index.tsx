@@ -1,17 +1,37 @@
 import { TableProperties } from "lucide-react";
+import { ElementType } from "react";
 
-export const Logo = () => {
+interface LogoProps {
+    suffix?: string;
+    subtitle?: string;
+    Icon?: ElementType;
+}
+
+export const Logo = ({
+    suffix,
+    subtitle,
+    Icon = TableProperties,
+}: LogoProps ) => {
     return (
-        <div className="flex items-center gap-2 mr-4">
-            <div className="bg-primary p-1 rounded shadow-sm">
-                <TableProperties className="text-white" size={ 16 } />
+        <div className="flex items-center gap-3 mr-4">
+            <div className="bg-primary p-1.5 rounded-lg">
+                <Icon className="text-white" size={ 18 } />
             </div>
 
-            <h1 className="text-xs font-black text-slate-800 tracking-tighter uppercase">
-                Sheet
-                { }
-                <span className="text-primary">Harvest</span>
-            </h1>
+            <div>
+                <h1 className="text-sm font-black text-slate-800 tracking-tight leading-none uppercase">
+                    Sheet
+                    { }
+                    <span className="text-primary">Harvest</span>
+                    { " " }
+                    { suffix }
+                </h1>
+
+                { subtitle
+                    && <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+                        { subtitle }
+                    </p> }
+            </div>
         </div>
     );
 };
