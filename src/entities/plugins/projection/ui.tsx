@@ -147,6 +147,7 @@ export const ProjectionConfig = ({ settings, onUpdate, prevContext }: LayerConfi
 
                                             <div className="flex justify-end">
                                                 <Checkbox
+                                                    className="p-0"
                                                     isSelected={ isSelected }
                                                     size="sm"
                                                     onClick={ ( e ) => e.stopPropagation() }
