@@ -1,64 +1,118 @@
-import { useExtractionStore } from "@/entities/extraction/model/store";
-import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
-import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
-import { UploadButton } from "@/features/upload-spreadsheet/ui/UploadButton";
-import { Button } from "@heroui/button";
-// import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
-import { TableProperties, X } from "lucide-react";
+"use client";
 
-const Logo = () => (
-    <div className="flex items-center gap-1">
-        <TableProperties className="text-primary" size={ 32 } />
-        <h1 className="text-2xl font-bold italic tracking-tight">SheetHarvest</h1>
-    </div>
-);
+import { 
+    Button, Divider, 
+    Dropdown, DropdownTrigger, DropdownMenu, DropdownItem,
+} from "@heroui/react";
+import { FileUp, FileX2, X } from "lucide-react";
+import { useRef } from "react";
+import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
+import { useExtractionStore } from "@/entities/extraction/model/store";
+import { usePatternStore } from "@/entities/pattern/model/store";
+import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
+import { parseSpreadsheet } from "@/shared/lib/file-parser";
+import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
+import { Logo } from "@/widgets/logo/ui";
+
 
 export const PageHeader = () => {
-    const hasData = useSpreadsheetStore(( state ) => state.sheets.length > 0 );
-    const isExtracted = useExtractionStore(( state ) => state.isExtracted );
-    const clearResults = useExtractionStore(( state ) => state.clearResults );
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const setSheets = useSpreadsheetStore((s) => s.setSheets);
+    const setFile = useSpreadsheetStore((s) => s.setFile);
+    const resetSpreadsheet = useSpreadsheetStore((s) => s.reset);
+    
+    const isExtracted = useExtractionStore((s) => s.isExtracted);
+    const clearResults = useExtractionStore((s) => s.clearResults);
+    
+    const resetPattern = usePatternStore((s) => s.resetPattern);
+    const setSelectedLayerIndex = useSelectedLayerStore((s) => s.setSelectedLayerIndex);
+    const hasData = useSpreadsheetStore((s) => s.sheets.length > 0);
+
+    const handleFileOpen = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFile(file);
+            const parsedData = await parseSpreadsheet(file);
+            setSheets(parsedData);
+            setSelectedLayerIndex(undefined);
+            resetPattern();
+            clearResults();
+        }
+    };
+
+    const handleCloseFile = () => {
+        resetSpreadsheet();
+        resetPattern();
+        clearResults();
+        setSelectedLayerIndex(undefined);
+        
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+
+    const menuBtnClass = "h-7 px-2 text-[10px] font-bold text-slate-600 uppercase data-[hover=true]:bg-slate-100";
+    const dropdownItemClass = {
+        base: "py-2",
+        title: "text-[10px] font-bold uppercase tracking-wider",
+    };
 
     return (
-        <header className="flex justify-between items-center p-2 border-b shrink-0">
-            <div className="flex gap-4">
-                <Logo />
+        <header className="flex justify-between items-center h-11 px-3 border-b border-slate-200 bg-white shrink-0 z-50">
+            <input 
+                ref={fileInputRef} 
+                type="file" 
+                className="hidden" 
+                accept=".xlsx,.xls,.csv" 
+                onChange={handleFileOpen} 
+            />
 
-                { /* <div>
-                    <ButtonGroup variant="light">
-                        <Dropdown placement="bottom-start">
-                            <DropdownTrigger>
-                                <Button size="sm" disableRipple className="min-w-0">Файл</Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                variant="flat"
-                                itemClasses={{
-                                    title: "text-xs"
-                                }}
+            <div className="flex items-center">
+                <Logo />
+                <Divider orientation="vertical" className="h-4 bg-slate-200 mx-2" />
+
+                <div className="flex gap-1">
+                    <Dropdown placement="bottom-start" className="min-w-[180px] rounded-md shadow-xl border border-slate-100">
+                        <DropdownTrigger>
+                            <Button variant="light" size="sm" className={menuBtnClass}>
+                                Файл
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="File Actions" variant="flat" itemClasses={dropdownItemClass}>
+                            <DropdownItem 
+                                key="open" 
+                                startContent={<FileUp size={14} />}
+                                onPress={() => fileInputRef.current?.click()}
                             >
-                                <DropdownItem key="create">Новый файл</DropdownItem>
-                                <DropdownItem key="close">Закрыть файл</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </ButtonGroup>
-                </div> */ }
+                                Открыть файл
+                            </DropdownItem>
+                            <DropdownItem 
+                                key="close" 
+                                className="text-danger" 
+                                color="danger"
+                                startContent={<FileX2 size={14} />}
+                                isDisabled={!hasData}
+                                onPress={handleCloseFile}
+                            >
+                                Закрыть файл
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
             </div>
 
-            <div className="flex flex-row gap-4 items-center">
-                { !isExtracted && <UploadButton /> }
-
-                { isExtracted && (
+            <div className="flex items-center gap-2">
+                { isExtracted ? (
                     <Button
-                        className="font-semibold"
-                        color="danger"
-                        startContent={ <X size={ 18 } /> }
-                        variant="flat"
-                        onPress={ clearResults }
+                        className="h-8 px-4 text-[10px] font-bold uppercase tracking-widest bg-danger-50 text-danger hover:bg-danger-100"
+                        radius="sm"
+                        startContent={<X size={14} strokeWidth={3} />}
+                        onPress={clearResults}
                     >
                         Закрыть результаты
                     </Button>
-                ) }
-
-                { hasData && !isExtracted && <RunExtractionButton /> }
+                ) : (
+                    hasData && <RunExtractionButton />
+                )}
             </div>
         </header>
     );
