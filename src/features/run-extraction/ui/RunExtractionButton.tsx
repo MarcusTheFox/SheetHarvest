@@ -9,12 +9,13 @@ export const RunExtractionButton = () => {
 
     return (
         <Button
-            className="font-bold text-white shadow-xl py-6 rounded-2xl shrink-0"
-            color="success"
-            startContent={ <Play fill="currentColor" size={ 20 } /> }
+            className="h-8 text-[10px] font-bold uppercase tracking-widest"
+            color="primary"
+            radius="sm"
+            startContent={ <Play fill="currentColor" size={ 12 } /> }
             onPress={ runExtraction }
         >
-            Запустить сбор данных
+            Запустить сбор
         </Button>
     );
 };
