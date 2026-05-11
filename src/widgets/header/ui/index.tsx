@@ -10,33 +10,27 @@ import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
 import { useExtractionStore } from "@/entities/extraction/model/store";
 import { usePatternStore } from "@/entities/pattern/model/store";
 import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
-import { parseSpreadsheet } from "@/shared/lib/file-parser";
 import { RunExtractionButton } from "@/features/run-extraction/ui/RunExtractionButton";
 import { Logo } from "@/widgets/logo/ui";
+import { useFileImport } from "@/features/upload-spreadsheet/lib/useFileImport";
 
 export const PageHeader = () => {
     const fileInputRef = useRef<HTMLInputElement>( null );
 
-    const setSheets = useSpreadsheetStore(( s ) => s.setSheets );
-    const setFile = useSpreadsheetStore(( s ) => s.setFile );
     const resetSpreadsheet = useSpreadsheetStore(( s ) => s.reset );
-
     const isExtracted = useExtractionStore(( s ) => s.isExtracted );
     const clearResults = useExtractionStore(( s ) => s.clearResults );
-
+    
     const resetPattern = usePatternStore(( s ) => s.resetPattern );
     const setSelectedLayerIndex = useSelectedLayerStore(( s ) => s.setSelectedLayerIndex );
     const hasData = useSpreadsheetStore(( s ) => s.sheets.length > 0 );
 
+    const { importFile } = useFileImport();
+
     const handleFileOpen = async ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const file = e.target.files?.[0];
         if ( file ) {
-            setFile( file );
-            const parsedData = await parseSpreadsheet( file );
-            setSheets( parsedData );
-            setSelectedLayerIndex( undefined );
-            resetPattern();
-            clearResults();
+            await importFile(file);
         }
     };
 
