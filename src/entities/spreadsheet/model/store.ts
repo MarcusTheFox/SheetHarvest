@@ -1,26 +1,41 @@
-import { create } from 'zustand';
-import { SpreadsheetState } from './types';
+import { create } from "zustand";
+import { Sheet } from "@/shared/types/spreadsheet";
+import { PipelineTable } from "@/shared/types/pipeline";
 
-export const useSpreadsheetStore = create<SpreadsheetState>((set, get) => ({
-  sheets: [],
-  currentSheetIndex: 0,
+export interface SpreadsheetState {
+    file: File | undefined;
+    sheets: Sheet[];
+    sourceTables: PipelineTable[];
+    setSheets: ( sheets: Sheet[]) => void;
+    setFile: ( file?: File ) => void;
+    reset: () => void;
+}
 
-  getCurrentSheet: () => {
-    const { sheets, currentSheetIndex } = get();
-    return sheets.length > 0 ? sheets[currentSheetIndex] : null;
-  },
+export const useSpreadsheetStore = create<SpreadsheetState>(( set ) => ({
+    file: undefined,
+    sheets: [],
+    sourceTables: [],
 
-  setSheets: (sheets) => set({ 
-    sheets, 
-    currentSheetIndex: 0 
-  }),
+    setFile: ( file?: File ) => set({ file }),
 
-  setCurrentSheet: (index) => set((state) => ({ 
-    currentSheetIndex: Math.min(Math.max(0, index), state.sheets.length - 1) 
-  })),
+    setSheets: ( sheets ) => {
+        const sourceTables = sheets.map(( sheet, idx ) => ({
+            id: `${ idx }`,
+            name: sheet.name,
+            merges: sheet.merges,
+            rows: sheet.data.map(( row, rowIdx ) => ({
+                groupIndex: idx,
+                originalIndex: rowIdx,
+                cells: [ ...row ],
+            })),
+        })) as PipelineTable[];
 
-  reset: () => set({ 
-    sheets: [], 
-    currentSheetIndex: 0 
-  }),
+        set({ sheets, sourceTables });
+    },
+
+    reset: () => set({
+        file: undefined,
+        sheets: [],
+        sourceTables: [],
+    }),
 }));

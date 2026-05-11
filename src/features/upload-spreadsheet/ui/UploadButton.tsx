@@ -5,37 +5,44 @@ import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { parseSpreadsheet } from "@/shared/lib/file-parser";
 import { useSpreadsheetStore } from "@/entities/spreadsheet/model/store";
+import { useSelectedLayerStore } from "@/widgets/spreadsheet-view/model/useSelectedLayerStore";
+import { usePatternStore } from "@/entities/pattern/model/store";
 
 export const UploadButton = () => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const setSheets = useSpreadsheetStore((state) => state.setSheets);
+    const fileInputRef = useRef<HTMLInputElement>( null );
+    const setSheets = useSpreadsheetStore(( state ) => state.setSheets );
+    const setFile = useSpreadsheetStore(( state ) => state.setFile );
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const parsedData = await parseSpreadsheet(file);
-      setSheets(parsedData);
-    }
-  };
+    const handleFileChange = async ( e: React.ChangeEvent<HTMLInputElement> ) => {
+        const file = e.target.files?.[0];
+        if ( file ) {
+            setFile( file );
+            const parsedData = await parseSpreadsheet( file );
+            setSheets( parsedData );
+            useSelectedLayerStore.getState().setSelectedLayerIndex();
+            usePatternStore.getState().resetPattern();
+        }
+    };
 
-  return (
-    <>
-      <input 
-        type="file" 
-        ref={fileInputRef} 
-        className="hidden" 
-        accept=".xlsx, .xls, .csv" 
-        onChange={handleFileChange}
-      />
-      <Button 
-        color="primary" 
-        variant="flat" 
-        startContent={<Upload size={18} />}
-        onPress={() => fileInputRef.current?.click()}
-        className="shrink-0"
-      >
-        Загрузить таблицу
-      </Button>
-    </>
-  );
+    return (
+        <>
+            <input
+                ref={ fileInputRef }
+                accept=".xlsx, .xls, .csv"
+                className="hidden"
+                type="file"
+                onChange={ handleFileChange }
+            />
+
+            <Button
+                className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 hover:bg-slate-200"
+                radius="sm"
+                startContent={ <Upload size={ 14 } strokeWidth={ 2.5 } /> }
+                variant="flat"
+                onPress={ () => fileInputRef.current?.click() }
+            >
+                Загрузить таблицу
+            </Button>
+        </>
+    );
 };

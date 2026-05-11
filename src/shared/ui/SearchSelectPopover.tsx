@@ -2,7 +2,7 @@
 
 import {
     Button, Popover, PopoverTrigger, PopoverContent,
-    Input, ScrollShadow, Listbox, ListboxItem
+    Input, ScrollShadow, Listbox, ListboxItem,
 } from "@heroui/react";
 import { Search, PlusCircle } from "lucide-react";
 import { useState, useMemo, ReactNode } from "react";
@@ -17,7 +17,7 @@ interface SearchSelectItem {
 
 interface SearchSelectPopoverProps {
     items: SearchSelectItem[];
-    onSelect: (id: string) => void;
+    onSelect: ( id: string ) => void;
     trigger?: ReactNode;
     placeholder?: string;
     label?: string;
@@ -40,78 +40,79 @@ export const SearchSelectPopover = ({
     trigger,
     placeholder = "Поиск...",
     label = "Выбрать",
-    classNames = {}
-}: SearchSelectPopoverProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [search, setSearch] = useState("");
+    classNames = {},
+}: SearchSelectPopoverProps ) => {
+    const [ isOpen, setIsOpen ] = useState( false );
+    const [ search, setSearch ] = useState( "" );
 
     const filteredItems = useMemo(() => {
-        if (!search) return items;
+        if ( !search ) return items;
         const s = search.toLowerCase();
-        return items.filter(item => 
-            item.name.toLowerCase().includes(s) || 
-            item.description?.toLowerCase().includes(s)
-        );
-    }, [items, search]);
+        return items.filter(( item ) =>
+            item.name.toLowerCase().includes( s )
+            || item.description?.toLowerCase().includes( s ));
+    }, [ items, search ]);
 
     return (
-        <Popover isOpen={isOpen} onOpenChange={setIsOpen} placement="bottom-end">
+        <Popover isOpen={ isOpen } placement="bottom-end" onOpenChange={ setIsOpen }>
             <PopoverTrigger>
-                {trigger || (
-                    <Button 
-                        isIconOnly 
-                        size="sm" 
-                        variant="flat" 
+                { trigger || (
+                    <Button
+                        isIconOnly
+                        className={ classNames.trigger }
                         color="primary"
-                        className={classNames.trigger}
+                        size="sm"
+                        variant="flat"
                     >
-                        <PlusCircle size={18} />
+                        <PlusCircle size={ 18 } />
                     </Button>
-                )}
+                ) }
             </PopoverTrigger>
-            <PopoverContent 
-                className={clsx(
-                    "p-0 overflow-hidden", 
+
+            <PopoverContent
+                className={ clsx(
+                    "p-0 overflow-hidden",
                     classNames.content || "w-64",
-                    classNames.base
-                )}
+                    classNames.base,
+                ) }
             >
-                <div className={clsx("p-2 border-b border-default-100 w-full", classNames.inputWrapper)}>
+                <div className={ clsx( "p-2 border-b border-default-100 w-full", classNames.inputWrapper ) }>
                     <Input
                         autoFocus
-                        size="sm"
-                        placeholder={placeholder}
-                        startContent={<Search size={14} />}
-                        value={search}
-                        onValueChange={setSearch}
-                        variant="flat"
                         classNames={{
-                            input: classNames.input
+                            input: classNames.input,
                         }}
+                        placeholder={ placeholder }
+                        size="sm"
+                        startContent={ <Search size={ 14 } /> }
+                        value={ search }
+                        variant="flat"
+                        onValueChange={ setSearch }
                     />
                 </div>
-                <ScrollShadow className={clsx("max-h-64 w-full", classNames.scrollShadow)}>
-                    <Listbox 
-                        aria-label={label}
-                        onAction={(key) => {
-                            onSelect(key as string);
-                            setIsOpen(false);
-                            setSearch("");
-                        }}
-                        className={classNames.listbox}
+
+                <ScrollShadow className={ clsx( "max-h-64 w-full", classNames.scrollShadow ) }>
+                    <Listbox
+                        aria-label={ label }
+                        className={ classNames.listbox }
+                        onAction={ ( key ) => {
+                            onSelect( key as string );
+                            setIsOpen( false );
+                            setSearch( "" );
+                        } }
                     >
-                        {filteredItems.map(item => (
-                            <ListboxItem 
-                                key={item.id} 
-                                description={item.description}
+                        { filteredItems.map(( item ) => (
+                            <ListboxItem
+                                key={ item.id }
                                 classNames={{
                                     title: classNames.item,
-                                    description: classNames.itemDescription
+                                    description: classNames.itemDescription,
                                 }}
+                                description={ item.description }
                             >
-                                {item.name}
+                                { item.name }
                             </ListboxItem>
-                        ))}
+                        )) }
                     </Listbox>
                 </ScrollShadow>
             </PopoverContent>

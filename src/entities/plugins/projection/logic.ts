@@ -1,0 +1,66 @@
+import { PipelineContext, PipelineRow, PipelineTable } from "@/shared/types/pipeline";
+import { ProjectionLayerSettings, ProjectionColumn } from "./types";
+
+export function projectionLayer( context: PipelineContext, settings: ProjectionLayerSettings ): PipelineContext {
+    const { tables, headers } = context;
+
+    let targetColumns: ProjectionColumn[] = [];
+
+    if ( settings.mode === "manual" ) {
+        // В ручном режиме просто берем то, что настроил пользователь
+        targetColumns = settings.columns || [];
+    }
+    else {
+        // В автоматическом режиме ищем строку-заголовок в текущем наборе строк
+        const hIdx = settings.headerRowIndex - 1;
+        // Ищем строку по originalIndex, так как до проекции индексы строк еще "сырые"
+        const headerRow = tables[0].rows.find(( r ) => r.originalIndex === hIdx );
+
+        if ( headerRow ) {
+            headerRow.cells.forEach(( cell, idx ) => {
+                const val = cell?.toString().trim();
+                // Если ячейка в строке заголовка не пуста - фиксируем колонку
+                if ( val ) {
+                    targetColumns.push({
+                        index: idx,
+                        name: val,
+                    });
+                }
+            });
+        }
+    }
+
+    // Если ничего не выбрано, возвращаем контекст как есть, чтобы не "сломать" данные
+    if ( targetColumns.length === 0 ) return context;
+
+    // Формируем новые заголовки
+    const nextHeaders = targetColumns.map(( col ) => {
+        return col.name || headers[col.index] || `Col ${ col.index }`;
+    });
+
+    // Трансформируем строки: оставляем только выбранные ячейки
+    const processRow = ( row: PipelineRow ): PipelineRow => {
+        const cells = targetColumns.map(( col ) => row.cells[col.index]);
+        return {
+            ...row,
+            cells,
+        };
+    };
+
+    const processTable = ( table: PipelineTable ): PipelineTable => {
+        const rows = table.rows.map(( row ) => processRow( row ));
+        return {
+            ...table,
+            rows,
+        };
+    };
+
+    const newTables = tables.map(( table ) => processTable( table ));
+
+    return {
+        ...context,
+        headers: nextHeaders,
+        tables: newTables,
+        isColumnStructureModified: true,
+    };
+}

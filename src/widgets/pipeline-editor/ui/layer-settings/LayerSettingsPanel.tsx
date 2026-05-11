@@ -1,76 +1,61 @@
 import { ScrollShadow, Spinner } from "@heroui/react";
-import { LAYER_REGISTRY } from "@/features/run-extraction/lib/pipeline/registry";
-import { PipelineLayer } from "@/entities/pattern/model/types";
+import { LAYER_REGISTRY } from "@/entities/plugins/registry";
 import { EmptyLayerState } from "./EmptyLayerState";
-import { LayerSettingsHeader } from "./LayerSettingsHeader";
 import { LayerConfigRenderer } from "./LayerConfigRenderer";
-import { usePatternStore } from "@/entities/pattern/model/store";
-import { usePreviewStore } from "@/entities/preview/model/store";
-import { useExtractionSource } from "@/features/run-extraction/lib/useExtractionParams";
-import { useEffect, useMemo } from "react";
-import { createInitialContext } from "@/features/run-extraction/lib/context-builder";
+import { useSelectedLayer } from "@/widgets/spreadsheet-view/lib/useSelectedLayer";
+import { memo } from "react";
 
-interface LayerSettingsPanelProps {
-    selectedEntry: PipelineLayer | null;
-    selectedIndex: number | null;
-}
+export const LayerSettingsPanel = memo(() => {
+    const { selectedLayerIndex, selectedLayer, isExecuting, inputContext } = useSelectedLayer();
 
-export const LayerSettingsPanel = ({ selectedEntry, selectedIndex }: LayerSettingsPanelProps) => {
-    const pipeline = usePatternStore(s => s.pipeline);
-    const sourceTables = useExtractionSource();
-    const cache = usePreviewStore(s => s.cache);
-    const isExecuting = usePreviewStore(s => s.isExecuting);
-    const runUpToLayer = usePreviewStore(s => s.runUpToLayer);
-
-    useEffect(() => {
-        if (selectedIndex !== null && selectedIndex > 0 && sourceTables) {
-            const selectedLayer = pipeline[selectedIndex - 1];
-            if (!selectedLayer) return;
-
-            const prevLayerId = pipeline[selectedIndex - 1].instanceId;
-            if (!cache[prevLayerId]) {
-                runUpToLayer(prevLayerId, pipeline, { tables: sourceTables });
-            }
-        }
-    }, [selectedIndex, pipeline, sourceTables, cache, runUpToLayer]);
-
-    const prevContext = useMemo(() => {
-        if (!selectedEntry || selectedIndex === null || !sourceTables) return undefined;
-        if (selectedIndex === 0) return createInitialContext(sourceTables);
-
-        const selectedLayer = pipeline[selectedIndex - 1];
-        if (!selectedLayer) return;
-
-        const prevLayerId = pipeline[selectedIndex - 1].instanceId;
-        return cache[prevLayerId];
-    }, [selectedEntry, selectedIndex, sourceTables, pipeline, cache]);
-
-    if (!selectedEntry || selectedIndex === null) {
+    if ( selectedLayerIndex === undefined || !selectedLayer ) {
         return <EmptyLayerState />;
     }
 
-    const metadata = LAYER_REGISTRY[selectedEntry.id];
+    const metadata = LAYER_REGISTRY[selectedLayer.id];
 
     return (
         <div className="flex flex-col h-full bg-white">
-            <LayerSettingsHeader
-                metadata={metadata}
-            />
+            { /* Header как в инспекторах свойств */ }
 
-            <ScrollShadow className="flex-1 p-8">
-                {isExecuting && selectedIndex > 0 && !prevContext ? (
-                    <div className="flex items-center justify-center h-48 text-default-400 gap-3">
-                        <Spinner size="sm" />
-                        <span className="text-sm">Вычисляем контекст...</span>
+            <div className="px-4 py-3 border-b border-slate-200 bg-slate-50/50">
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter font-mono">
+                            Step #{ selectedLayerIndex + 1 }
+                        </span>
+
+                        <span className="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase">
+                            { selectedLayer.id }
+                        </span>
                     </div>
-                ) : (
-                    <LayerConfigRenderer
-                        entry={selectedEntry}
-                        index={selectedIndex}
-                        prevContext={prevContext}
-                    />
-                )}
+
+                    <h3 className="text-sm font-bold text-slate-700 truncate">
+                        { metadata.name }
+                    </h3>
+                </div>
+            </div>
+
+            <ScrollShadow className="flex-1">
+                <div className="p-4 space-y-6">
+                    { isExecuting && !inputContext
+                        ? (
+                            <div className="py-20 flex flex-col items-center gap-3">
+                                <Spinner size="sm" />
+                                <span className="text-[10px] font-bold text-slate-400 uppercase">Processing...</span>
+                            </div>
+                        )
+                        : (
+                            <LayerConfigRenderer
+                                entry={ selectedLayer }
+                                index={ selectedLayerIndex }
+                                prevContext={ inputContext }
+                            />
+                        ) }
+                </div>
             </ScrollShadow>
         </div>
     );
-};
+});
+
+LayerSettingsPanel.displayName = "LayerSettingsPanel";
