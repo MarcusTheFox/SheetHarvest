@@ -35,10 +35,10 @@ export const UploadButton = () => {
             />
 
             <Button
-                className="shrink-0"
-                color="primary"
-                startContent={ <Upload size={ 18 } /> }
+                className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 hover:bg-slate-200"
+                radius="sm"
                 variant="flat"
+                startContent={ <Upload size={ 14 } strokeWidth={2.5} /> }
                 onPress={ () => fileInputRef.current?.click() }
             >
                 Загрузить таблицу
