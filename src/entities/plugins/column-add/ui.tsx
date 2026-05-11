@@ -22,32 +22,35 @@ export const ColumnAddConfig = ({ settings, onUpdate }: ColumnAddConfigProps ) =
         <div className="flex flex-col gap-5 animate-in fade-in duration-300">
             <div className="space-y-1">
                 <label className={ controlClassNames.label }>1. Название колонки</label>
+
                 <Input
-                    placeholder="Название"
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
                     classNames={ controlClassNames }
+                    placeholder="Название"
+                    radius="sm"
+                    size="sm"
                     value={ settings.columnName }
+                    variant="bordered"
                     onValueChange={ ( v ) => handleChange( "columnName", v ) }
                 />
             </div>
 
             <div className="space-y-1">
                 <label className={ controlClassNames.label }>2. Фиксированное значение</label>
+
                 <Input
-                    placeholder="Текст"
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
                     classNames={ controlClassNames }
+                    placeholder="Текст"
+                    radius="sm"
+                    size="sm"
                     value={ settings.value }
+                    variant="bordered"
                     onValueChange={ ( v ) => handleChange( "value", v ) }
                 />
             </div>
 
             <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2.5 mt-2">
                 <Info className="text-slate-400 shrink-0" size={ 14 } />
+
                 <p className="text-[10px] text-slate-500 leading-normal italic">
                     Новая колонка будет добавлена в самый конец таблицы. Все строки получат указанное значение.
                 </p>

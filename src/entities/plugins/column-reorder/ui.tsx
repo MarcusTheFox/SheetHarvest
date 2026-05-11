@@ -10,8 +10,8 @@ import clsx from "clsx";
 type ColumnReorderConfigProps = LayerConfigProps<ColumnReorderLayerSettings>;
 
 export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnReorderConfigProps ) => {
-    const headers = prevContext?.headers ?? [];
-    const order = settings?.order ?? [];
+    const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
+    const order = useMemo(() => settings?.order ?? [], [ settings ]);
 
     // Инициализация порядка, если пустой
     useEffect(() => {
@@ -29,15 +29,15 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
             onUpdate?.({ order: newOrder });
         }
     };
-    
+
     // Собираем актуальный список для отображения
     const displayList = useMemo(() => {
-        const list = order.length === headers.length ? order : headers.map((_, i) => i);
-        return list.map((originalIdx) => ({
+        const list = order.length === headers.length ? order : headers.map(( _, i ) => i );
+        return list.map(( originalIdx ) => ({
             id: originalIdx,
-            name: headers[originalIdx] || originalIdx + 1
+            name: headers[originalIdx] || originalIdx + 1,
         }));
-    }, [order, headers]);
+    }, [ order, headers ]);
 
     const controlClassNames = {
         label: "text-[10px] font-bold text-slate-500 uppercase block tracking-widest",
@@ -64,12 +64,12 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
 
                 <ScrollShadow className="max-h-120">
                     { displayList.map(( item, index ) => (
-                        <div 
-                            key={ item.id } 
-                            className={clsx(
+                        <div
+                            key={ item.id }
+                            className={ clsx(
                                 "grid grid-cols-[36px_1fr_60px] items-center gap-2 px-3 py-1 border-b border-slate-100 last:border-0",
-                                "bg-white hover:bg-slate-50 transition-colors group"
-                            )}
+                                "bg-white hover:bg-slate-50 transition-colors group",
+                            ) }
                         >
                             <span className="text-[10px] font-mono font-bold text-slate-300">
                                 #{ index + 1 }
@@ -82,12 +82,12 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
                             <div className="flex justify-end gap-0.5">
                                 <Button
                                     isIconOnly
+                                    className={ clsx(
+                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
+                                        index === 0 && "invisible",
+                                    ) }
                                     size="sm"
                                     variant="light"
-                                    className={clsx(
-                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
-                                        index === 0 && "invisible"
-                                    )}
                                     onPress={ () => move( index, "up" ) }
                                 >
                                     <ArrowUp size={ 14 } />
@@ -95,12 +95,12 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
 
                                 <Button
                                     isIconOnly
+                                    className={ clsx(
+                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
+                                        index === displayList.length - 1 && "invisible",
+                                    ) }
                                     size="sm"
                                     variant="light"
-                                    className={clsx(
-                                        "h-6 w-6 min-w-0 text-slate-300 hover:text-primary",
-                                        index === displayList.length - 1 && "invisible"
-                                    )}
                                     onPress={ () => move( index, "down" ) }
                                 >
                                     <ArrowDown size={ 14 } />
@@ -113,6 +113,7 @@ export const ColumnReorderConfig = ({ settings, onUpdate, prevContext }: ColumnR
 
             <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
                 <ArrowDownUp className="text-slate-400 shrink-0" size={ 14 } />
+
                 <p className="text-[10px] text-slate-500 leading-normal italic">
                     Перемещайте колонки, чтобы изменить их положение в таблице.
                 </p>

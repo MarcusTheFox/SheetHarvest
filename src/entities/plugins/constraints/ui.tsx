@@ -1,8 +1,7 @@
-// entities/step/constraints/ui.tsx
 "use client";
 
-import { Select, SelectItem, Button, Input, Tooltip } from "@heroui/react";
-import { Trash2, Plus, AlertCircle, ShieldCheck } from "lucide-react";
+import { Select, SelectItem, Button, Input } from "@heroui/react";
+import { Trash2, Plus, ShieldCheck } from "lucide-react";
 import { ColumnConstraint, ConstraintsLayerSettings, ConstraintType } from "./types";
 import { LayerConfigProps } from "@/shared/types/layer";
 
@@ -54,6 +53,7 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <label className={ controlClassNames.label }>Правила валидации</label>
+
                     <Button
                         isIconOnly
                         className="w-5 h-5 min-w-0 bg-primary text-white shadow-sm"
@@ -67,6 +67,7 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
 
                 <div className="border border-slate-200 rounded overflow-hidden">
                     { /* Header */ }
+
                     <div className="grid grid-cols-[1fr_1fr_32px] items-center gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
                         <span className="text-[9px] font-bold text-slate-500 uppercase">Колонка</span>
                         <span className="text-[9px] font-bold text-slate-500 uppercase">Тип проверки</span>
@@ -74,17 +75,18 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
                     </div>
 
                     { /* List */ }
+
                     <div className="flex flex-col bg-white">
                         { constraints.map(( c, idx ) => (
                             <div key={ idx } className="border-b border-slate-100 last:border-0 p-3 space-y-2">
                                 <div className="grid grid-cols-[1fr_1fr_32px] items-start gap-2">
                                     <Select
+                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
+                                        radius="sm"
+                                        selectedKeys={ [ String( c.colIndex ) ] }
                                         size="sm"
                                         variant="bordered"
-                                        radius="sm"
-                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
-                                        selectedKeys={ [ String( c.colIndex ) ] }
-                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { colIndex: Number( Array.from( keys )[0] ) } ) }
+                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { colIndex: Number( Array.from( keys )[0]) }) }
                                     >
                                         { headers.map(( h, i ) => (
                                             <SelectItem key={ i } className="text-xs">{ h || `Колонка ${ i }` }</SelectItem>
@@ -92,12 +94,12 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
                                     </Select>
 
                                     <Select
+                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
+                                        radius="sm"
+                                        selectedKeys={ [ c.type ] }
                                         size="sm"
                                         variant="bordered"
-                                        radius="sm"
-                                        classNames={{ trigger: controlClassNames.selectTrigger, value: controlClassNames.selectValue }}
-                                        selectedKeys={ [ c.type ] }
-                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { type: Array.from( keys )[0] as ConstraintType } ) }
+                                        onSelectionChange={ ( keys ) => updateConstraint( idx, { type: Array.from( keys )[0] as ConstraintType }) }
                                     >
                                         { CONSTRAINT_TYPES.map(( t ) => (
                                             <SelectItem key={ t.key } className="text-xs">{ t.label }</SelectItem>
@@ -117,13 +119,13 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
                                 { c.type === "regex" && (
                                     <div className="animate-in slide-in-from-top-1 duration-200">
                                         <Input
-                                            placeholder="Паттерн: ^\d{3}-\d{2}$"
-                                            size="sm"
-                                            variant="bordered"
-                                            radius="sm"
                                             classNames={ controlClassNames }
+                                            placeholder="Паттерн: ^\d{3}-\d{2}$"
+                                            radius="sm"
+                                            size="sm"
                                             value={ c.pattern || "" }
-                                            onValueChange={ ( val ) => updateConstraint( idx, { pattern: val } ) }
+                                            variant="bordered"
+                                            onValueChange={ ( val ) => updateConstraint( idx, { pattern: val }) }
                                         />
                                     </div>
                                 ) }
@@ -141,6 +143,7 @@ export const ConstraintsConfig = ({ settings, onUpdate, prevContext }: LayerConf
 
             <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2">
                 <ShieldCheck className="text-slate-400 shrink-0" size={ 14 } />
+
                 <p className="text-[10px] text-slate-500 leading-normal italic">
                     Строки, не соответствующие правилам, будут удалены из финального результата.
                 </p>

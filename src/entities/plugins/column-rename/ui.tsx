@@ -45,38 +45,40 @@ export const ColumnRenameConfig = ({ settings, onUpdate, prevContext }: ColumnRe
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">
             <div className="space-y-3">
                 <label className={ controlClassNames.label }>Новые названия колонок</label>
-                
+
                 <div className="border border-slate-200 rounded overflow-hidden">
                     { /* Header */ }
+
                     <div className="grid grid-cols-[30px_1fr_30px] items-center gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-200">
                         <span className="text-[9px] font-black text-slate-500 font-mono">ID</span>
                         <span className="text-[9px] font-bold text-slate-500 uppercase">Оригинал → Новое имя</span>
-                        <span className="text-[9px] font-bold text-slate-500 uppercase text-right"></span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase text-right" />
                     </div>
 
                     { /* List */ }
+
                     <ScrollShadow className="max-h-[440px]">
                         { headers.map(( header, idx ) => {
                             const isRenamed = renames[idx] !== undefined && renames[idx].trim() !== "";
 
                             return (
-                                <div 
-                                    key={ idx } 
-                                    className={clsx(
+                                <div
+                                    key={ idx }
+                                    className={ clsx(
                                         "grid grid-cols-[30px_1fr_30px] items-center gap-2 px-3 py-2 border-b border-slate-100 last:border-0 transition-colors group",
-                                        isRenamed ? "bg-primary-50/10" : "bg-white"
-                                    )}
+                                        isRenamed ? "bg-primary-50/10" : "bg-white",
+                                    ) }
                                 >
                                     <span className="text-[10px] font-mono font-bold text-slate-400">#{ idx }</span>
-                                    
+
                                     <div className="flex-1 min-w-0">
                                         <Input
-                                            placeholder={ header || `Колонка ${idx + 1}` }
-                                            size="sm"
-                                            variant="bordered"
-                                            radius="sm"
                                             classNames={ controlClassNames }
+                                            placeholder={ header || `Колонка ${ idx + 1 }` }
+                                            radius="sm"
+                                            size="sm"
                                             value={ renames[idx] || "" }
+                                            variant="bordered"
                                             onValueChange={ ( val ) => handleRename( idx, val ) }
                                         />
                                     </div>
@@ -87,7 +89,7 @@ export const ColumnRenameConfig = ({ settings, onUpdate, prevContext }: ColumnRe
                                                 isIconOnly
                                                 className="h-6 w-6 min-w-0 text-slate-400 hover:text-blue-500"
                                                 variant="light"
-                                                onPress={() => handleReset(idx)}
+                                                onPress={ () => handleReset( idx ) }
                                             >
                                                 <RotateCcw size={ 12 } />
                                             </Button>
@@ -102,6 +104,7 @@ export const ColumnRenameConfig = ({ settings, onUpdate, prevContext }: ColumnRe
 
             <div className="bg-slate-50 p-3 rounded border border-slate-100 flex gap-2 mt-2">
                 <Type className="text-slate-400 shrink-0" size={ 14 } />
+
                 <p className="text-[10px] text-slate-500 leading-normal italic">
                     Оставьте поле пустым, чтобы сохранить оригинальное название. Переименование не меняет данные, только заголовки.
                 </p>

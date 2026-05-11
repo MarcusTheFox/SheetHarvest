@@ -1,4 +1,3 @@
-// entities/step/column-split/ui.tsx
 "use client";
 
 import { Input, Select, SelectItem, Tabs, Tab, Button } from "@heroui/react";

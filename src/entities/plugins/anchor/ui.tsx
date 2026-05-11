@@ -29,19 +29,20 @@ const AnchorPointEditor = ({
 }) => {
 
     const toggleRow = ( isSelected: boolean, onToggle: ( v: boolean ) => void ) => (
-        <div 
+        <div
             className="flex items-center justify-between px-2 py-1.5 rounded border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
-            onClick={() => onToggle(!isSelected)}
+            onClick={ () => onToggle( !isSelected ) }
         >
             <span className="text-xs font-bold text-slate-600">Включить маркер в результат</span>
-            <Switch 
-                isSelected={isSelected} 
+
+            <Switch
+                isSelected={ isSelected }
                 size="sm"
-                onValueChange={onToggle} 
+                onValueChange={ onToggle }
             />
         </div>
     );
-    
+
     return (
         <div className="space-y-2">
             <Select
@@ -74,7 +75,8 @@ const AnchorPointEditor = ({
                 variant="bordered"
                 onValueChange={ ( text ) => onChange({ colIndex: point?.colIndex ?? 0, text }) }
             />
-            { toggleRow(includePoint, (v) => onIncludeChage?.( v )) }
+
+            { toggleRow( includePoint, ( v ) => onIncludeChage?.( v )) }
         </div>
     );
 };
@@ -95,8 +97,8 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
 
                 <AnchorPointEditor
                     columns={ columns }
-                    point={ settings?.start ?? null }
                     includePoint={ !!settings.includeStart }
+                    point={ settings?.start ?? null }
                     onChange={ ( start ) => onUpdate?.({ start }) }
                     onIncludeChage={ ( includeStart ) => onUpdate?.({ includeStart }) }
                 />
@@ -109,8 +111,8 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
 
                 <AnchorPointEditor
                     columns={ columns }
-                    point={ settings?.end ?? null }
                     includePoint={ !!settings.includeEnd }
+                    point={ settings?.end ?? null }
                     onChange={ ( end ) => onUpdate?.({ end }) }
                     onIncludeChage={ ( includeEnd ) => onUpdate?.({ includeEnd }) }
                 />
