@@ -21,7 +21,7 @@ export const PageHeader = () => {
     const resetSpreadsheet = useSpreadsheetStore(( s ) => s.reset );
     const isExtracted = useExtractionStore(( s ) => s.isExtracted );
     const clearResults = useExtractionStore(( s ) => s.clearResults );
-    
+
     const resetPattern = usePatternStore(( s ) => s.resetPattern );
     const setSelectedLayerIndex = useSelectedLayerStore(( s ) => s.setSelectedLayerIndex );
     const hasData = useSpreadsheetStore(( s ) => s.sheets.length > 0 );
@@ -31,7 +31,7 @@ export const PageHeader = () => {
     const handleFileOpen = async ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const file = e.target.files?.[0];
         if ( file ) {
-            await importFile(file);
+            await importFile( file );
         }
     };
 
@@ -93,14 +93,15 @@ export const PageHeader = () => {
                             </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
+
                     <Button
+                        as={ Link }
                         className={ menuBtnClass }
-                        size="sm"
-                        variant="light"
-                        as={Link}
                         href="/docs"
-                        target="_blank"
                         rel="noopener noreferrer"
+                        size="sm"
+                        target="_blank"
+                        variant="light"
                     >
                         Справка
                     </Button>
