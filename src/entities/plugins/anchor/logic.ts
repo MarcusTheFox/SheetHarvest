@@ -27,18 +27,16 @@ export function anchorLayer( context: PipelineContext, settings: AnchorLayerSett
             });
         };
 
-        const initNextSubTable = () => {
-            subTableIndex++;
-            currentSubTableRows = [];
-        };
-
         for ( const row of table.rows ) {
             // Проверка стартового якоря
             if ( anchor.start && anchor.start.text && !isSearchActive ) {
                 const cellValue = row.cells[anchor.start.colIndex]?.toString();
                 if ( cellValue && cellValue.includes( anchor.start.text )) {
                     isSearchActive = true;
-                    continue; // Строку со стартовым якорем пропускаем
+                    if ( anchor.includeStart ) {
+                        addRow( row );
+                    }
+                    continue;
                 }
             }
 
@@ -46,10 +44,14 @@ export function anchorLayer( context: PipelineContext, settings: AnchorLayerSett
             if ( anchor.end && anchor.end.text && isSearchActive ) {
                 const cellValue = row.cells[anchor.end.colIndex]?.toString();
                 if ( cellValue && cellValue.includes( anchor.end.text )) {
+                    if ( anchor.includeEnd ) {
+                        addRow( row );
+                    }
                     isSearchActive = false;
                     if ( currentSubTableRows.length > 0 && !anchor.mergeResults ) {
                         createSubTable( false );
-                        initNextSubTable();
+                        subTableIndex++;
+                        currentSubTableRows = [];
                     }
                     continue;
                 }
@@ -70,10 +72,8 @@ export function anchorLayer( context: PipelineContext, settings: AnchorLayerSett
         return subTables;
     };
 
-    const newTables = tables.map(( table ) => processTable( table )).flat();
-
     return {
         ...context,
-        tables: newTables,
+        tables: tables.map( processTable ).flat(),
     };
 }

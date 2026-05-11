@@ -16,21 +16,39 @@ const controlClassNames = {
 
 const AnchorPointEditor = ({
     point,
+    includePoint,
     columns,
     onChange,
+    onIncludeChage,
 }: {
     point: AnchorPoint | null;
+    includePoint: boolean;
     columns: { label: string; value: string }[];
     onChange: ( point: AnchorPoint | null ) => void;
+    onIncludeChage: ( include: boolean ) => void;
 }) => {
+
+    const toggleRow = ( isSelected: boolean, onToggle: ( v: boolean ) => void ) => (
+        <div 
+            className="flex items-center justify-between px-2 py-1.5 rounded border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
+            onClick={() => onToggle(!isSelected)}
+        >
+            <span className="text-xs font-bold text-slate-600">Включить маркер в результат</span>
+            <Switch 
+                isSelected={isSelected} 
+                size="sm"
+                onValueChange={onToggle} 
+            />
+        </div>
+    );
+    
     return (
         <div className="space-y-2">
             <Select
                 classNames={{
-                    trigger: "h-8 min-h-8 border-slate-200 bg-white",
+                    trigger: "h-8 min-h-8 border-slate-200 bg-white shadow-none",
                     value: "text-xs font-bold text-slate-700",
                 }}
-                labelPlacement="outside"
                 placeholder="Выберите колонку"
                 radius="sm"
                 selectedKeys={ point?.colIndex !== undefined ? [ String( point.colIndex ) ] : [] }
@@ -56,19 +74,17 @@ const AnchorPointEditor = ({
                 variant="bordered"
                 onValueChange={ ( text ) => onChange({ colIndex: point?.colIndex ?? 0, text }) }
             />
+            { toggleRow(includePoint, (v) => onIncludeChage?.( v )) }
         </div>
     );
 };
 
 export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigProps ) => {
     const headers = useMemo(() => prevContext?.headers ?? [], [ prevContext ]);
-
-    const columns = useMemo(() => {
-        return headers.map(( h, i ) => ({
-            label: h || `Колонка ${ i + 1 }`,
-            value: String( i ),
-        }));
-    }, [ headers ]);
+    const columns = useMemo(() => headers.map(( h, i ) => ({
+        label: h || String( i + 1 ),
+        value: String( i ),
+    })), [ headers ]);
 
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">
@@ -80,7 +96,9 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                 <AnchorPointEditor
                     columns={ columns }
                     point={ settings?.start ?? null }
+                    includePoint={ !!settings.includeStart }
                     onChange={ ( start ) => onUpdate?.({ start }) }
+                    onIncludeChage={ ( includeStart ) => onUpdate?.({ includeStart }) }
                 />
             </div>
 
@@ -92,7 +110,9 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                 <AnchorPointEditor
                     columns={ columns }
                     point={ settings?.end ?? null }
+                    includePoint={ !!settings.includeEnd }
                     onChange={ ( end ) => onUpdate?.({ end }) }
+                    onIncludeChage={ ( includeEnd ) => onUpdate?.({ includeEnd }) }
                 />
             </div>
 
@@ -111,7 +131,7 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                     </div>
 
                     <Switch
-                        isSelected={ settings?.mergeResults ?? false }
+                        isSelected={ !!settings.mergeResults }
                         size="sm"
                         onValueChange={ ( val ) => onUpdate?.({ mergeResults: val }) }
                     />
@@ -124,8 +144,7 @@ export const AnchorConfig = ({ settings, onUpdate, prevContext }: AnchorConfigPr
                 <HelpCircle className="text-slate-400 shrink-0" size={ 14 } />
 
                 <p className="text-[10px] text-slate-500 leading-normal italic">
-                    Данные будут захвачены от строки после «Старта» до строки перед «Концом».
-                    Если текст не найден, якорь игнорируется.
+                    Данные будут захвачены от строки начала диапазона до строки конца диапазона.
                 </p>
             </div>
         </div>

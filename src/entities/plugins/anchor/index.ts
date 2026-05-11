@@ -11,6 +11,9 @@ export const anchorLayerMetadata: LayerMetadata<AnchorLayerSettings> = {
     defaultSettings: {
         start: null,
         end: null,
+        includeStart: false,
+        includeEnd: false,
+        mergeResults: false,
     },
     component: AnchorConfig,
 };
