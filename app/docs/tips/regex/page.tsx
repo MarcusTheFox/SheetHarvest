@@ -2,17 +2,15 @@
 
 import {
     Regex, Terminal, BookOpen, GraduationCap,
-    ArrowRight, Code2, ShieldCheck, Microscope,
+    Code2, ShieldCheck, Microscope,
     ExternalLink, AlertTriangle, Layers,
 } from "lucide-react";
-import { Divider, Button, Card, CardBody, ScrollShadow } from "@heroui/react";
+import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function RegexGuidePage() {
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-            { /* Header */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Regex size={ 14 } />
@@ -30,14 +28,13 @@ export default function RegexGuidePage() {
                     Если обычный поиск ищет точное слово (например, «Артикул 123»), то Regex
                     позволяет сказать программе:
                     { " " }
-                    <i>«Найди мне слово "Артикул", после которого идет пробел и ровно 3 любые цифры»</i>
+                    <i>«Найди мне слово &quot;Артикул&quot;, после которого идет пробел и ровно 3 любые цифры»</i>
+                    { }
                     .
                 </p>
             </header>
 
             <Divider />
-
-            { /* Введение для новичков */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -65,11 +62,10 @@ export default function RegexGuidePage() {
                     ищет
                     { " " }
                     <b>любую цифру</b>
+                    { }
                     .
                     Создание формулы похоже на сборку конструктора Lego: вы берете нужные детали и ставите их друг за другом.
                 </p>
-
-                { /* Интерактивный разбор (как в Regex101) */ }
 
                 <Card className="bg-slate-900 border-none shadow-xl overflow-hidden" radius="lg">
                     <div className="bg-slate-950 px-6 py-3 border-b border-slate-800 flex items-center justify-between">
@@ -135,8 +131,6 @@ export default function RegexGuidePage() {
                 </Card>
             </section>
 
-            { /* Квантификаторы */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -163,8 +157,6 @@ export default function RegexGuidePage() {
                     <QuantifierCard desc="Например, \d{2,4} найдет от 2 до 4 цифр подряд." name="От N до M раз" symbol="{n,m}" />
                 </div>
 
-                { /* Жадность */ }
-
                 <Card className="bg-amber-50 border border-amber-200 shadow-none" radius="sm">
                     <CardBody className="p-5 flex gap-4 items-start">
                         <AlertTriangle className="text-amber-500 shrink-0 mt-0.5" size={ 20 } />
@@ -186,32 +178,31 @@ export default function RegexGuidePage() {
                                 <br/>
                                 Если у вас текст
                                 { " " }
-                                <code>"А", "Б", "В"</code>
+                                <code>&quot;А&quot;, &quot;Б&quot;, &quot;В&quot;</code>
                                 { " " }
                                 и вы напишете
                                 { " " }
-                                <code>".*"</code>
+                                <code>&quot;.*&quot;</code>
                                 { " " }
                                 (кавычка, любой текст, кавычка), он захватит всё от первой до последней кавычки:
                                 { " " }
-                                <b>"А", "Б", "В"</b>
+                                <b>&quot;А&quot;, &quot;Б&quot;, &quot;В&quot;</b>
                                 .
                                 { " " }
                                 <br/>
                                 Чтобы он остановился на первой же закрывающей кавычке (стал ленивым), добавьте знак вопроса:
                                 { " " }
-                                <code>".*?"</code>
+                                <code>&quot;.*?&quot;</code>
                                 . Результат:
                                 { " " }
-                                <b>"А"</b>
+                                <b>&quot;А&quot;</b>
+                                { }
                                 .
                             </p>
                         </div>
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Токены (Алфавит) */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -236,7 +227,6 @@ export default function RegexGuidePage() {
                         <div className="p-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Что он ищет</div>
                     </div>
 
-                    { /* Базовые */ }
                     <TokenRow desc="Любой символ вообще (кроме переноса строки)." token="." />
                     <TokenRow desc="Любая цифра (от 0 до 9)." token="\d" />
                     <TokenRow desc="Всё, что УГОДНО, только НЕ цифра (буквы, пробелы, знаки)." token="\D" />
@@ -244,38 +234,26 @@ export default function RegexGuidePage() {
                     <TokenRow desc="НЕ словесный символ (пробелы, точки, запятые, дефисы)." token="\W" />
                     <TokenRow desc="Пробельный символ (пробел, табуляция, невидимые отступы)." token="\s" />
                     <TokenRow desc="НЕ пробел (любой видимый символ)." token="\S" />
-                    
-                    { /* Наборы */ }
                     <TokenRow desc="Набор: найдет либо 'a', либо 'b', либо 'c'. Любой ОДИН символ из скобок." token="[abc]" />
                     <TokenRow desc="Отрицание: найдет любой символ, КРОМЕ 'a', 'b' и 'c'." token="[^abc]" />
                     <TokenRow desc="Диапазон: любая маленькая английская буква." token="[a-z]" />
                     <TokenRow desc="Диапазон: любая русская буква (большая или маленькая)." token="[А-Яа-я]" />
                     <TokenRow desc="Аналог \d (любая цифра)." token="[0-9]" />
-                    
-                    { /* Позиции */ }
                     <TokenRow desc="Начало строки. ^Привет найдет слово 'Привет' только если оно стоит в самом начале." token="^" />
                     <TokenRow desc="Конец строки. Пока$ найдет слово 'Пока' только в самом конце текста." token="$" />
                     <TokenRow desc="Граница слова. \bКот\b найдет слово 'Кот', но проигнорирует его внутри слова 'Который'." token="\b" />
-                    
-                    { /* Группировка и логика */ }
                     <TokenRow desc="Группа. Объединяет символы. (abc)+ найдет 'abcabcabc'." token="(abc)" />
                     <TokenRow desc="ИЛИ. Найдет либо 'a', либо 'b'. Например (cat|dog) найдет кота или собаку." token="(a|b)" />
                     <TokenRow desc="Группа без захвата. Объединяет, но не сохраняет в память (экономит ресурсы)." token="(?:abc)" />
-                    
-                    { /* Спецсимволы */ }
                     <TokenRow desc="Экранирование. Если вам нужно найти саму точку (а не любой символ), напишите \." token="\" />
                     <TokenRow desc="Перенос на новую строку." token="\n" />
                     <TokenRow desc="Символ табуляции (Tab)." token="\t" />
-                    
-                    { /* Продвинутые */ }
                     <TokenRow desc="Позитивный просмотр вперед. Найдет позицию ПЕРЕД 'abc', не захватывая само 'abc'." token="(?=abc)" />
                     <TokenRow desc="Негативный просмотр вперед. Убеждается, что впереди НЕТ 'abc'." token="(?!abc)" />
                     <TokenRow desc="Позитивный просмотр назад. Найдет позицию ПОСЛЕ 'abc'." token="(?<=abc)" />
                     <TokenRow desc="Негативный просмотр назад. Убеждается, что сзади НЕТ 'abc'." token="(?<!abc)" />
                 </div>
             </section>
-
-            { /* Готовые рецепты */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -325,8 +303,6 @@ export default function RegexGuidePage() {
                 </div>
             </section>
 
-            { /* Regex101 Promo */ }
-
             <Card className="bg-slate-50 border border-slate-200" radius="lg">
                 <CardBody className="p-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
                     <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-primary shrink-0">
@@ -359,8 +335,6 @@ export default function RegexGuidePage() {
                     </Button>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

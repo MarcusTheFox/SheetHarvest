@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function MappingPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Globe size={ 14 } />
@@ -32,14 +30,13 @@ export default function MappingPage() {
                     или
                     { " " }
                     <i>«Samsung»</i>
+                    { }
                     .
                     Инструмент сопоставления превращает этот хаос в идеальный порядок.
                 </p>
             </header>
 
             <Divider />
-
-            { /* Как это работает */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Ваш личный переводчик</h2>
@@ -66,8 +63,6 @@ export default function MappingPage() {
                     </div>
                 </Card>
             </section>
-
-            { /* Глобальная память */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -103,6 +98,7 @@ export default function MappingPage() {
                                     программа сама заменит его на
                                     { " " }
                                     <i>«Apple»</i>
+                                    { }
                                     . Вам не нужно делать это снова.
                                 </p>
                             </div>
@@ -125,8 +121,6 @@ export default function MappingPage() {
                 </div>
             </section>
 
-            { /* Управление базой */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Как управлять базой</h2>
 
@@ -145,8 +139,6 @@ export default function MappingPage() {
                 </div>
             </section>
 
-            { /* Совет по использованию */ }
-
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
                     <div className="p-3 bg-white/10 rounded-xl text-primary shrink-0">
@@ -164,8 +156,6 @@ export default function MappingPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

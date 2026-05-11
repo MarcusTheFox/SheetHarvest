@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function PreviewUiPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Eye size={ 14 } />
@@ -27,8 +25,6 @@ export default function PreviewUiPage() {
             </header>
 
             <Divider />
-
-            { /* Концепция До и После */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
@@ -69,8 +65,6 @@ export default function PreviewUiPage() {
                 </div>
             </section>
 
-            { /* Работа с таблицей */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Удобство навигации</h2>
 
@@ -95,8 +89,6 @@ export default function PreviewUiPage() {
                 </div>
             </section>
 
-            { /* Совет по интерфейсу */ }
-
             <Card className="bg-slate-50 border border-slate-200 shadow-none" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
                     <div className="p-3 bg-white rounded-xl border border-slate-200 text-slate-400 shrink-0">
@@ -116,8 +108,6 @@ export default function PreviewUiPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

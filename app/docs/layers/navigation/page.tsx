@@ -1,14 +1,12 @@
 "use client";
 
-import { Anchor, ArrowDownToLine, Info, HelpCircle, ArrowRight, Target, Scissors } from "lucide-react";
-import { Divider, Button, Card, CardBody, Chip } from "@heroui/react";
+import { Anchor, ArrowDownToLine, HelpCircle, ArrowRight, Target, Scissors } from "lucide-react";
+import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function NavigationLayersPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Target size={ 14 } />
@@ -29,8 +27,6 @@ export default function NavigationLayersPage() {
 
             <Divider />
 
-            { /* 1. Якоря (Anchor Layer) */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -44,6 +40,7 @@ export default function NavigationLayersPage() {
                     Этот инструмент работает как
                     { " " }
                     <b>ножницы</b>
+                    { }
                     . Вы указываете программе: «Начни собирать данные, когда встретишь текст Х, и закончи, когда увидишь текст Y».
                 </p>
 
@@ -93,8 +90,6 @@ export default function NavigationLayersPage() {
                 </div>
             </section>
 
-            { /* 2. Пропуск строк (Row Skip) */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -129,8 +124,6 @@ export default function NavigationLayersPage() {
                 </div>
             </section>
 
-            { /* Рекомендация */ }
-
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
                     <div className="p-3 bg-white/10 rounded-xl text-primary shrink-0">
@@ -155,8 +148,6 @@ export default function NavigationLayersPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

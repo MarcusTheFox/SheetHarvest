@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function AboutPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Header */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Info size={ 14 } />
@@ -28,8 +26,6 @@ export default function AboutPage() {
             </header>
 
             <Divider />
-
-            { /* Main Philosophy */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Зачем это нужно?</h2>
@@ -73,8 +69,6 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            { /* Workflow Section */ }
-
             <section className="space-y-6 bg-slate-50 p-8 rounded-3xl border border-slate-100">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight text-center">Как работает процесс?</h2>
 
@@ -88,8 +82,6 @@ export default function AboutPage() {
                     <Step icon={ <ArrowRight size={ 18 } /> } label="Экспорт" />
                 </div>
             </section>
-
-            { /* Key Benefits */ }
 
             <section className="space-y-4">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Ключевые преимущества</h2>
@@ -111,8 +103,6 @@ export default function AboutPage() {
                 </ul>
             </section>
 
-            { /* Footer Nav */ }
-
             <div className="pt-10 flex justify-end">
                 <Button
                     as={ Link }
@@ -129,7 +119,6 @@ export default function AboutPage() {
     );
 }
 
-// Вспомогательные компоненты для визуализации процесса
 const Step = ({ icon, label }: { icon: React.ReactNode, label: string }) => (
     <div className="flex flex-col items-center gap-2">
         <div className="w-12 h-12 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-primary">

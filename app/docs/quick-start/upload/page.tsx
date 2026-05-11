@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function UploadStepPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <FileUp size={ 14 } />
@@ -28,8 +26,6 @@ export default function UploadStepPage() {
 
             <Divider />
 
-            { /* Способ 1: Перетаскивание */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-xs border border-slate-200">
@@ -44,6 +40,7 @@ export default function UploadStepPage() {
                     Появится синяя рамка с надписью
                     { " " }
                     <b>«Отпустите для загрузки»</b>
+                    { }
                     . Это самый быстрый способ.
                 </p>
 
@@ -60,8 +57,6 @@ export default function UploadStepPage() {
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Способ 2: Кнопка */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -103,8 +98,6 @@ export default function UploadStepPage() {
                 </div>
             </section>
 
-            { /* Результат */ }
-
             <section className="space-y-4 p-6 bg-success-50 rounded-2xl border border-success-100">
                 <div className="flex items-center gap-2 text-success-700">
                     <CheckCircle2 size={ 20 } />
@@ -116,8 +109,6 @@ export default function UploadStepPage() {
                     а слева — список функций. Теперь вы готовы к самому интересному — настройке обработки.
                 </p>
             </section>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

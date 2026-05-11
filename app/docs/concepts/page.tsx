@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function ConceptsPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Workflow size={ 14 } />
@@ -30,13 +28,12 @@ export default function ConceptsPage() {
                     и как работают
                     { " " }
                     <b>Слои</b>
+                    { }
                     .
                 </p>
             </header>
 
             <Divider />
-
-            { /* Пайплайн - Конвейер */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -81,8 +78,6 @@ export default function ConceptsPage() {
                 </Card>
             </section>
 
-            { /* Слои - Инструменты */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -96,6 +91,7 @@ export default function ConceptsPage() {
                     Каждое действие, которое вы добавляете — это
                     { " " }
                     <b>Слой</b>
+                    { }
                     .
                     Они лежат друг на друге по порядку. Самое важное: вы в любой момент можете
                     вернуться к любому шагу и изменить его настройки, не переделывая всё остальное.
@@ -137,8 +133,6 @@ export default function ConceptsPage() {
                 </div>
             </section>
 
-            { /* Подвал навигации */ }
-
             <div className="pt-10 flex justify-between items-center">
                 <Button
                     as={ Link }
@@ -164,7 +158,6 @@ export default function ConceptsPage() {
     );
 }
 
-// Мини-компонент для списка слоев
 const LayerStep = ({ number, title }: { number: string, title: string }) => (
     <li className="flex items-center gap-3 p-2 bg-slate-50 rounded border border-slate-100 group hover:border-primary/30 transition-colors">
         <span className="w-5 h-5 flex items-center justify-center rounded bg-white border border-slate-200 text-[10px] font-black text-slate-400 group-hover:text-primary">

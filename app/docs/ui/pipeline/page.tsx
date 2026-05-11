@@ -1,14 +1,12 @@
 "use client";
 
-import { Settings2, ArrowUp, ArrowDown, Trash2, Play, CheckCircle2, ListPlus, ArrowRight } from "lucide-react";
-import { Divider, Button, Card, CardBody, Chip } from "@heroui/react";
+import { Settings2, ArrowUp, Trash2, Play, CheckCircle2, ListPlus, ArrowRight } from "lucide-react";
+import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function PipelineUiPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Settings2 size={ 14 } />
@@ -29,8 +27,6 @@ export default function PipelineUiPage() {
 
             <Divider />
 
-            { /* Добавление шагов */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Добавление новых шагов</h2>
 
@@ -47,8 +43,6 @@ export default function PipelineUiPage() {
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Кнопка «Добавить слой»</span>
                 </div>
             </section>
-
-            { /* Анатомия карточки шага */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Как управлять шагами</h2>
@@ -77,8 +71,6 @@ export default function PipelineUiPage() {
                     />
                 </div>
             </section>
-
-            { /* Статусы выполнения */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Цвета и значки (Статусы)</h2>
@@ -112,8 +104,6 @@ export default function PipelineUiPage() {
                 </div>
             </section>
 
-            { /* Важное правило */ }
-
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 space-y-3">
                     <div className="flex items-center gap-2 text-primary">
@@ -128,8 +118,6 @@ export default function PipelineUiPage() {
                     </p>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

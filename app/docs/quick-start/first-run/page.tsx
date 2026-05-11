@@ -1,14 +1,12 @@
 "use client";
 
-import { Play, ListPlus, Download, CheckCircle2, ArrowRight, Settings2 } from "lucide-react";
+import { Play, CheckCircle2, ArrowRight, Settings2 } from "lucide-react";
 import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function FirstRunPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Play fill="currentColor" size={ 14 } />
@@ -28,8 +26,6 @@ export default function FirstRunPage() {
             </header>
 
             <Divider />
-
-            { /* Этап 1: Добавление действий */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -65,8 +61,6 @@ export default function FirstRunPage() {
                 </Card>
             </section>
 
-            { /* Этап 2: Запуск */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-primary/20">
@@ -93,8 +87,6 @@ export default function FirstRunPage() {
                 </div>
             </section>
 
-            { /* Этап 3: Сохранение */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-primary/20">
@@ -115,8 +107,6 @@ export default function FirstRunPage() {
                 </div>
             </section>
 
-            { /* Завершение */ }
-
             <section className="space-y-4 p-6 bg-primary-50 rounded-2xl border border-primary-100">
                 <div className="flex items-center gap-2 text-primary-700">
                     <CheckCircle2 size={ 20 } />
@@ -127,12 +117,11 @@ export default function FirstRunPage() {
                     Вы только что создали свою первую автоматическую выгрузку. Теперь вы можете сохранить этот набор действий как
                     { " " }
                     <b>Шаблон</b>
+                    { }
                     ,
                     чтобы в следующий раз просто загрузить новый файл и получить результат нажатием одной кнопки.
                 </p>
             </section>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

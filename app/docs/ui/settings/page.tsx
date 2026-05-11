@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function SettingsUiPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Settings size={ 14 } />
@@ -28,8 +26,6 @@ export default function SettingsUiPage() {
             </header>
 
             <Divider />
-
-            { /* Как это выглядит */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Основные элементы</h2>
@@ -97,8 +93,6 @@ export default function SettingsUiPage() {
                 </div>
             </section>
 
-            { /* Мгновенная реакция */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -124,8 +118,6 @@ export default function SettingsUiPage() {
                 </div>
             </section>
 
-            { /* Навигация клавиатурой */ }
-
             <section className="space-y-4">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
                     <Keyboard className="text-primary" size={ 20 } />
@@ -137,11 +129,10 @@ export default function SettingsUiPage() {
                     с помощью клавиши
                     { " " }
                     <b>Tab</b>
+                    { }
                     . Все списки выбора поддерживают поиск — просто начните печатать название колонки.
                 </p>
             </section>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

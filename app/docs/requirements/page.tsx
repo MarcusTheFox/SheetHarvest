@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function RequirementsPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Monitor size={ 14 } />
@@ -28,8 +26,6 @@ export default function RequirementsPage() {
 
             <Divider />
 
-            { /* Форматы файлов */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
                     <FileCheck className="text-primary" size={ 20 } />
@@ -46,8 +42,6 @@ export default function RequirementsPage() {
                     <FormatCard desc="Текстовые таблицы из других программ" title=".CSV" />
                 </div>
             </section>
-
-            { /* Безопасность */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
@@ -68,6 +62,7 @@ export default function RequirementsPage() {
                                 Это самая важная часть: когда вы загружаете файл, он
                                 { " " }
                                 <b>не отправляется в интернет</b>
+                                { }
                                 .
                                 Все расчеты происходят внутри вашего браузера. Если вы отключите интернет после загрузки страницы,
                                 программа продолжит работать так же быстро.
@@ -76,8 +71,6 @@ export default function RequirementsPage() {
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Браузеры */ }
 
             <section className="space-y-4">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
@@ -108,8 +101,6 @@ export default function RequirementsPage() {
                 </div>
             </section>
 
-            { /* Память */ }
-
             <section className="space-y-3 p-6 bg-slate-50 rounded-2xl border border-slate-100">
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Маленький совет:</h3>
 
@@ -118,8 +109,6 @@ export default function RequirementsPage() {
                     В этом случае лучше закрыть лишние вкладки в браузере.
                 </p>
             </section>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

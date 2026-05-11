@@ -1,14 +1,12 @@
 "use client";
 
-import { Download, FileSpreadsheet, FileJson, FileText, Archive, Edit3, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Download, FileSpreadsheet, FileJson, FileText, Archive, Edit3, ArrowRight } from "lucide-react";
 import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function ExportFormatsPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Download size={ 14 } />
@@ -28,8 +26,6 @@ export default function ExportFormatsPage() {
             </header>
 
             <Divider />
-
-            { /* Выбор имен */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -52,29 +48,20 @@ export default function ExportFormatsPage() {
                 <Card className="border border-slate-200 shadow-none bg-slate-50/50" radius="lg">
                     <CardBody className="p-6">
                         <div className="flex flex-col gap-4">
-                            { /* Подписи над "полями" */ }
-
                             <div className="flex items-center justify-between px-1">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Имя в программе</span>
                                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Ваше название для файла</span>
                             </div>
 
-                            { /* Имитация процесса переименования */ }
-
                             <div className="flex items-center gap-4">
-                                { /* Исходное имя (выглядит как заблокированное) */ }
 
                                 <div className="flex-1 px-4 py-3 bg-slate-200/50 rounded-xl border border-slate-200 text-xs font-bold text-slate-400 italic flex items-center gap-2">
                                     Результат_1
                                 </div>
 
-                                { /* Стрелка перехода */ }
-
                                 <div className="shrink-0 w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                                     <ArrowRight className="text-primary" size={ 20 } strokeWidth={ 3 } />
                                 </div>
-
-                                { /* Активное поле ввода */ }
 
                                 <div className="flex-1 px-4 py-3 bg-white rounded-xl border-2 border-primary shadow-md text-xs font-bold text-slate-800 flex items-center gap-3 animate-pulse-slow">
                                     <Edit3 className="text-primary" size={ 14 } />
@@ -90,14 +77,10 @@ export default function ExportFormatsPage() {
                 </p>
             </section>
 
-            { /* Три формата */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Доступные форматы</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                    { /* Excel */ }
 
                     <Card className="border border-slate-100 shadow-none bg-slate-50/50" radius="sm">
                         <CardBody className="p-5 space-y-4">
@@ -115,8 +98,6 @@ export default function ExportFormatsPage() {
                         </CardBody>
                     </Card>
 
-                    { /* CSV */ }
-
                     <Card className="border border-slate-100 shadow-none bg-slate-50/50" radius="sm">
                         <CardBody className="p-5 space-y-4">
                             <div className="w-10 h-10 rounded-lg bg-slate-700 text-white flex items-center justify-center shadow-lg shadow-slate-300">
@@ -133,8 +114,6 @@ export default function ExportFormatsPage() {
                         </CardBody>
                     </Card>
 
-                    { /* JSON */ }
-
                     <Card className="border border-slate-100 shadow-none bg-slate-50/50" radius="sm">
                         <CardBody className="p-5 space-y-4">
                             <div className="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-200">
@@ -150,11 +129,8 @@ export default function ExportFormatsPage() {
                             </div>
                         </CardBody>
                     </Card>
-
                 </div>
             </section>
-
-            { /* Экспортировать всё */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -191,8 +167,6 @@ export default function ExportFormatsPage() {
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

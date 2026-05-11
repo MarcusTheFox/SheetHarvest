@@ -1,14 +1,12 @@
 "use client";
 
-import { Save, FolderOpen, Zap, Trash2, Clock, CheckCircle2, ArrowRight, Copy } from "lucide-react";
+import { Save, FolderOpen, Zap, Trash2, Clock, ArrowRight, Copy } from "lucide-react";
 import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function TemplatesPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Save size={ 14 } />
@@ -28,8 +26,6 @@ export default function TemplatesPage() {
             </header>
 
             <Divider />
-
-            { /* Как сохранить шаблон */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -67,13 +63,12 @@ export default function TemplatesPage() {
                             ) и нажмите на иконку
                             { " " }
                             <b>дискеты (Сохранить)</b>
+                            { }
                             .
                         </p>
                     </div>
                 </div>
             </section>
-
-            { /* Использование шаблонов */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -97,6 +92,7 @@ export default function TemplatesPage() {
                                 Все ваши сохраненные инструкции находятся в блоке
                                 { " " }
                                 <b>«Сохраненные шаблоны»</b>
+                                { }
                                 .
                                 Просто нажмите на название нужного шаблона, и вся цепочка действий тут же появится в списке функций.
                             </p>
@@ -110,8 +106,6 @@ export default function TemplatesPage() {
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Библиотека и управление */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Управление библиотекой</h2>
@@ -147,8 +141,6 @@ export default function TemplatesPage() {
                 </div>
             </section>
 
-            { /* Экономия времени */ }
-
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start text-white">
                     <div className="p-3 bg-primary rounded-xl shrink-0 shadow-lg shadow-primary/40">
@@ -176,8 +168,6 @@ export default function TemplatesPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

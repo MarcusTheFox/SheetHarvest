@@ -1,14 +1,12 @@
 "use client";
 
 import { Filter, ShieldCheck, Check, X, Minus, Info, ArrowRight, Ban, ListFilter } from "lucide-react";
-import { Divider, Button, Card, CardBody, Tooltip } from "@heroui/react";
+import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function FiltersLayersPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Filter size={ 14 } />
@@ -28,8 +26,6 @@ export default function FiltersLayersPage() {
             </header>
 
             <Divider />
-
-            { /* 1. Топология строк (Topology) */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -95,8 +91,6 @@ export default function FiltersLayersPage() {
                 </div>
             </section>
 
-            { /* 2. Типы данных (Constraints) */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -126,8 +120,6 @@ export default function FiltersLayersPage() {
                 </div>
             </section>
 
-            { /* Заметка о важности порядка */ }
-
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
                     <div className="p-3 bg-white/10 rounded-xl text-amber-500 shrink-0">
@@ -142,13 +134,12 @@ export default function FiltersLayersPage() {
                             Всегда проверяйте нижнюю таблицу
                             { " " }
                             <b>«После»</b>
+                            { }
                             , чтобы убедиться, что вы не удалили лишнего.
                         </p>
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

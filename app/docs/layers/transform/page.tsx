@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function TransformLayersPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Columns size={ 14 } />
@@ -28,8 +26,6 @@ export default function TransformLayersPage() {
             </header>
 
             <Divider />
-
-            { /* 1. Проекция (Projection) */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -67,8 +63,6 @@ export default function TransformLayersPage() {
                 </div>
             </section>
 
-            { /* 2. Разделение колонки (Split) */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -96,8 +90,6 @@ export default function TransformLayersPage() {
 
                 <p className="text-[11px] text-slate-400 italic">Разделять можно по любому символу: запятая, пробел, косая черта и т.д.</p>
             </section>
-
-            { /* 3. Regex Извлечение (Regex Extract) */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -129,12 +121,11 @@ export default function TransformLayersPage() {
                         программа вытянет из этой строки только число
                         { " " }
                         <b>50</b>
+                        { }
                         .
                     </p>
                 </div>
             </section>
-
-            { /* Быстрые действия */ }
 
             <section className="space-y-4">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Вспомогательные действия</h2>
@@ -146,8 +137,6 @@ export default function TransformLayersPage() {
                     <MiniAction desc="Перетаскивание колонок влево или вправо." icon={ <Columns size={ 14 } /> } title="Порядок" />
                 </div>
             </section>
-
-            { /* Заметка о модификации */ }
 
             <Card className="bg-amber-50 border border-amber-100 shadow-none" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
@@ -165,8 +154,6 @@ export default function TransformLayersPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

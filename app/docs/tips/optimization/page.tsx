@@ -7,8 +7,6 @@ import Link from "next/link";
 export default function OptimizationPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Lightbulb size={ 14 } />
@@ -29,8 +27,6 @@ export default function OptimizationPage() {
 
             <Divider />
 
-            { /* Принцип воронки */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -44,6 +40,7 @@ export default function OptimizationPage() {
                     Самое главное правило:
                     { " " }
                     <b>удаляйте лишнее как можно раньше</b>
+                    { }
                     .
                     Если в вашем файле 50 000 строк, а вам нужны только 5 000 из них, первым делом добавьте слои фильтрации (Якоря, Топологию или Пропуск строк).
                 </p>
@@ -71,8 +68,6 @@ export default function OptimizationPage() {
                     </CardBody>
                 </Card>
             </section>
-
-            { /* Гигиена браузера */ }
 
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -122,8 +117,6 @@ export default function OptimizationPage() {
                 </div>
             </section>
 
-            { /* Сопоставление: один раз и навсегда */ }
-
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary rounded-lg text-white">
@@ -144,8 +137,6 @@ export default function OptimizationPage() {
                 </p>
             </section>
 
-            { /* Золотой совет */ }
-
             <Card className="bg-primary-50 border-none shadow-none" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start text-primary-900">
                     <div className="p-3 bg-white rounded-xl text-primary shrink-0 shadow-sm border border-primary-100">
@@ -163,8 +154,6 @@ export default function OptimizationPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button

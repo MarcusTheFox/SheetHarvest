@@ -1,14 +1,12 @@
 "use client";
 
-import { Grid2X2, Lock, ArrowRight, HelpCircle, Table, Layers, Info, FileStack } from "lucide-react";
+import { Grid2X2, Lock, ArrowRight, FileStack } from "lucide-react";
 import { Divider, Button, Card, CardBody } from "@heroui/react";
 import Link from "next/link";
 
 export default function MatrixLayerPage() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            { /* Заголовок */ }
-
             <header className="space-y-4">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
                     <Grid2X2 size={ 14 } />
@@ -25,14 +23,13 @@ export default function MatrixLayerPage() {
                     Этот инструмент превращает одну большую таблицу в
                     { " " }
                     <b>целую стопку отдельных таблиц</b>
+                    { }
                     .
                     Это идеальный способ разделить общий прайс-лист на отдельные списки по складам, городам или категориям.
                 </p>
             </header>
 
             <Divider />
-
-            { /* Суть процесса */ }
 
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Как это работает?</h2>
@@ -41,6 +38,7 @@ export default function MatrixLayerPage() {
                     Представьте, что у вас есть файл, где в одной строке указан товар, а дальше идут колонки:
                     { " " }
                     <b>«Остаток Москва»</b>
+                    { }
                     ,
                     <b>«Остаток Питер»</b>
                     { " " }
@@ -56,10 +54,9 @@ export default function MatrixLayerPage() {
                     Названия колонок (Москва, Питер, Казань) станут
                     { " " }
                     <b>названиями этих таблиц</b>
+                    { }
                     .
                 </p>
-
-                { /* Визуальная схема */ }
 
                 <Card className="border-none shadow-xl bg-slate-900" radius="lg">
                     <CardBody className="p-6">
@@ -100,8 +97,6 @@ export default function MatrixLayerPage() {
                 </Card>
             </section>
 
-            { /* Настройка ролей */ }
-
             <section className="space-y-6">
                 <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Настройка ролей</h2>
 
@@ -139,6 +134,7 @@ export default function MatrixLayerPage() {
                                     Выберите колонки, названия которых станут
                                     { " " }
                                     <b>именами новых таблиц</b>
+                                    { }
                                     .
                                     Данные из этих колонок попадут в новый столбец «Количество».
                                 </p>
@@ -147,8 +143,6 @@ export default function MatrixLayerPage() {
                     </Card>
                 </div>
             </section>
-
-            { /* Важный нюанс */ }
 
             <Card className="bg-slate-900 border-none shadow-xl" radius="lg">
                 <CardBody className="p-6 flex flex-row gap-5 items-start">
@@ -170,8 +164,6 @@ export default function MatrixLayerPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            { /* Подвал навигации */ }
 
             <div className="pt-10 flex justify-between items-center">
                 <Button
