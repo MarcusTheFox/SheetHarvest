@@ -50,7 +50,7 @@ export const PageHeader = () => {
     };
 
     return (
-        <header className="flex justify-between items-center h-11 px-3 border-b border-slate-200 bg-white shrink-0 z-50">
+        <header className="flex justify-between items-center h-12 px-6 border-b border-slate-200 bg-white shrink-0">
             <input
                 ref={ fileInputRef }
                 accept=".xlsx,.xls,.csv"
