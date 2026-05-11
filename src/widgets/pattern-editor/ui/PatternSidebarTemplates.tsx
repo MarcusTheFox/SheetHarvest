@@ -24,7 +24,12 @@ export const PatternSidebarTemplates = () => {
 
             <div className="flex flex-col gap-2">
                 { templates.map(( t ) => (
-                    <Card key={ t.id } className="border border-default-100 hover:border-primary-200 transition-all group" shadow="none">
+                    <Card
+                        key={ t.id }
+                        className="border border-slate-200 hover:border-primary-200 transition-all group"
+                        radius="sm"
+                        shadow="none"
+                    >
                         <CardBody className="p-3">
                             <div className="flex justify-between items-start gap-2">
                                 <div
